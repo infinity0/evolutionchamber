@@ -23,6 +23,8 @@ import org.jgap.event.GeneticEventListener;
 import org.jgap.impl.DefaultConfiguration;
 import org.jgap.impl.IntegerGene;
 
+import com.fray.evo.action.EcAction;
+
 public class EvolutionChamber
 {
 	//The seeds files. (one and a backup, in case execution stops while the file is half written)

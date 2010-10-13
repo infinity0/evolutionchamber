@@ -5,6 +5,8 @@ import org.jgap.Gene;
 import org.jgap.IChromosome;
 import org.jgap.impl.IntegerGene;
 
+import com.fray.evo.action.EcAction;
+
 public class EcEvolver extends FitnessFunction
 {
 	EcState			source;
