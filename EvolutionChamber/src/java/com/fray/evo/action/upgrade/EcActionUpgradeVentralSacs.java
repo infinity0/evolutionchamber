@@ -16,6 +16,7 @@ public class EcActionUpgradeVentralSacs extends EcActionUpgrade
 		init(200, 200, 130, "Ventral Sacs");
 	}
 
+	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{
 		if (s.lairs == 0 && s.evolvingLairs == 0 && s.hives == 0)

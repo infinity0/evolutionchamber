@@ -11,7 +11,6 @@ import com.fray.evo.EcEvolver;
 import com.fray.evo.EcRequirementTree;
 import com.fray.evo.EcState;
 
-
 public abstract class EcAction implements Serializable
 {
 	public static Map<Integer, Class>	actions;
@@ -23,7 +22,7 @@ public abstract class EcAction implements Serializable
 	{
 		return getClass().getSimpleName().replace("EcAction", "");
 	}
-	
+
 	public boolean canExecute(EcBuildOrder s)
 	{
 		if (isPossible(s))

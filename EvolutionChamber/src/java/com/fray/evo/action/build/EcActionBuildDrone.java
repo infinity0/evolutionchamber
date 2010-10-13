@@ -10,6 +10,7 @@ import com.fray.evo.action.EcAction;
 
 public class EcActionBuildDrone extends EcAction implements Serializable
 {
+	@Override
 	public void execute(final EcBuildOrder s,final EcEvolver e)
 	{
 		s.minerals -=50;
@@ -25,6 +26,7 @@ public class EcActionBuildDrone extends EcAction implements Serializable
 			}});
 	}
 
+	@Override
 	public boolean isPossible(EcBuildOrder s)
 	{
 		if (s.minerals < 50)
@@ -41,5 +43,5 @@ public class EcActionBuildDrone extends EcAction implements Serializable
 	{
 		return new ArrayList();
 	}
-	
+
 }

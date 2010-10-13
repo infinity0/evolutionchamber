@@ -11,6 +11,7 @@ import com.fray.evo.action.EcAction;
 public class EcActionBuildLair extends EcAction implements Serializable
 {
 
+	@Override
 	public void execute(final EcBuildOrder s,final EcEvolver e)
 	{
 		s.minerals -=150;
@@ -27,6 +28,7 @@ public class EcActionBuildLair extends EcAction implements Serializable
 			}});
 	}
 
+	@Override
 	public boolean isPossible(EcBuildOrder s)
 	{
 		if (s.minerals < 150)
@@ -37,7 +39,7 @@ public class EcActionBuildLair extends EcAction implements Serializable
 			return false;
 		return true;
 	}
-	
+
 	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{
@@ -55,5 +57,5 @@ public class EcActionBuildLair extends EcAction implements Serializable
 		l.add(new EcActionBuildSpawningPool());
 		return l;
 	}
-	
+
 }

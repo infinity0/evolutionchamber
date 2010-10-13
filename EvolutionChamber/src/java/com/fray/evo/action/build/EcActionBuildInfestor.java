@@ -15,6 +15,7 @@ public class EcActionBuildInfestor extends EcAction implements Serializable
 	private static final int	gas			= 150;
 	private static final int	minerals	= 100;
 
+	@Override
 	public void execute(final EcBuildOrder s, final EcEvolver e)
 	{
 		s.minerals -= minerals;
@@ -33,6 +34,7 @@ public class EcActionBuildInfestor extends EcAction implements Serializable
 		});
 	}
 
+	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{
 		if (s.infestationPit == 0)
@@ -40,6 +42,7 @@ public class EcActionBuildInfestor extends EcAction implements Serializable
 		return false;
 	}
 
+	@Override
 	public boolean isPossible(EcBuildOrder s)
 	{
 		if (s.minerals < minerals)

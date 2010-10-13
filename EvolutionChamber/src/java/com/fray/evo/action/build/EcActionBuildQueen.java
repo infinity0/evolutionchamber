@@ -35,6 +35,7 @@ public class EcActionBuildQueen extends EcAction implements Serializable
 			}});
 	}
 
+	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{
 		if (s.spawningPools == 0)

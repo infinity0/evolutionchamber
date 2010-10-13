@@ -16,6 +16,7 @@ public class EcActionUpgradeCentrifugalHooks extends EcActionUpgrade
 		init(150, 150, 110, "Centrifugal Hooks");
 	}
 
+	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{
 		if (s.banelingNest == 0)

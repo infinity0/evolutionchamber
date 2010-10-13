@@ -16,6 +16,7 @@ public class EcActionUpgradeMetabolicBoost extends EcActionUpgrade
 		init(100, 100, 110, "Metabolic Boost");
 	}
 
+	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{
 		if (s.spawningPools == 0)

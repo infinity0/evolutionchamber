@@ -86,7 +86,7 @@ public class EcGeneticUtil
 					return;
 				for (int i = 0; i < arg0.size(); i++)
 				{
-					IChromosome chromosome = (IChromosome) arg0.getChromosome(i);
+					IChromosome chromosome = arg0.getChromosome(i);
 					Gene[] beforeArray = chromosome.getGenes();
 					Gene[] afterArray = new Gene[beforeArray.length + 1];
 					for (int j = 0; j < beforeArray.length; j++)
@@ -132,7 +132,7 @@ public class EcGeneticUtil
 					return;
 				for (int i = 0; i < arg0.size(); i++)
 				{
-					IChromosome chromosome = (IChromosome) arg0.getChromosome(i);
+					IChromosome chromosome = arg0.getChromosome(i);
 					Gene[] beforeArray = chromosome.getGenes();
 					Gene[] afterArray = new Gene[beforeArray.length - 1];
 					for (int j = 0; j < afterArray.length; j++)

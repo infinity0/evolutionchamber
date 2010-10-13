@@ -15,6 +15,7 @@ public class EcActionBuildUltralisk extends EcAction implements Serializable
 	private static final int	gas			= 200;
 	private static final int	minerals	= 300;
 
+	@Override
 	public void execute(final EcBuildOrder s, final EcEvolver e)
 	{
 		s.minerals -= minerals;
@@ -33,6 +34,7 @@ public class EcActionBuildUltralisk extends EcAction implements Serializable
 		});
 	}
 
+	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{
 		if (s.spire == 0 && s.evolvingSpires == 0 && s.greaterSpire == 0)
@@ -40,6 +42,7 @@ public class EcActionBuildUltralisk extends EcAction implements Serializable
 		return false;
 	}
 
+	@Override
 	public boolean isPossible(EcBuildOrder s)
 	{
 		if (s.minerals < minerals)

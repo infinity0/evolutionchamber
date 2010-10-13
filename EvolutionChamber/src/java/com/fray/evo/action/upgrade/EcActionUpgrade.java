@@ -1,8 +1,6 @@
 package com.fray.evo.action.upgrade;
 
 import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
 
 import com.fray.evo.EcBuildOrder;
 import com.fray.evo.EcEvolver;
@@ -14,12 +12,12 @@ public abstract class EcActionUpgrade extends EcAction implements Serializable
 	public int gas = 0;
 	public int time = 0;
 	public String name = "EROAR";
-	
+
 	public EcActionUpgrade()
 	{
 		init();
 	}
-	
+
 	@Override
 	public void execute(final EcBuildOrder s, final EcEvolver e)
 	{
@@ -45,7 +43,7 @@ public abstract class EcActionUpgrade extends EcAction implements Serializable
 			return false;
 		return true;
 	}
-	
+
 	public abstract void init();
 	protected void init(int minerals, int gas, int time, String name)
 	{
@@ -54,7 +52,7 @@ public abstract class EcActionUpgrade extends EcAction implements Serializable
 		this.time = time;
 		this.name = name;
 	}
-	
+
 	@Override
 	public String toString()
 	{

@@ -16,6 +16,7 @@ public class EcActionUpgradeGroovedSpines extends EcActionUpgrade
 		init(150, 150, 80, "Grooved Spines");
 	}
 
+	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{
 		if (s.hydraliskDen == 0)

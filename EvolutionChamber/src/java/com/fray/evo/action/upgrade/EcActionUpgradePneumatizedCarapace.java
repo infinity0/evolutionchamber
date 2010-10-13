@@ -16,6 +16,7 @@ public class EcActionUpgradePneumatizedCarapace extends EcActionUpgrade
 		init(100, 100, 60, "Pneumatized Carapace");
 	}
 
+	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{
 		if (s.lairs == 0 && s.evolvingLairs == 0 && s.hives == 0)

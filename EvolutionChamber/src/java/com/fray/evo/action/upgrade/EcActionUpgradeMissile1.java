@@ -16,6 +16,7 @@ public class EcActionUpgradeMissile1 extends EcActionUpgrade
 		init(100, 100, 160, "Missile +1");
 	}
 
+	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{
 		if (s.evolutionChambers == 0)

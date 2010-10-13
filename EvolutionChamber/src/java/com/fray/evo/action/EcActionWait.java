@@ -16,7 +16,7 @@ public class EcActionWait extends EcAction implements Serializable
 	{
 		s.waits +=1;
 	}
-	
+
 	@Override
 	public boolean canExecute(EcBuildOrder s)
 	{
@@ -32,7 +32,7 @@ public class EcActionWait extends EcAction implements Serializable
 		s.accumulateMaterials();
 		return false;
 	}
-	
+
 	@Override
 	public boolean isPossible(EcBuildOrder s)
 	{

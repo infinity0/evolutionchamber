@@ -13,11 +13,9 @@ import java.util.List;
 import org.jgap.Chromosome;
 import org.jgap.Configuration;
 import org.jgap.Gene;
-import org.jgap.GeneticOperator;
 import org.jgap.Genotype;
 import org.jgap.IChromosome;
 import org.jgap.InvalidConfigurationException;
-import org.jgap.Population;
 import org.jgap.event.GeneticEvent;
 import org.jgap.event.GeneticEventListener;
 import org.jgap.impl.DefaultConfiguration;
@@ -30,16 +28,16 @@ public class EvolutionChamber
 	//The seeds files. (one and a backup, in case execution stops while the file is half written)
 	private static final String	SEEDS_EVO	= "c:\\seeds.evo";
 	private static final String	SEEDS_EVO_2	= "c:\\seeds2.evo";
-	
+
 	static final double	BASE_CHANCE	= 1;
 	static final int	CHROMOSOME_LENGTH = 50;
 	static final int	NUM_THREADS = 4;
 	static final int	POPULATION_SIZE	= 300;
-	
+
 	static Double	bestScore	= new Double(0);
-	
+
 	static List<EcBuildOrder> seeds = new ArrayList<EcBuildOrder>();
-	
+
 	public static void main(String[] args) throws InvalidConfigurationException
 	{
 		EcState s = importSource();
@@ -47,66 +45,69 @@ public class EvolutionChamber
 		EcAction.setup(d);
 
 		//We are using the 'many small villages' vs 'one large city' method of evolution.
-		for (int thread = 0; thread < NUM_THREADS; thread++)
+		for (int threadIndex = 0; threadIndex < NUM_THREADS; threadIndex++)
 		{
-			Configuration conf = new DefaultConfiguration(thread + " thread.", thread + " thread.");
-
-			final EcEvolver myFunc = new EcEvolver(s, d);
-			conf.setFitnessFunction(myFunc);
-
-			conf.addGeneticOperator(EcGeneticUtil.getInsertionOperator());
-			conf.addGeneticOperator(EcGeneticUtil.getDeletionOperator());
-			conf.addGeneticOperator(EcGeneticUtil.getTwiddleOperator());
-			conf.addGeneticOperator(EcGeneticUtil.getSwapOperator());
-			// conf.addGeneticOperator(getShortenOperator());
-			// conf.addGeneticOperator(getLengthenOperator());
-			conf.setPopulationSize(POPULATION_SIZE);
-			conf.setSelectFromPrevGen(.9);
-			conf.setPreservFittestIndividual(true);
-			conf.setAlwaysCaculateFitness(false);
-			conf.setKeepPopulationSizeConstant(false);
-
-			Gene[] initialGenes = importInitialGenes(conf);
-			Chromosome c = new Chromosome(conf, initialGenes);
-			conf.setSampleChromosome(c);
-			
-			final Genotype population = Genotype.randomInitialGenotype(conf);
-			
-			if (thread == 0) //On first thread only
-				loadOldBuildOrders(population, conf,myFunc);
-			
-			conf.getEventManager().addEventListener(GeneticEvent.GENOTYPE_EVOLVED_EVENT, new GeneticEventListener()
-			{
-				public void geneticEventFired(GeneticEvent a_firedEvent)
-				{
-					IChromosome fittestChromosome = population.getFittestChromosome();
-					if (fittestChromosome.getFitnessValue() > bestScore)
-					{
-						synchronized (bestScore)
-						{
-							bestScore = fittestChromosome.getFitnessValue();
-							displayBuildOrder(myFunc, fittestChromosome);
-							System.out.println(new Date() + ": " + fittestChromosome.getFitnessValue());
-							displayChromosome(fittestChromosome);
-							saveSeeds(fittestChromosome);
-							System.out.println();
-						}
-					}
-				}
-			});
-			final Thread t1 = new Thread(population);
-			t1.start();
+			spawnEvolutionaryChamber(s, d, threadIndex);
 		}
 		while (true)
 			try
 			{
-				Thread.sleep(1000);
+				Thread.sleep(10000);
 			}
 			catch (InterruptedException e)
 			{
 				e.printStackTrace();
 			}
+	}
 
+	private static void spawnEvolutionaryChamber(EcState s, EcState d, int threadIndex) throws InvalidConfigurationException
+	{
+		Configuration conf = new DefaultConfiguration(threadIndex + " thread.", threadIndex + " thread.");
+
+		final EcEvolver myFunc = new EcEvolver(s, d);
+		conf.setFitnessFunction(myFunc);
+
+		conf.addGeneticOperator(EcGeneticUtil.getInsertionOperator());
+		conf.addGeneticOperator(EcGeneticUtil.getDeletionOperator());
+		conf.addGeneticOperator(EcGeneticUtil.getTwiddleOperator());
+		conf.addGeneticOperator(EcGeneticUtil.getSwapOperator());
+		conf.setPopulationSize(POPULATION_SIZE);
+		conf.setSelectFromPrevGen(.9);
+		conf.setPreservFittestIndividual(true);
+		conf.setAlwaysCaculateFitness(false);
+		conf.setKeepPopulationSizeConstant(false);
+
+		Gene[] initialGenes = importInitialGenes(conf);
+		Chromosome c = new Chromosome(conf, initialGenes);
+		conf.setSampleChromosome(c);
+
+		final Genotype population = Genotype.randomInitialGenotype(conf);
+
+		if (threadIndex == 0) //On first thread only
+			loadOldBuildOrders(population, conf,myFunc);
+
+		conf.getEventManager().addEventListener(GeneticEvent.GENOTYPE_EVOLVED_EVENT, new GeneticEventListener()
+		{
+			@Override
+			public void geneticEventFired(GeneticEvent a_firedEvent)
+			{
+				IChromosome fittestChromosome = population.getFittestChromosome();
+				if (fittestChromosome.getFitnessValue() > bestScore)
+				{
+					synchronized (bestScore)
+					{
+						bestScore = fittestChromosome.getFitnessValue();
+						displayBuildOrder(myFunc, fittestChromosome);
+						System.out.println(new Date() + ": " + fittestChromosome.getFitnessValue());
+						displayChromosome(fittestChromosome);
+						saveSeeds(fittestChromosome);
+						System.out.println();
+					}
+				}
+			}
+		});
+		final Thread t1 = new Thread(population);
+		t1.start();
 	}
 
 	private static void displayChromosome(IChromosome fittestChromosome)
@@ -133,7 +134,7 @@ public class EvolutionChamber
 	private static synchronized void loadOldBuildOrders(Genotype population, Configuration conf, EcEvolver myFunc)
 	{
 		loadSeeds();
-		
+
 		int cindex = 0;
 		for (EcBuildOrder bo : seeds)
 		{
@@ -207,7 +208,7 @@ public class EvolutionChamber
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		try
 		{
 			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(SEEDS_EVO,false));
@@ -227,9 +228,9 @@ public class EvolutionChamber
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
-	
+
 	private static Gene[] importInitialGenes(Configuration conf)
 	{
 		ArrayList<Gene> genes = new ArrayList<Gene>();
@@ -273,7 +274,7 @@ public class EvolutionChamber
 				break;
 			g.setAllele(allele);
 			genes.add(g);
-	
+
 		}
 		while (genes.size() < CHROMOSOME_LENGTH)
 		{

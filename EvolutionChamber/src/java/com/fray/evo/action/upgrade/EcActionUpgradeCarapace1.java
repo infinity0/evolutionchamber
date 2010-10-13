@@ -16,6 +16,7 @@ public class EcActionUpgradeCarapace1 extends EcActionUpgrade
 		init(100, 100, 160, "Carapace +1");
 	}
 
+	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{
 		if (s.evolutionChambers == 0)

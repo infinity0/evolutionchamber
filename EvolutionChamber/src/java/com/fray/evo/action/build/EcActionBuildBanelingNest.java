@@ -30,6 +30,7 @@ public class EcActionBuildBanelingNest extends EcAction implements Serializable
 		});
 	}
 
+	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{
 		if (s.spawningPools == 0)

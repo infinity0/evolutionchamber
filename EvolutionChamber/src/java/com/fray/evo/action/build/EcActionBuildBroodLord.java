@@ -10,6 +10,7 @@ import com.fray.evo.action.EcAction;
 
 public class EcActionBuildBroodLord extends EcAction implements Serializable
 {
+	@Override
 	public void execute(final EcBuildOrder s,final EcEvolver e)
 	{
 		s.minerals -=150;
@@ -24,6 +25,7 @@ public class EcActionBuildBroodLord extends EcAction implements Serializable
 			}});
 	}
 
+	@Override
 	public boolean isPossible(EcBuildOrder s)
 	{
 		if (s.minerals < 150)
@@ -34,7 +36,7 @@ public class EcActionBuildBroodLord extends EcAction implements Serializable
 			return false;
 		return true;
 	}
-	
+
 	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{

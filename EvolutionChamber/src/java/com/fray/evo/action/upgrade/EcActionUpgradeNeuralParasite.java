@@ -16,6 +16,7 @@ public class EcActionUpgradeNeuralParasite extends EcActionUpgrade
 		init(150, 150, 110, "Neural Parasite");
 	}
 
+	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{
 		if (s.infestationPit == 0)

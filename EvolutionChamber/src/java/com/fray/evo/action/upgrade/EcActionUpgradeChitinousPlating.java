@@ -16,6 +16,7 @@ public class EcActionUpgradeChitinousPlating extends EcActionUpgrade
 		init(150, 150, 110, "Chitinous Plating");
 	}
 
+	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{
 		if (s.ultraliskCavern == 0)

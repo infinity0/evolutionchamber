@@ -74,7 +74,7 @@ public class EcRequirementTree
 		add(actions,new EcActionBuildOverlord());
 		add(actions,new EcActionBuildSpawningPool());
 		add(actions,new EcActionWait());
-		
+
 		if (target.adrenalGlands)
 			add(actions,new EcActionUpgradeAdrenalGlands());
 		if (target.armor1)
@@ -165,10 +165,10 @@ public class EcRequirementTree
 			add(actions,new EcActionBuildUltralisk());
 		if (target.zerglings > 0)
 			add(actions,new EcActionBuildZergling());
-		
+
 		for (Class a : actions.values())
 			System.out.println(a.getSimpleName());
-		
+
 		EcAction.actions = actions;
 	}
 

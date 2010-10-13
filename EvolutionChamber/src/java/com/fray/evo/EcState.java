@@ -314,7 +314,7 @@ public class EcState
 			return false;
 		if (c.overlords < overlords)
 			return false;
-		
+
 		if (c.hatcheries < hatcheries)
 			return false;
 		if (c.lairs < lairs)

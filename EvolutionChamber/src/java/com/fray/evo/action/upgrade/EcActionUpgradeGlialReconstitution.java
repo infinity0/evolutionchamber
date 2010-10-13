@@ -17,6 +17,7 @@ public class EcActionUpgradeGlialReconstitution extends EcActionUpgrade
 		init(100, 100, 110, "Glial Reconstitution");
 	}
 
+	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{
 		if (s.roachWarrens == 0)

@@ -10,6 +10,7 @@ import com.fray.evo.action.EcAction;
 
 public class EcActionBuildBaneling extends EcAction implements Serializable
 {
+	@Override
 	public void execute(final EcBuildOrder s,final EcEvolver e)
 	{
 		s.minerals -=25;
@@ -31,7 +32,8 @@ public class EcActionBuildBaneling extends EcAction implements Serializable
 			return true;
 		return super.canExecute(s);
 	}
-	
+
+	@Override
 	public boolean isPossible(EcBuildOrder s)
 	{
 		if (s.minerals < 25)
@@ -50,5 +52,5 @@ public class EcActionBuildBaneling extends EcAction implements Serializable
 		l.add(new EcActionBuildBanelingNest());
 		return l;
 	}
-	
+
 }

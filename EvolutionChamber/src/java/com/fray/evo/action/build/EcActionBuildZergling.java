@@ -1,7 +1,6 @@
 package com.fray.evo.action.build;
 
 import java.io.Serializable;
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +10,7 @@ import com.fray.evo.action.EcAction;
 
 public class EcActionBuildZergling extends EcAction implements Serializable
 {
+	@Override
 	public void execute(final EcBuildOrder s,final EcEvolver e)
 	{
 		s.minerals -=50;
@@ -25,13 +25,15 @@ public class EcActionBuildZergling extends EcAction implements Serializable
 			}});
 	}
 
+	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{
 		if (s.spawningPools == 0)
 			return true;
 		return false;
 	}
-	
+
+	@Override
 	public boolean isPossible(EcBuildOrder s)
 	{
 		if (s.minerals < 50)

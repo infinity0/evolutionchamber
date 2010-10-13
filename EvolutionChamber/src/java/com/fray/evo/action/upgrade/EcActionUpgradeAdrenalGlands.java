@@ -17,6 +17,7 @@ public class EcActionUpgradeAdrenalGlands extends EcActionUpgrade
 		init(200, 200, 130, "Adrenal Glands");
 	}
 
+	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{
 		if (s.spawningPools == 0)

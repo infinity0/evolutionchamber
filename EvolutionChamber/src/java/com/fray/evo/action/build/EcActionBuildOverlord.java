@@ -10,6 +10,7 @@ import com.fray.evo.action.EcAction;
 
 public class EcActionBuildOverlord extends EcAction implements Serializable
 {
+	@Override
 	public void execute(final EcBuildOrder s,final EcEvolver e)
 	{
 		s.minerals -= 100;
@@ -23,6 +24,7 @@ public class EcActionBuildOverlord extends EcAction implements Serializable
 			}});
 	}
 
+	@Override
 	public boolean isPossible(EcBuildOrder s)
 	{
 		if (s.minerals < 100)

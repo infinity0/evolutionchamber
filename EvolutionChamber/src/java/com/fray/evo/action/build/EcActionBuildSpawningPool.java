@@ -11,6 +11,7 @@ import com.fray.evo.action.EcAction;
 public class EcActionBuildSpawningPool extends EcAction implements Serializable
 {
 
+	@Override
 	public void execute(final EcBuildOrder s,final EcEvolver e)
 	{
 		s.minerals -=200;
@@ -26,6 +27,7 @@ public class EcActionBuildSpawningPool extends EcAction implements Serializable
 			}});
 	}
 
+	@Override
 	public boolean isPossible(EcBuildOrder s)
 	{
 		if (s.minerals < 200)

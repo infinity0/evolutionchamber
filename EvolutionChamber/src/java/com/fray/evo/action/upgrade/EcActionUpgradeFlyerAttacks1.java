@@ -16,6 +16,7 @@ public class EcActionUpgradeFlyerAttacks1 extends EcActionUpgrade
 		init(100, 100, 160, "Flyer Attacks +1");
 	}
 
+	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{
 		if (s.spire == 0)

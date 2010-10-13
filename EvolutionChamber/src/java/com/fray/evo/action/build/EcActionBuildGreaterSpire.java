@@ -11,6 +11,7 @@ import com.fray.evo.action.EcAction;
 public class EcActionBuildGreaterSpire extends EcAction implements Serializable
 {
 
+	@Override
 	public void execute(final EcBuildOrder s,final EcEvolver e)
 	{
 		s.minerals -=100;
@@ -27,6 +28,7 @@ public class EcActionBuildGreaterSpire extends EcAction implements Serializable
 			}});
 	}
 
+	@Override
 	public boolean isPossible(EcBuildOrder s)
 	{
 		if (s.minerals < 100)
@@ -37,7 +39,7 @@ public class EcActionBuildGreaterSpire extends EcAction implements Serializable
 			return false;
 		return true;
 	}
-	
+
 	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{
@@ -56,5 +58,5 @@ public class EcActionBuildGreaterSpire extends EcAction implements Serializable
 		l.add(new EcActionBuildHive());
 		return l;
 	}
-	
+
 }

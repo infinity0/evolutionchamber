@@ -17,6 +17,7 @@ public class EcActionUpgradeTunnelingClaws extends EcActionUpgrade
 		init(150, 150, 110, "Tunneling Claws");
 	}
 
+	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{
 		if (s.roachWarrens == 0)

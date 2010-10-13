@@ -27,13 +27,14 @@ public class EcActionBuildRoachWarren extends EcAction implements Serializable
 			}});
 	}
 
+	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{
 		if (s.spawningPools == 0)
 			return true;
 		return false;
 	}
-	
+
 	@Override
 	public boolean isPossible(EcBuildOrder s)
 	{
