@@ -155,9 +155,9 @@ public class EcBuildOrder extends EcState implements Serializable
 			else if (patches[i] == 0)
 				;
 			else if (patches[i] == 1)
-				mineralsMined += 39.0 / 60.0; // Per TeamLiquid
+				mineralsMined += 37.5 / 60.0; // Per TeamLiquid
 			else if (patches[i] == 2)
-				mineralsMined += 78.0 / 60.0; // Per TeamLiquid
+				mineralsMined += 77.5 / 60.0; // Per TeamLiquid
 			else
 				mineralsMined += 102.0 / 60.0; // Per TeamLiquid
 		return mineralsMined;
