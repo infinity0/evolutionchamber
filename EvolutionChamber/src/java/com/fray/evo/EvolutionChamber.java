@@ -30,7 +30,7 @@ public class EvolutionChamber
 	private static final String	SEEDS_EVO_2	= "c:\\seeds2.evo";
 
 	static final double	BASE_CHANCE	= 1;
-	static final int	CHROMOSOME_LENGTH = 50;
+	static final int	CHROMOSOME_LENGTH = 120;
 	static final int	NUM_THREADS = 4;
 	static final int	POPULATION_SIZE	= 300;
 

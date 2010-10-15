@@ -23,7 +23,7 @@ public class EcActionExtractorTrick extends EcAction implements Serializable
 			public void run()
 			{
 				if (e.debug)
-					System.out.println("@" + s.timestamp() + " Extractor Trick, Drone+1");
+					System.out.println("@" + s.timestamp() + " Extractor Trick Finished, Drone Restored");
 				s.minerals += 19;
 				s.drones += 1;
 				s.dronesOnMinerals += 1;

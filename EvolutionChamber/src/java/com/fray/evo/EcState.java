@@ -20,6 +20,7 @@ public class EcState
 	public int		ultraliskCavern		= 0;
 	public int		gasExtractors		= 0;
 	public int		spire				= 0;
+	public int		spineCrawlers		= 0;
 
 	public int		zerglings			= 0;
 	public int		banelings			= 0;
@@ -95,6 +96,7 @@ public class EcState
 		s.gasExtractors = gasExtractors;
 		s.spire = spire;
 		s.greaterSpire = greaterSpire;
+		s.spineCrawlers = spineCrawlers;
 
 		s.zerglings = zerglings;
 		s.banelings = banelings;
@@ -152,11 +154,11 @@ public class EcState
 	{
 		EcState d = new EcState();
 
-		d.drones = 6;
+		d.drones = 38;
 		d.overlords = 1;
 
-		// d.hatcheries = 1;
-		// d.lairs = 1;
+		d.hatcheries = 1;
+		d.lairs = 1;
 		// d.hives = 1;
 		d.spawningPools = 1;
 		// d.evolutionChambers = 1;
@@ -167,20 +169,21 @@ public class EcState
 		// d.greaterSpire = 1;
 		// d.ultraliskCavern = 1;
 		// d.gasExtractors = 1;
-		// d.spire = 1;
+		d.spire = 1;
+		d.spineCrawlers = 2;
 		//
-		// d.zerglings = 50;
-		// d.queens = 1;
+		d.zerglings = 6;
+		d.queens = 1;
 		// d.banelings = 1;
 		// d.roaches = 7;
-		d.mutalisks = 8;
+		d.mutalisks = 5;
 		// d.infestors = 5;
 		// d.hydralisks = 50;
 		// d.corruptors = 1;
 		// d.ultralisks = 1;
 		// d.broodlords = 1;
 
-		// d.metabolicBoost = true;
+		d.metabolicBoost = true;
 		// d.adrenalGlands = true;
 		// d.glialReconstitution = true;
 		// d.tunnelingClaws = true;
@@ -238,6 +241,7 @@ public class EcState
 		score = augmentScore(score, c.spire, spire, 400, 4);
 		score = augmentScore(score, c.infestationPit, infestationPit, 200, 2.0);
 		score = augmentScore(score, c.evolutionChambers, evolutionChambers, 75, 0.75);
+		score = augmentScore(score, c.spineCrawlers, evolutionChambers, 100, 1.00);
 		score = augmentScore(score, (int) c.minerals, (int) minerals, .001, .001);
 		score = augmentScore(score, (int) c.gas, (int) gas, .002, .002);
 
@@ -338,6 +342,8 @@ public class EcState
 		if (c.ultraliskCavern < ultraliskCavern)
 			return false;
 		if (c.evolutionChambers < evolutionChambers)
+			return false;
+		if (c.spineCrawlers < spineCrawlers)
 			return false;
 
 		if ((!c.metabolicBoost) & metabolicBoost)

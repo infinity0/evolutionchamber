@@ -26,6 +26,7 @@ import com.fray.evo.action.build.EcActionBuildQueen;
 import com.fray.evo.action.build.EcActionBuildRoach;
 import com.fray.evo.action.build.EcActionBuildRoachWarren;
 import com.fray.evo.action.build.EcActionBuildSpawningPool;
+import com.fray.evo.action.build.EcActionBuildSpineCrawler;
 import com.fray.evo.action.build.EcActionBuildSpire;
 import com.fray.evo.action.build.EcActionBuildUltralisk;
 import com.fray.evo.action.build.EcActionBuildUltraliskCavern;
@@ -165,6 +166,8 @@ public class EcRequirementTree
 			add(actions,new EcActionBuildUltralisk());
 		if (target.zerglings > 0)
 			add(actions,new EcActionBuildZergling());
+		if (target.spineCrawlers > 0)
+			add(actions,new EcActionBuildSpineCrawler());
 
 		for (Class a : actions.values())
 			System.out.println(a.getSimpleName());
