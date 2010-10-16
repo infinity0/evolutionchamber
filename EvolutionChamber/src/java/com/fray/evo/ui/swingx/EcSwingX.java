@@ -44,6 +44,7 @@ import org.jgap.InvalidConfigurationException;
 
 import com.fray.evo.EcState;
 import com.fray.evo.EvolutionChamber;
+import com.fray.evo.action.EcAction;
 
 public class EcSwingX extends JXPanel
 {
@@ -95,56 +96,49 @@ public class EcSwingX extends JXPanel
 		component.add(outputList = new JXList());
 	}
 
-	EvolutionChamber ec = new EvolutionChamber();
-	EcState	destination	= ec.getInternalDestination();
+	EvolutionChamber	ec			= new EvolutionChamber();
+	EcState				destination	= ec.getInternalDestination();
 
 	private void addInputContainer(JPanel component)
 	{
-		addButton(component, "Go", new ActionListener(){
-
+		addButton(component, "Go", new ActionListener()
+		{
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-try
-{
-	ec.onNewBuild = new ActionListener(){
-
-		@Override
-		public void actionPerformed(final ActionEvent e)
-		{
-			SwingUtilities.invokeLater(new Runnable()
-			{
-				@Override
-				public void run()
+				ec.onNewBuild = new ActionListener()
 				{
-			EcState destination = (EcState) e.getSource();
-			
-			StringReader sr = new StringReader(e.getActionCommand());
-			BufferedReader br = new BufferedReader(sr);
-			List<String> list = new ArrayList<String>();
-			String line;
-			try
-			{
-				while ((line = br.readLine()) != null)
-					list.add(line);
+					@Override
+					public void actionPerformed(final ActionEvent e)
+					{
+						SwingUtilities.invokeLater(new Runnable()
+						{
+							@Override
+							public void run()
+							{
+								EcState destination = (EcState) e.getSource();
+								StringReader sr = new StringReader(e.getActionCommand());
+								BufferedReader br = new BufferedReader(sr);
+								List<String> list = new ArrayList<String>();
+								String line;
+								try
+								{
+									while ((line = br.readLine()) != null)
+										list.add(line);
+								}
+								catch (IOException e1)
+								{
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								}
+								outputList.setListData(list.toArray());
+							}
+						});
+					}
+				};
+				restartChamber();
 			}
-			catch (IOException e1)
-			{
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			outputList.setListData(list.toArray());
-				}
-			});
-		}};
-	ec.go();
-}
-catch (InvalidConfigurationException e1)
-{
-	e1.printStackTrace();
-}
-			}}
-		);
+		});
 		gridy++;
 		addInput(component, "Target number of seconds", new ActionListener()
 		{
@@ -183,6 +177,13 @@ catch (InvalidConfigurationException e1)
 				destination.overlords = getDigit(e);
 			}
 		}).setText("1");
+		addInput(component, "Overseers", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination.overseers = getDigit(e);
+			}
+		});
 		gridy++;
 		addCheck(component, "Pneumatized Carapace", new ActionListener()
 		{
@@ -250,7 +251,7 @@ catch (InvalidConfigurationException e1)
 			public void actionPerformed(ActionEvent e)
 			{
 				destination.roaches = getDigit(e);
-				
+
 			}
 		});
 		gridy++;
@@ -454,12 +455,117 @@ catch (InvalidConfigurationException e1)
 				destination.flyerArmor3 = getTrue(e);
 			}
 		});
+		gridy++;
+		addInput(component, "Hatcheries", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination.hatcheries = getDigit(e);
+			}
+		});
+		addInput(component, "Lairs", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination.lairs = getDigit(e);
+			}
+		});
+		gridy++;
+		addInput(component, "Hives", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination.hives = getDigit(e);
+			}
+		});
+		addInput(component, "Gas Extractors", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination.gasExtractors = getDigit(e);
+			}
+		});
+		gridy++;
+		addInput(component, "Evolution Chambers", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination.evolutionChambers = getDigit(e);
+			}
+		});
+		addInput(component, "Spine Crawlers", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination.spineCrawlers = getDigit(e);
+			}
+		});
+		gridy++;
+		addInput(component, "Spawning Pools", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination.spawningPools = getDigit(e);
+			}
+		});
+		addInput(component, "Baneling Nests", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination.banelingNest = getDigit(e);
+			}
+		});
+		gridy++;
+		addInput(component, "Roach Warrens", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination.roachWarrens = getDigit(e);
+			}
+		});
+		addInput(component, "Hydralisk Dens", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination.hydraliskDen = getDigit(e);
+			}
+		});
+		gridy++;
+		addInput(component, "Infestation Pits", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination.infestationPit = getDigit(e);
+			}
+		});
+		addInput(component, "Spires", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination.spire = getDigit(e);
+			}
+		});
+		gridy++;
+		addInput(component, "Ultralisk Caverns", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination.ultraliskCavern = getDigit(e);
+			}
+		});
+		addInput(component, "Greater Spires", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination.greaterSpire = getDigit(e);
+			}
+		});
 	}
 
 	private JButton addButton(JPanel container, String string, ActionListener actionListener)
 	{
 		final JButton button = new JButton();
-		
+
 		button.setText(string);
 		GridBagConstraints gridBagConstraints = new GridBagConstraints();
 		gridBagConstraints.anchor = GridBagConstraints.WEST;
@@ -487,13 +593,31 @@ catch (InvalidConfigurationException e1)
 			return 0;
 		}
 	}
+
+	private void restartChamber()
+	{
+		if (ec.threads.size() > 0)
+			ec.stop();
+		try
+		{
+			ec.go();
+		}
+		catch (InvalidConfigurationException e1)
+		{
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	}
+
 	protected boolean getTrue(ActionEvent e)
 	{
 		JCheckBox tf = (JCheckBox) e.getSource();
-			return tf.isSelected();
+		this.ec.bestScore = new Double(0);
+		return tf.isSelected();
 	}
 
-	int gridy = 0;
+	int	gridy	= 0;
+
 	private JTextField addInput(JPanel container, String name, final ActionListener a)
 	{
 		GridBagConstraints gridBagConstraints;
@@ -520,18 +644,18 @@ catch (InvalidConfigurationException e1)
 		container.add(nonStrictTextField, gridBagConstraints);
 		nonStrictTextField.addFocusListener(new FocusListener()
 		{
-			
+
 			@Override
 			public void focusLost(FocusEvent e)
 			{
 				a.actionPerformed(new ActionEvent(e.getSource(), 0, "changed"));
 			}
-			
+
 			@Override
 			public void focusGained(FocusEvent e)
 			{
 				// TODO Auto-generated method stub
-				
+
 			}
 		});
 		return nonStrictTextField;

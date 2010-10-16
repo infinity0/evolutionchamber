@@ -8,22 +8,29 @@ import com.fray.evo.EcBuildOrder;
 import com.fray.evo.EcEvolver;
 import com.fray.evo.action.EcAction;
 
-public class EcActionBuildDrone extends EcAction implements Serializable
+public class EcActionBuildOverseer extends EcAction implements Serializable
 {
 	@Override
 	public void execute(final EcBuildOrder s,final EcEvolver e)
 	{
 		s.minerals -=50;
-		s.consumeLarva(e);
-		s.supplyUsed += 1;
+		s.gas -=100;
+		s.overlords -=1;
 		s.addFutureAction(17,new Runnable(){
 			@Override
 			public void run()
 			{
-				if (e.debug) e.log.println("@"+s.timestamp()+" Drone+1");
-				s.drones +=1;
-				s.dronesOnMinerals +=1;
+				if (e.debug) e.log.println("@"+s.timestamp()+" Overseer+1");
+				s.overseers +=1;
 			}});
+	}
+
+	@Override
+	public boolean isInvalid(EcBuildOrder s)
+	{
+		if (s.lairs == 0)
+			return true;
+		return false;
 	}
 
 	@Override
@@ -31,9 +38,9 @@ public class EcActionBuildDrone extends EcAction implements Serializable
 	{
 		if (s.minerals < 50)
 			return false;
-		if (s.larva < 1)
+		if (s.gas < 100)
 			return false;
-		if (!s.hasSupply(1))
+		if (s.overlords < 1)
 			return false;
 		return true;
 	}
@@ -41,7 +48,9 @@ public class EcActionBuildDrone extends EcAction implements Serializable
 	@Override
 	public List<EcAction> requirements()
 	{
-		return new ArrayList<EcAction>();
+		ArrayList<EcAction> l = new ArrayList<EcAction>();
+		l.add(new EcActionBuildLair());
+		return l;
 	}
 
 }

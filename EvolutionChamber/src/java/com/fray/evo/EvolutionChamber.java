@@ -40,11 +40,13 @@ public class EvolutionChamber
 	int	NUM_THREADS = 10;
 	final int	POPULATION_SIZE	= 30;
 
-	static Double	bestScore	= new Double(0);
+	public Double	bestScore	= new Double(0);
 
 	static List<EcBuildOrder> seeds = new ArrayList<EcBuildOrder>();
 	private EcState	destination = EcState.defaultDestination();
 	public ActionListener	onNewBuild;
+	public List<Thread>	threads = new ArrayList<Thread>();
+	private boolean	kill = false;
 
 	public static void main(String[] args) throws InvalidConfigurationException
 	{
@@ -53,9 +55,11 @@ public class EvolutionChamber
 
 	public void go() throws InvalidConfigurationException
 	{
+		kill = false;
 		EcState s = importSource();
 		EcState d = getInternalDestination();
 		EcAction.setup(d);
+		bestScore = new Double(0);
 
 		//We are using the 'many small villages' vs 'one large city' method of evolution.
 		for (int threadIndex = 0; threadIndex < NUM_THREADS; threadIndex++)
@@ -74,8 +78,26 @@ public class EvolutionChamber
 			}
 	}
 
+	public void stop()
+	{
+		kill  = true;
+		for (Thread t : threads)
+			try
+			{
+				t.join();
+			}
+			catch (InterruptedException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		threads.clear();
+
+	}
+	
 	private void spawnEvolutionaryChamber(EcState s, EcState d, int threadIndex) throws InvalidConfigurationException
 	{
+		DefaultConfiguration.reset(threadIndex + " thread.");
 		Configuration conf = new DefaultConfiguration(threadIndex + " thread.", threadIndex + " thread.");
 
 		final EcEvolver myFunc = new EcEvolver(s, d);
@@ -100,12 +122,15 @@ public class EvolutionChamber
 		if (threadIndex == 0) //On first thread only
 			loadOldBuildOrders(population, conf,myFunc);
 
+		final Thread t1 = new Thread(population);
 		conf.getEventManager().addEventListener(GeneticEvent.GENOTYPE_EVOLVED_EVENT, new GeneticEventListener()
 		{
 			@Override
 			public void geneticEventFired(GeneticEvent a_firedEvent)
 			{
 				IChromosome fittestChromosome = population.getFittestChromosome();
+				if (kill)
+					t1.interrupt();
 				if (fittestChromosome.getFitnessValue() > bestScore)
 				{
 					synchronized (bestScore)
@@ -127,8 +152,8 @@ public class EvolutionChamber
 				}
 			}
 		});
-		final Thread t1 = new Thread(population);
 		t1.start();
+		threads.add(t1);
 	}
 
 	private static void displayChromosome(IChromosome fittestChromosome)

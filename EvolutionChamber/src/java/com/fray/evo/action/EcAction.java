@@ -2,9 +2,12 @@ package com.fray.evo.action;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.collections.SynchronizedPriorityQueue;
 
 import com.fray.evo.EcBuildOrder;
 import com.fray.evo.EcEvolver;
@@ -13,7 +16,7 @@ import com.fray.evo.EcState;
 
 public abstract class EcAction implements Serializable
 {
-	public static Map<Integer, Class>	actions;
+	public static Map<Integer, Class>	actions = Collections.synchronizedMap(new HashMap<Integer, Class>());
 
 	public abstract void execute(EcBuildOrder s, EcEvolver e);
 
@@ -64,7 +67,7 @@ public abstract class EcAction implements Serializable
 
 	public static void setup(EcState target)
 	{
-		actions = new HashMap<Integer, Class>();
+//		actions = new HashMap<Integer, Class>();
 		EcRequirementTree.execute(target);
 	}
 

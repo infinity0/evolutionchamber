@@ -24,6 +24,7 @@ public class EcState
 
 	public int		drones				= 6;
 	public int		overlords			= 1;
+	public int		overseers			= 0;
 	public int		zerglings			= 0;
 	public int		banelings			= 0;
 	public int		roaches				= 0;
@@ -111,6 +112,7 @@ public class EcState
 		s.ultralisks = ultralisks;
 		s.broodlords = broodlords;
 		s.overlords = overlords;
+		s.overseers = overseers;
 
 		s.metabolicBoost = metabolicBoost;
 		s.adrenalGlands = adrenalGlands;
@@ -148,7 +150,7 @@ public class EcState
 
 	int supply()
 	{
-		return overlords * 8 + 2 * bases();
+		return (overlords+overseers) * 8 + 2 * bases();
 	}
 
 	public static EcState defaultDestination()
@@ -234,6 +236,7 @@ public class EcState
 		score = augmentScore(score, c.ultralisks, ultralisks, 500, 5);
 		score = augmentScore(score, c.broodlords, broodlords, 400, 4);
 		score = augmentScore(score, c.overlords, overlords, 100, 1);
+		score = augmentScore(score, c.overseers, overseers, 250, 2.5);
 		score = augmentScore(score, c.spawningPools, spawningPools, 200, 2);
 		score = augmentScore(score, c.roachWarrens, roachWarrens, 150, 1.5);
 		score = augmentScore(score, c.hydraliskDen, hydraliskDen, 200, 2);
@@ -321,6 +324,8 @@ public class EcState
 		if (c.broodlords < broodlords)
 			return false;
 		if (c.overlords < overlords)
+			return false;
+		if (c.overseers < overseers)
 			return false;
 
 		if (c.hatcheries < hatcheries)

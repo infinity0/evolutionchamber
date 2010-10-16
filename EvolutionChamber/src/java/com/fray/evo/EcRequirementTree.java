@@ -22,6 +22,7 @@ import com.fray.evo.action.build.EcActionBuildInfestor;
 import com.fray.evo.action.build.EcActionBuildLair;
 import com.fray.evo.action.build.EcActionBuildMutalisk;
 import com.fray.evo.action.build.EcActionBuildOverlord;
+import com.fray.evo.action.build.EcActionBuildOverseer;
 import com.fray.evo.action.build.EcActionBuildQueen;
 import com.fray.evo.action.build.EcActionBuildRoach;
 import com.fray.evo.action.build.EcActionBuildRoachWarren;
@@ -65,7 +66,8 @@ public class EcRequirementTree
 	public static void execute(EcState target)
 	{
 		max = 0;
-		Map<Integer, Class> actions = new HashMap<Integer,Class>();
+		Map<Integer, Class> actions = EcAction.actions;
+		actions.clear();
 
 		add(actions,new EcActionBuildQueen());
 		add(actions,new EcActionBuildDrone());
@@ -168,11 +170,12 @@ public class EcRequirementTree
 			add(actions,new EcActionBuildZergling());
 		if (target.spineCrawlers > 0)
 			add(actions,new EcActionBuildSpineCrawler());
+		if (target.overseers > 0)
+			add(actions,new EcActionBuildOverseer());
 
 		for (Class a : actions.values())
 			System.out.println(a.getSimpleName());
 
-		EcAction.actions = actions;
 	}
 
 	private static void add(Map<Integer, Class> actions, EcAction action)
