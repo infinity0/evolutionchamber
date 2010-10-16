@@ -22,7 +22,7 @@ public class EcActionBuildLair extends EcAction implements Serializable
 			@Override
 			public void run()
 			{
-				if (e.debug) System.out.println("@"+s.timestamp()+" Lairs+1");
+				if (e.debug) e.log.println("@"+s.timestamp()+" Lairs+1");
 				s.lairs +=1;
 				s.evolvinghatcheries -=1;
 			}});

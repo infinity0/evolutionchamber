@@ -1,11 +1,17 @@
 package com.fray.evo;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -30,18 +36,25 @@ public class EvolutionChamber
 	private static final String	SEEDS_EVO_2	= "c:\\seeds2.evo";
 
 	static final double	BASE_CHANCE	= 1;
-	static final int	CHROMOSOME_LENGTH = 120;
-	static final int	NUM_THREADS = 4;
-	static final int	POPULATION_SIZE	= 300;
+	final int	CHROMOSOME_LENGTH = 120;
+	int	NUM_THREADS = 10;
+	final int	POPULATION_SIZE	= 30;
 
 	static Double	bestScore	= new Double(0);
 
 	static List<EcBuildOrder> seeds = new ArrayList<EcBuildOrder>();
+	private EcState	destination = EcState.defaultDestination();
+	public ActionListener	onNewBuild;
 
 	public static void main(String[] args) throws InvalidConfigurationException
 	{
+		new EvolutionChamber().go();
+	}
+
+	public void go() throws InvalidConfigurationException
+	{
 		EcState s = importSource();
-		EcState d = importDestination();
+		EcState d = getInternalDestination();
 		EcAction.setup(d);
 
 		//We are using the 'many small villages' vs 'one large city' method of evolution.
@@ -49,6 +62,7 @@ public class EvolutionChamber
 		{
 			spawnEvolutionaryChamber(s, d, threadIndex);
 		}
+		if (onNewBuild == null)
 		while (true)
 			try
 			{
@@ -60,17 +74,17 @@ public class EvolutionChamber
 			}
 	}
 
-	private static void spawnEvolutionaryChamber(EcState s, EcState d, int threadIndex) throws InvalidConfigurationException
+	private void spawnEvolutionaryChamber(EcState s, EcState d, int threadIndex) throws InvalidConfigurationException
 	{
 		Configuration conf = new DefaultConfiguration(threadIndex + " thread.", threadIndex + " thread.");
 
 		final EcEvolver myFunc = new EcEvolver(s, d);
 		conf.setFitnessFunction(myFunc);
 
-		conf.addGeneticOperator(EcGeneticUtil.getInsertionOperator());
-		conf.addGeneticOperator(EcGeneticUtil.getDeletionOperator());
-		conf.addGeneticOperator(EcGeneticUtil.getTwiddleOperator());
-		conf.addGeneticOperator(EcGeneticUtil.getSwapOperator());
+		conf.addGeneticOperator(EcGeneticUtil.getInsertionOperator(this));
+		conf.addGeneticOperator(EcGeneticUtil.getDeletionOperator(this));
+		conf.addGeneticOperator(EcGeneticUtil.getTwiddleOperator(this));
+		conf.addGeneticOperator(EcGeneticUtil.getSwapOperator(this));
 		conf.setPopulationSize(POPULATION_SIZE);
 		conf.setSelectFromPrevGen(.9);
 		conf.setPreservFittestIndividual(true);
@@ -97,10 +111,17 @@ public class EvolutionChamber
 					synchronized (bestScore)
 					{
 						bestScore = fittestChromosome.getFitnessValue();
+						
+						ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+						PrintStream ps = new PrintStream(byteArrayOutputStream);
+						if (onNewBuild != null)
+							myFunc.log = ps;
+							
 						displayBuildOrder(myFunc, fittestChromosome);
-						System.out.println(new Date() + ": " + fittestChromosome.getFitnessValue());
+						myFunc.log.println(new Date() + ": " + fittestChromosome.getFitnessValue());
 						displayChromosome(fittestChromosome);
 						saveSeeds(fittestChromosome);
+						onNewBuild.actionPerformed(new ActionEvent(myFunc.evaluateGetBuildOrder(fittestChromosome),bestScore.intValue(),new String(byteArrayOutputStream.toByteArray())));
 						System.out.println();
 					}
 				}
@@ -124,14 +145,14 @@ public class EvolutionChamber
 		}
 	}
 
-	private static void displayBuildOrder(final EcEvolver myFunc, IChromosome fittestChromosome)
+	private void displayBuildOrder(final EcEvolver myFunc, IChromosome fittestChromosome)
 	{
 		myFunc.debug = true;
-		myFunc.evaluate(fittestChromosome);
+		myFunc.evaluateGetBuildOrder(fittestChromosome);
 		myFunc.debug = false;
 	}
 
-	private static synchronized void loadOldBuildOrders(Genotype population, Configuration conf, EcEvolver myFunc)
+	private synchronized void loadOldBuildOrders(Genotype population, Configuration conf, EcEvolver myFunc)
 	{
 		loadSeeds();
 
@@ -192,7 +213,7 @@ public class EvolutionChamber
 	}
 
 	static boolean haveSavedBefore = false;
-	protected static synchronized void saveSeeds(IChromosome fittestChromosome)
+	protected synchronized void saveSeeds(IChromosome fittestChromosome)
 	{
 		EcBuildOrder bo = importSource();
 		try
@@ -231,7 +252,7 @@ public class EvolutionChamber
 
 	}
 
-	private static Gene[] importInitialGenes(Configuration conf)
+	private Gene[] importInitialGenes(Configuration conf)
 	{
 		ArrayList<Gene> genes = new ArrayList<Gene>();
 		for (int i = 0; i < CHROMOSOME_LENGTH; i++)
@@ -248,19 +269,29 @@ public class EvolutionChamber
 		return genes.toArray(new Gene[genes.size()]);
 	}
 
-	private static EcBuildOrder importSource()
+	private EcBuildOrder importSource()
 	{
 		EcBuildOrder ecBuildOrder = new EcBuildOrder();
 		ecBuildOrder.targetSeconds = importDestination().targetSeconds;
 		return ecBuildOrder;
 	}
 
-	private static EcState importDestination()
+
+	public EcState importDestination()
 	{
-		return EcState.defaultDestination();
+		try
+		{
+			return (EcState) getInternalDestination().clone();
+		}
+		catch (CloneNotSupportedException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 
-	static Chromosome buildChromosome(Configuration conf, EcBuildOrder bo) throws InvalidConfigurationException
+	Chromosome buildChromosome(Configuration conf, EcBuildOrder bo) throws InvalidConfigurationException
 	{
 		ArrayList<Gene> genes = new ArrayList<Gene>();
 		int CC = 0;
@@ -286,6 +317,21 @@ public class EvolutionChamber
 		c.setGenes(genes.toArray(new Gene[genes.size()]));
 		c.setIsSelectedForNextGeneration(true);
 		return c;
+	}
+
+	public void setThreads(int digit)
+	{
+		NUM_THREADS = digit;
+	}
+
+	public void setDestination(EcState destination)
+	{
+		this.destination = destination;
+	}
+
+	public EcState getInternalDestination()
+	{
+		return destination;
 	}
 }
 //public static void main2() throws InvalidConfigurationException

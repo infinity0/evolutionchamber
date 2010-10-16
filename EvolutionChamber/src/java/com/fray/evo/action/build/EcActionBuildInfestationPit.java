@@ -28,7 +28,7 @@ public class EcActionBuildInfestationPit extends EcAction implements Serializabl
 			public void run()
 			{
 				if (e.debug)
-					System.out.println("@" + s.timestamp() + " Infestation Pit+1");
+					e.log.println("@" + s.timestamp() + " Infestation Pit+1");
 				s.infestationPit += 1;
 			}
 		});

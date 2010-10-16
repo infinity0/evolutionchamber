@@ -22,18 +22,18 @@ public class EcState
 	public int		spire				= 0;
 	public int		spineCrawlers		= 0;
 
+	public int		drones				= 6;
+	public int		overlords			= 1;
 	public int		zerglings			= 0;
 	public int		banelings			= 0;
 	public int		roaches				= 0;
 	public int		mutalisks			= 0;
 	public int		infestors			= 0;
-	public int		drones				= 6;
 	public int		queens				= 0;
 	public int		hydralisks			= 0;
 	public int		corruptors			= 0;
 	public int		ultralisks			= 0;
 	public int		broodlords			= 0;
-	public int		overlords			= 1;
 
 	public boolean	metabolicBoost		= false;
 	public boolean	adrenalGlands		= false;
@@ -68,6 +68,7 @@ public class EcState
 	public int		invalidActions		= 0;
 	public double	actionLength		= 0;
 	public int		waits;
+	public int	evolvingLairs;
 
 	@Override
 	public Object clone() throws CloneNotSupportedException
@@ -147,20 +148,20 @@ public class EcState
 
 	int supply()
 	{
-		return overlords * 8 + 2;
+		return overlords * 8 + 2 * bases();
 	}
 
 	public static EcState defaultDestination()
 	{
 		EcState d = new EcState();
 
-		d.drones = 38;
+		d.drones = 6;
 		d.overlords = 1;
 
 		d.hatcheries = 1;
-		d.lairs = 1;
+//		d.lairs = 1;
 		// d.hives = 1;
-		d.spawningPools = 1;
+//		d.spawningPools = 1;
 		// d.evolutionChambers = 1;
 		// d.roachWarrens = 1;
 		// //d.hydraliskDen = 1;
@@ -169,21 +170,21 @@ public class EcState
 		// d.greaterSpire = 1;
 		// d.ultraliskCavern = 1;
 		// d.gasExtractors = 1;
-		d.spire = 1;
-		d.spineCrawlers = 2;
+//		d.spire = 1;
+//		d.spineCrawlers = 2;
 		//
-		d.zerglings = 6;
-		d.queens = 1;
+//		d.zerglings = 6;
+//		d.queens = 1;
 		// d.banelings = 1;
 		// d.roaches = 7;
-		d.mutalisks = 5;
+//		d.mutalisks = 5;
 		// d.infestors = 5;
 		// d.hydralisks = 50;
 		// d.corruptors = 1;
 		// d.ultralisks = 1;
 		// d.broodlords = 1;
 
-		d.metabolicBoost = true;
+//		d.metabolicBoost = true;
 		// d.adrenalGlands = true;
 		// d.glialReconstitution = true;
 		// d.tunnelingClaws = true;
@@ -221,6 +222,7 @@ public class EcState
 		double score = 0;
 		score = augmentScore(score, c.drones, drones, 50, .5);
 		score = augmentScore(score, c.zerglings, zerglings, 25, .25);
+		score = augmentScore(score, c.banelings, banelings, 75, .75);
 		score = augmentScore(score, c.roaches, roaches, 100, 1);
 		score = augmentScore(score, c.hatcheries, hatcheries, 300, 3);
 		score = augmentScore(score, c.lairs, lairs, 550, 5.5);
@@ -297,6 +299,8 @@ public class EcState
 		if (c.drones < drones)
 			return false;
 		if (c.zerglings < zerglings)
+			return false;
+		if (c.banelings < banelings)
 			return false;
 		if (c.roaches < roaches)
 			return false;
@@ -402,5 +406,10 @@ public class EcState
 			return false;
 
 		return true;
+	}
+
+	public int bases()
+	{
+		return hatcheries + lairs + evolvinghatcheries + evolvingLairs + hives;
 	}
 }

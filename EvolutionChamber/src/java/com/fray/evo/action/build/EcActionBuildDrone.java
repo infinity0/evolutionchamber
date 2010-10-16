@@ -20,7 +20,7 @@ public class EcActionBuildDrone extends EcAction implements Serializable
 			@Override
 			public void run()
 			{
-				if (e.debug) System.out.println("@"+s.timestamp()+" Drone+1");
+				if (e.debug) e.log.println("@"+s.timestamp()+" Drone+1");
 				s.drones +=1;
 				s.dronesOnMinerals +=1;
 			}});

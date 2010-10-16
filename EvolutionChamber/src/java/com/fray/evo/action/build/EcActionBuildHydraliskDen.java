@@ -28,7 +28,7 @@ public class EcActionBuildHydraliskDen extends EcAction implements Serializable
 			public void run()
 			{
 				if (e.debug)
-					System.out.println("@" + s.timestamp() + " Hydralisk Den+1");
+					e.log.println("@" + s.timestamp() + " Hydralisk Den+1");
 				s.hydraliskDen += 1;
 			}
 		});

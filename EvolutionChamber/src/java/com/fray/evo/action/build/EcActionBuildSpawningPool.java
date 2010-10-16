@@ -22,7 +22,7 @@ public class EcActionBuildSpawningPool extends EcAction implements Serializable
 			@Override
 			public void run()
 			{
-				if (e.debug) System.out.println("@"+s.timestamp()+" Spawning Pool+1");
+				if (e.debug) e.log.println("@"+s.timestamp()+" Spawning Pool+1");
 				s.spawningPools +=1;
 			}});
 	}

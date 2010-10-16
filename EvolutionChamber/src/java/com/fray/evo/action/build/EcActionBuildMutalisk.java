@@ -28,7 +28,7 @@ public class EcActionBuildMutalisk extends EcAction implements Serializable
 			public void run()
 			{
 				if (e.debug)
-					System.out.println("@" + s.timestamp() + " Mutalisk+1");
+					e.log.println("@" + s.timestamp() + " Mutalisk+1");
 				s.mutalisks += 1;
 			}
 		});

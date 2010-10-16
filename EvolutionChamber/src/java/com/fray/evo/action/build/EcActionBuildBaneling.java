@@ -20,7 +20,7 @@ public class EcActionBuildBaneling extends EcAction implements Serializable
 			@Override
 			public void run()
 			{
-				if (e.debug) System.out.println("@"+s.timestamp()+" Baneling+1");
+				if (e.debug) e.log.println("@"+s.timestamp()+" Baneling+1");
 				s.banelings +=1;
 			}});
 	}
@@ -30,7 +30,7 @@ public class EcActionBuildBaneling extends EcAction implements Serializable
 	{
 		if (s.banelingNest == 0)
 			return true;
-		return super.canExecute(s);
+		return false;
 	}
 
 	@Override
@@ -50,6 +50,7 @@ public class EcActionBuildBaneling extends EcAction implements Serializable
 	{
 		ArrayList<EcAction> l = new ArrayList<EcAction>();
 		l.add(new EcActionBuildBanelingNest());
+		l.add(new EcActionBuildZergling());
 		return l;
 	}
 

@@ -22,7 +22,7 @@ public class EcActionBuildHydralisk extends EcAction implements Serializable
 			@Override
 			public void run()
 			{
-				if (e.debug) System.out.println("@"+s.timestamp()+" Hydralisk+1");
+				if (e.debug) e.log.println("@"+s.timestamp()+" Hydralisk+1");
 				s.hydralisks +=1;
 			}});
 	}

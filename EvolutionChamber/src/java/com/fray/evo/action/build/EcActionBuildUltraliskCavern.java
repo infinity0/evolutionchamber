@@ -28,7 +28,7 @@ public class EcActionBuildUltraliskCavern extends EcAction implements Serializab
 			public void run()
 			{
 				if (e.debug)
-					System.out.println("@" + s.timestamp() + " Ultralisk Cavern+1");
+					e.log.println("@" + s.timestamp() + " Ultralisk Cavern+1");
 				s.ultraliskCavern += 1;
 			}
 		});

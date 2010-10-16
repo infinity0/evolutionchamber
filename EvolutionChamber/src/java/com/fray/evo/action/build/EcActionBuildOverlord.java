@@ -19,7 +19,7 @@ public class EcActionBuildOverlord extends EcAction implements Serializable
 			@Override
 			public void run()
 			{
-				if (e.debug) System.out.println("@"+s.timestamp()+" Overlord+1");
+				if (e.debug) e.log.println("@"+s.timestamp()+" Overlord+1");
 				s.overlords +=1;
 			}});
 	}

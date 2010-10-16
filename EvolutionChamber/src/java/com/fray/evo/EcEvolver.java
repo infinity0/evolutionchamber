@@ -1,5 +1,8 @@
 package com.fray.evo;
 
+import java.io.PrintStream;
+import java.io.PrintWriter;
+
 import org.jgap.FitnessFunction;
 import org.jgap.Gene;
 import org.jgap.IChromosome;
@@ -87,6 +90,22 @@ public class EcEvolver extends FitnessFunction
 		return Double.NEGATIVE_INFINITY;
 	}
 
+	public EcState evaluateGetBuildOrder(IChromosome arg0)
+	{
+		EcBuildOrder s;
+		try
+		{
+			s = populateBuildOrder((EcBuildOrder) source, arg0);
+
+			return doEvaluate(s);
+		}
+		catch (CloneNotSupportedException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public static EcBuildOrder populateBuildOrder(EcBuildOrder source, IChromosome arg0) throws CloneNotSupportedException
 	{
 		EcBuildOrder s;
@@ -111,6 +130,7 @@ public class EcEvolver extends FitnessFunction
 		return s;
 	}
 
+	public PrintStream log = System.out;
 	public EcState doEvaluate(EcBuildOrder s)
 	{
 		int i = 0;
@@ -127,18 +147,18 @@ public class EcEvolver extends FitnessFunction
 				if (s.seconds >= s.targetSeconds)
 				{
 					if (debug)
-						System.out.println("Expired on " + a + ", " + s.invalidActions + "&" + s.actionLength);
+						log.println("Expired on " + a + ", " + s.invalidActions + "&" + s.actionLength);
 					return s;
 				}
 				if (destination.isSatisfied(s))
 				{
 					if (debug)
-						System.out.println("Satisfied." + s.invalidActions + "&" + s.actionLength + "("+i+")");
+						log.println("Satisfied." + s.invalidActions + "&" + s.actionLength + "("+i+")");
 					return s;
 				}
 			}
 			if (debug)
-				System.out.println(s.toString() + " -- " + a);
+				log.println(s.toString() + " -- " + a);
 
 			a.execute(s, this);
 		}

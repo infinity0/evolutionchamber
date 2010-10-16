@@ -21,7 +21,7 @@ public class EcActionBuildRoach extends EcAction implements Serializable
 			@Override
 			public void run()
 			{
-				if (e.debug) System.out.println("@"+s.timestamp()+" Roach+1");
+				if (e.debug) e.log.println("@"+s.timestamp()+" Roach+1");
 				s.roaches +=1;
 			}});
 	}

@@ -16,7 +16,6 @@ public class EcBuildOrder extends EcState implements Serializable
 	public int				dronesOnMinerals	= 6;
 	public int				dronesOnGas			= 0;
 	boolean					buildingLarva		= false;
-	public int				evolvingLairs;
 	public int				evolvingSpires		= 0;
 	public int				queensBuilding		= 0;
 	public int				spiresInUse			= 0;
@@ -82,7 +81,7 @@ public class EcBuildOrder extends EcState implements Serializable
 				public void run()
 				{
 					if (e.debug)
-						System.out.println("@" + timestamp() + " Larva+1");
+						e.log.println("@" + timestamp() + " Larva+1");
 					larva = Math.max(Math.min(larva + bases(), bases() * 3), larva);
 					if (larva < 3 * bases())
 						addFutureAction(15, this);
@@ -220,11 +219,6 @@ public class EcBuildOrder extends EcState implements Serializable
 	public int extractors()
 	{
 		return (bases()) * 2;
-	}
-
-	public int bases()
-	{
-		return hatcheries + lairs + evolvinghatcheries + evolvingLairs + hives;
 	}
 
 }

@@ -22,7 +22,7 @@ public class EcActionBuildSpineCrawler extends EcAction implements Serializable
 			@Override
 			public void run()
 			{
-				if (e.debug) System.out.println("@"+s.timestamp()+" Spine Crawler+1");
+				if (e.debug) e.log.println("@"+s.timestamp()+" Spine Crawler+1");
 				s.spineCrawlers +=1;
 			}});
 	}

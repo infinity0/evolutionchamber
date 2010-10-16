@@ -23,7 +23,7 @@ public class EcActionExtractorTrick extends EcAction implements Serializable
 			public void run()
 			{
 				if (e.debug)
-					System.out.println("@" + s.timestamp() + " Extractor Trick Finished, Drone Restored");
+					e.log.println("@" + s.timestamp() + " Extractor Trick Finished, Drone Restored");
 				s.minerals += 19;
 				s.drones += 1;
 				s.dronesOnMinerals += 1;
@@ -44,7 +44,7 @@ public class EcActionExtractorTrick extends EcAction implements Serializable
 	@Override
 	public boolean isPossible(EcBuildOrder s)
 	{
-		if (s.minerals < 25)
+		if (s.minerals < 75)
 			return false;
 		if (s.drones < 1)
 			return false;

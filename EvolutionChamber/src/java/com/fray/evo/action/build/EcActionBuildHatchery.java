@@ -21,7 +21,7 @@ public class EcActionBuildHatchery extends EcAction implements Serializable
 			@Override
 			public void run()
 			{
-				if (e.debug) System.out.println("@"+s.timestamp()+" Hatchery+1");
+				if (e.debug) e.log.println("@"+s.timestamp()+" Hatchery+1");
 				s.hatcheries +=1;
 			}});
 	}

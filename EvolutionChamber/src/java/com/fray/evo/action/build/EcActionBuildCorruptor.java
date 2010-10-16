@@ -28,7 +28,7 @@ public class EcActionBuildCorruptor extends EcAction implements Serializable
 			public void run()
 			{
 				if (e.debug)
-					System.out.println("@" + s.timestamp() + " Corruptor+1");
+					e.log.println("@" + s.timestamp() + " Corruptor+1");
 				s.corruptors += 1;
 			}
 		});

@@ -22,7 +22,7 @@ public class EcActionBuildHive extends EcAction implements Serializable
 			@Override
 			public void run()
 			{
-				if (e.debug) System.out.println("@"+s.timestamp()+" Hives+1");
+				if (e.debug) e.log.println("@"+s.timestamp()+" Hives+1");
 				s.hives +=1;
 				s.evolvingLairs -=1;
 			}});

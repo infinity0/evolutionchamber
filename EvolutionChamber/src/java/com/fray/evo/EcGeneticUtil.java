@@ -12,7 +12,7 @@ import org.jgap.impl.IntegerGene;
 public class EcGeneticUtil
 {
 
-	static GeneticOperator getDeletionOperator()
+	static GeneticOperator getDeletionOperator(final EvolutionChamber c)
 	{
 		return new GeneticOperator()
 		{
@@ -21,7 +21,7 @@ public class EcGeneticUtil
 			{
 				for (int i = 0; i < arg0.size(); i++)
 				{
-					if (Math.random() > EvolutionChamber.BASE_CHANCE/EvolutionChamber.CHROMOSOME_LENGTH)
+					if (Math.random() > c.BASE_CHANCE/c.CHROMOSOME_LENGTH)
 						return;
 					IChromosome chromosome = (IChromosome) arg0.getChromosome(i).clone();
 					Gene[] beforeArray = chromosome.getGenes();
@@ -42,7 +42,7 @@ public class EcGeneticUtil
 		};
 	}
 
-	static GeneticOperator getInsertionOperator()
+	static GeneticOperator getInsertionOperator(final EvolutionChamber c)
 	{
 		return new GeneticOperator()
 		{
@@ -51,7 +51,7 @@ public class EcGeneticUtil
 			{
 				for (int i = 0; i < arg0.size(); i++)
 				{
-					if (Math.random() > EvolutionChamber.BASE_CHANCE/EvolutionChamber.CHROMOSOME_LENGTH)
+					if (Math.random() > c.BASE_CHANCE/c.CHROMOSOME_LENGTH)
 						return;
 					IChromosome chromosome = (IChromosome) arg0.getChromosome(i).clone();
 					Gene[] beforeArray = chromosome.getGenes();
@@ -66,7 +66,6 @@ public class EcGeneticUtil
 					}
 					catch (InvalidConfigurationException e)
 					{
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					arg1.add(chromosome);
@@ -75,14 +74,14 @@ public class EcGeneticUtil
 		};
 	}
 
-	private static GeneticOperator getLengthenOperator()
+	private static GeneticOperator getLengthenOperator(final EvolutionChamber c)
 	{
 		return new GeneticOperator()
 		{
 			@Override
 			public void operate(Population arg0, List arg1)
 			{
-				if (Math.random() > EvolutionChamber.BASE_CHANCE/EvolutionChamber.CHROMOSOME_LENGTH)
+				if (Math.random() > c.BASE_CHANCE/c.CHROMOSOME_LENGTH)
 					return;
 				for (int i = 0; i < arg0.size(); i++)
 				{
@@ -121,14 +120,14 @@ public class EcGeneticUtil
 		};
 	}
 
-	private static GeneticOperator getShortenOperator()
+	private static GeneticOperator getShortenOperator(final EvolutionChamber c)
 	{
 		return new GeneticOperator()
 		{
 			@Override
 			public void operate(Population arg0, List arg1)
 			{
-				if (Math.random() > EvolutionChamber.BASE_CHANCE/EvolutionChamber.CHROMOSOME_LENGTH)
+				if (Math.random() > c.BASE_CHANCE/c.CHROMOSOME_LENGTH)
 					return;
 				for (int i = 0; i < arg0.size(); i++)
 				{
@@ -165,7 +164,7 @@ public class EcGeneticUtil
 		};
 	}
 
-	static GeneticOperator getSwapOperator()
+	static GeneticOperator getSwapOperator(final EvolutionChamber c)
 	{
 		return new GeneticOperator()
 		{
@@ -174,7 +173,7 @@ public class EcGeneticUtil
 			{
 				for (int i = 0; i < arg0.size(); i++)
 				{
-					if (Math.random() > EvolutionChamber.BASE_CHANCE/EvolutionChamber.CHROMOSOME_LENGTH)
+					if (Math.random() > c.BASE_CHANCE/c.CHROMOSOME_LENGTH)
 						return;
 					IChromosome chromosome = (IChromosome) arg0.getChromosome(i).clone();
 					Gene[] beforeArray = chromosome.getGenes();
@@ -198,7 +197,7 @@ public class EcGeneticUtil
 		};
 	}
 
-	static GeneticOperator getTwiddleOperator()
+	static GeneticOperator getTwiddleOperator(final EvolutionChamber c)
 	{
 		return new GeneticOperator()
 		{
@@ -207,7 +206,7 @@ public class EcGeneticUtil
 			{
 				for (int i = 0; i < arg0.size(); i++)
 				{
-					if (Math.random() > EvolutionChamber.BASE_CHANCE/EvolutionChamber.CHROMOSOME_LENGTH)
+					if (Math.random() > c.BASE_CHANCE/c.CHROMOSOME_LENGTH)
 						return;
 					IChromosome chromosome = (IChromosome) arg0.getChromosome(i).clone();
 					Gene[] beforeArray = chromosome.getGenes();

@@ -20,7 +20,7 @@ public class EcActionBuildBroodLord extends EcAction implements Serializable
 			@Override
 			public void run()
 			{
-				if (e.debug) System.out.println("@"+s.timestamp()+" Brood Lord+1");
+				if (e.debug) e.log.println("@"+s.timestamp()+" Brood Lord+1");
 				s.broodlords +=1;
 			}});
 	}

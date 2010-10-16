@@ -28,7 +28,7 @@ public class EcActionBuildInfestor extends EcAction implements Serializable
 			public void run()
 			{
 				if (e.debug)
-					System.out.println("@" + s.timestamp() + " Infestor+1");
+					e.log.println("@" + s.timestamp() + " Infestor+1");
 				s.infestors += 1;
 			}
 		});

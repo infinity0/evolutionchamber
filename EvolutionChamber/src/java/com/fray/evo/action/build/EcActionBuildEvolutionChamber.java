@@ -22,7 +22,7 @@ public class EcActionBuildEvolutionChamber extends EcAction implements Serializa
 			@Override
 			public void run()
 			{
-				if (e.debug) System.out.println("@"+s.timestamp()+" Evolution Chamber+1");
+				if (e.debug) e.log.println("@"+s.timestamp()+" Evolution Chamber+1");
 				s.evolutionChambers +=1;
 			}});
 	}

@@ -25,7 +25,7 @@ public class EcActionBuildSpire extends EcAction implements Serializable
 			public void run()
 			{
 				if (e.debug)
-					System.out.println("@" + s.timestamp() + " Spire+1");
+					e.log.println("@" + s.timestamp() + " Spire+1");
 				s.spire += 1;
 			}
 		});

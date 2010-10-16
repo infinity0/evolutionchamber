@@ -22,7 +22,7 @@ public class EcActionBuildGreaterSpire extends EcAction implements Serializable
 			@Override
 			public void run()
 			{
-				if (e.debug) System.out.println("@"+s.timestamp()+" Greater Spire+1");
+				if (e.debug) e.log.println("@"+s.timestamp()+" Greater Spire+1");
 				s.greaterSpire +=1;
 				s.evolvingSpires -=1;
 			}});

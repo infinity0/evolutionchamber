@@ -25,7 +25,7 @@ public class EcActionBuildExtractor extends EcAction implements Serializable
 			{
 				if (s.extractorsBuilding == 0) return;
 				if (e.debug)
-					System.out.println("@" + s.timestamp() + " Extractor+1");
+					e.log.println("@" + s.timestamp() + " Extractor+1");
 				s.gasExtractors += 1;
 				s.dronesOnGas += 3;
 				s.dronesOnMinerals -= 3;

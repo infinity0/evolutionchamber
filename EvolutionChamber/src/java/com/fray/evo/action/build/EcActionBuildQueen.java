@@ -21,14 +21,14 @@ public class EcActionBuildQueen extends EcAction implements Serializable
 			@Override
 			public void run()
 			{
-				if (e.debug) System.out.println("@"+s.timestamp()+" Queen+1");
+				if (e.debug) e.log.println("@"+s.timestamp()+" Queen+1");
 				s.queens+=1;
 				s.queensBuilding--;
 				s.addFutureAction(45, new Runnable(){
 					@Override
 					public void run()
 					{
-						if (e.debug) System.out.println("@"+s.timestamp()+" Larva+4");
+						if (e.debug) e.log.println("@"+s.timestamp()+" Larva+4");
 						s.larva += 4;
 						s.addFutureAction(40,this);
 					}});
