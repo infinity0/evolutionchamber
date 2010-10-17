@@ -222,7 +222,7 @@ public class EcState
 	{
 		EcState c = candidate;
 		double score = 0;
-		score = augmentScore(score, c.drones, drones, 50, .5);
+		score = augmentScore(score, c.drones, drones, 50, 2);
 		score = augmentScore(score, c.zerglings, zerglings, 25, .25);
 		score = augmentScore(score, c.banelings, banelings, 75, .75);
 		score = augmentScore(score, c.roaches, roaches, 100, 1);
@@ -416,5 +416,71 @@ public class EcState
 	public int bases()
 	{
 		return hatcheries + lairs + evolvinghatcheries + evolvingLairs + hives;
+	}
+
+	public int getSumStuff()
+	{
+		int i = hatcheries + lairs + hives + spawningPools + evolutionChambers + roachWarrens + hydraliskDen
+				+ banelingNest + infestationPit + greaterSpire + ultraliskCavern + gasExtractors + spire
+				+ spineCrawlers
+
+				+ drones + overlords + overseers + zerglings + banelings + roaches + mutalisks + infestors + queens
+				+ hydralisks + corruptors + ultralisks + broodlords;
+
+		if (metabolicBoost)
+			i++;
+		if (adrenalGlands)
+			i++;
+		if (glialReconstitution)
+			i++;
+		if (tunnelingClaws)
+			i++;
+		if (burrow)
+			i++;
+		if (pneumatizedCarapace)
+			i++;
+		if (ventralSacs)
+			i++;
+		if (centrifugalHooks)
+			i++;
+		if (melee1)
+			i++;
+		if (melee2)
+			i++;
+		if (melee3)
+			i++;
+		if (missile1)
+			i++;
+		if (missile2)
+			i++;
+		if (missile3)
+			i++;
+		if (armor1)
+			i++;
+		if (armor2)
+			i++;
+		if (armor3)
+			i++;
+		if (groovedSpines)
+			i++;
+		if (neuralParasite)
+			i++;
+		if (pathogenGlands)
+			i++;
+		if (flyerAttack1)
+			i++;
+		if (flyerAttack2)
+			i++;
+		if (flyerAttack3)
+			i++;
+		if (flyerArmor1)
+			i++;
+		if (flyerArmor2)
+			i++;
+		if (flyerArmor3)
+			i++;
+		if (chitinousPlating)
+			i++;
+		return i;
 	}
 }

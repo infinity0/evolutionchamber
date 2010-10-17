@@ -38,7 +38,7 @@ public class EvolutionChamber
 	static final double	BASE_CHANCE	= 1;
 	public int	CHROMOSOME_LENGTH = 120;
 	int	NUM_THREADS = 4;
-	public int	POPULATION_SIZE	= 30;
+	public int	POPULATION_SIZE	= 200;
 
 	public Double	bestScore	= new Double(0);
 
@@ -59,6 +59,7 @@ public class EvolutionChamber
 		EcState s = importSource();
 		EcState d = getInternalDestination();
 		EcAction.setup(d);
+		CHROMOSOME_LENGTH = d.getSumStuff()+70;
 		bestScore = new Double(0);
 
 		//We are using the 'many small villages' vs 'one large city' method of evolution.

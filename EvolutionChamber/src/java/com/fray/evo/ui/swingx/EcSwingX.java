@@ -16,7 +16,10 @@ import java.awt.event.KeyListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -32,6 +35,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneLayout;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -41,15 +45,17 @@ import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXList;
 import org.jdesktop.swingx.JXMultiSplitPane;
 import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.JXStatusBar;
 import org.jdesktop.swingx.JXTextArea;
 import org.jdesktop.swingx.MultiSplitLayout;
 import org.jgap.InvalidConfigurationException;
 
+import com.fray.evo.EcReportable;
 import com.fray.evo.EcState;
 import com.fray.evo.EvolutionChamber;
 import com.fray.evo.action.EcAction;
 
-public class EcSwingX extends JXPanel
+public class EcSwingX extends JXPanel implements EcReportable
 {
 	public static void main(String[] args)
 	{
@@ -70,7 +76,7 @@ public class EcSwingX extends JXPanel
 
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				frame.getContentPane().add(new EcSwingX());
-				frame.setPreferredSize(new Dimension(800, 600));
+				frame.setPreferredSize(new Dimension(800, 650));
 				frame.pack();
 				frame.setLocationRelativeTo(null);
 				frame.setVisible(true);
@@ -78,7 +84,11 @@ public class EcSwingX extends JXPanel
 		});
 	}
 
-	private JTextArea	outputList;
+	private JTextArea	outputText;
+	private JLabel	status2;
+	private JLabel	status1;
+	protected long	timeStarted;
+	protected long	lastUpdate;
 
 	public EcSwingX()
 	{
@@ -101,18 +111,73 @@ public class EcSwingX extends JXPanel
 		outside.setLeftComponent(stuffPanel);
 		JPanel right = new JPanel(new FlowLayout());
 		outside.setRightComponent(new JScrollPane(right));
+		
 
 		addInputContainer(leftbottom);
+		addStatusBar(leftbottom);
 		addOutputContainer(right);
 
 		add(outside);
 	}
 
+	private void addStatusBar(JPanel leftbottom)
+	{
+		statusbar = new JXStatusBar();
+		status1 = new JLabel("Ready.");
+		status2 = new JLabel("Not Running.");
+		statusbar.add(status1);
+		statusbar.add(status2);
+		
+
+		GridBagConstraints gridBagConstraints = new GridBagConstraints();
+		gridBagConstraints.anchor = GridBagConstraints.SOUTH;
+		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+		gridBagConstraints.weightx = .5;
+			gridBagConstraints.gridwidth = 4;
+		gridBagConstraints.gridy = gridy+1;
+		gridBagConstraints.insets = new Insets(1, 1, 1, 1);
+		leftbottom.add(statusbar,gridBagConstraints);
+		Timer t = new Timer(1000, new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				if (timeStarted == 0)
+					status1.setText("Ready");
+				else
+				{
+					long ms = new Date().getTime()-timeStarted;
+					long seconds = ms/1000;
+					long minutes = seconds/60;
+					long hours = minutes/60;
+					status1.setText("Running for " + hours%60 + ":" + minutes%60 + ":" + seconds%60);
+				}
+				if (lastUpdate == 0)
+					status2.setText("Not Running");
+				else
+				{
+					long ms = new Date().getTime()-lastUpdate;
+					long seconds = ms/1000;
+					long minutes = seconds/60;
+					long hours = minutes/60;
+					status2.setText("Last update: " + hours%60 + ":" + minutes%60 + ":" + seconds%60 + " ago");
+				}
+				statusbar.invalidate();
+			}
+		});
+		t.start();
+	}
+
 	private void addOutputContainer(JPanel component)
 	{
-		component.add(outputList = new JTextArea());
-		outputList.setAlignmentX(0);
-		outputList.setAlignmentY(0);
+		component.add(outputText = new JTextArea());
+		outputText.setAlignmentX(0);
+		outputText.setAlignmentY(0);
+		StringBuilder sb = new StringBuilder();
+		sb.append("Hello! Welcome to the Evolution Chamber.");
+		sb.append("\nTo start, enter in some units you would like to have.");
+		sb.append("\nWhen you have decided what you would like, hit Start.");
+		sb.append("\n");
 	}
 
 	EvolutionChamber	ec	= new EvolutionChamber();
@@ -121,6 +186,14 @@ public class EcSwingX extends JXPanel
 
 	private void addInputContainer(JPanel component)
 	{
+		addInput(component, "Processors", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				ec.setThreads(getDigit(e));
+			}
+		}).setText("4");
+		gridy++;
 		addButton(component, "Stop", new ActionListener()
 		{
 			@Override
@@ -128,6 +201,7 @@ public class EcSwingX extends JXPanel
 			{
 				ec.stop();
 				goButton.setText("Start");
+				timeStarted = 0;
 			}
 		});
 		goButton = addButton(component, "Start", new ActionListener()
@@ -146,46 +220,39 @@ public class EcSwingX extends JXPanel
 							public void run()
 							{
 								EcState destination = (EcState) e.getSource();
-								outputList.setText(e.getActionCommand());
+								outputText.setText(e.getActionCommand());
+								lastUpdate = new Date().getTime();
 							}
 						});
 					}
 				};
 				restartChamber();
+				timeStarted = new Date().getTime();
 				goButton.setText("Restart");
 			}
 		});
 		gridy++;
-		addInput(component, "Target number of seconds", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.targetSeconds = getDigit(e);
-			}
-		}).setText("600");
-		addInput(component, "Threads", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				ec.setThreads(getDigit(e));
-			}
-		}).setText("4");
-		gridy++;
-		addInput(component, "Population Size", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				ec.POPULATION_SIZE = getDigit(e);
-			}
-		}).setText("30");
-		addInput(component, "Chromosome Length", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				ec.CHROMOSOME_LENGTH = getDigit(e);
-			}
-		}).setText("120");
-		gridy++;
+//		addInput(component, "Target number of seconds", new ActionListener()
+//		{
+//			public void actionPerformed(ActionEvent e)
+//			{
+//				destination.targetSeconds = getDigit(e);
+//			}
+//		}).setText("600");
+//		addInput(component, "", new ActionListener()
+//		{
+//			public void actionPerformed(ActionEvent e)
+//			{
+//				ec.POPULATION_SIZE = getDigit(e);
+//			}
+//		}).setText("30");
+//		addInput(component, "Chromosome Length", new ActionListener()
+//		{
+//			public void actionPerformed(ActionEvent e)
+//			{
+//				ec.CHROMOSOME_LENGTH = getDigit(e);
+//			}
+//		}).setText("120");
 		addInput(component, "Drones", new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -494,21 +561,21 @@ public class EcSwingX extends JXPanel
 				destination.hatcheries = getDigit(e);
 			}
 		});
-		addInput(component, "Lairs", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.lairs = getDigit(e);
-			}
-		});
-		gridy++;
-		addInput(component, "Hives", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.hives = getDigit(e);
-			}
-		});
+//		addInput(component, "Lairs", new ActionListener()
+//		{
+//			public void actionPerformed(ActionEvent e)
+//			{
+//				destination.lairs = getDigit(e);
+//			}
+//		});
+//		gridy++;
+//		addInput(component, "Hives", new ActionListener()
+//		{
+//			public void actionPerformed(ActionEvent e)
+//			{
+//				destination.hives = getDigit(e);
+//			}
+//		});
 		addInput(component, "Gas Extractors", new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -531,66 +598,66 @@ public class EcSwingX extends JXPanel
 				destination.spineCrawlers = getDigit(e);
 			}
 		});
-		gridy++;
-		addInput(component, "Spawning Pools", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.spawningPools = getDigit(e);
-			}
-		});
-		addInput(component, "Baneling Nests", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.banelingNest = getDigit(e);
-			}
-		});
-		gridy++;
-		addInput(component, "Roach Warrens", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.roachWarrens = getDigit(e);
-			}
-		});
-		addInput(component, "Hydralisk Dens", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.hydraliskDen = getDigit(e);
-			}
-		});
-		gridy++;
-		addInput(component, "Infestation Pits", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.infestationPit = getDigit(e);
-			}
-		});
-		addInput(component, "Spires", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.spire = getDigit(e);
-			}
-		});
-		gridy++;
-		addInput(component, "Ultralisk Caverns", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.ultraliskCavern = getDigit(e);
-			}
-		});
-		addInput(component, "Greater Spires", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.greaterSpire = getDigit(e);
-			}
-		});
+//		gridy++;
+//		addInput(component, "Spawning Pools", new ActionListener()
+//		{
+//			public void actionPerformed(ActionEvent e)
+//			{
+//				destination.spawningPools = getDigit(e);
+//			}
+//		});
+//		addInput(component, "Baneling Nests", new ActionListener()
+//		{
+//			public void actionPerformed(ActionEvent e)
+//			{
+//				destination.banelingNest = getDigit(e);
+//			}
+//		});
+//		gridy++;
+//		addInput(component, "Roach Warrens", new ActionListener()
+//		{
+//			public void actionPerformed(ActionEvent e)
+//			{
+//				destination.roachWarrens = getDigit(e);
+//			}
+//		});
+//		addInput(component, "Hydralisk Dens", new ActionListener()
+//		{
+//			public void actionPerformed(ActionEvent e)
+//			{
+//				destination.hydraliskDen = getDigit(e);
+//			}
+//		});
+//		gridy++;
+//		addInput(component, "Infestation Pits", new ActionListener()
+//		{
+//			public void actionPerformed(ActionEvent e)
+//			{
+//				destination.infestationPit = getDigit(e);
+//			}
+//		});
+//		addInput(component, "Spires", new ActionListener()
+//		{
+//			public void actionPerformed(ActionEvent e)
+//			{
+//				destination.spire = getDigit(e);
+//			}
+//		});
+//		gridy++;
+//		addInput(component, "Ultralisk Caverns", new ActionListener()
+//		{
+//			public void actionPerformed(ActionEvent e)
+//			{
+//				destination.ultraliskCavern = getDigit(e);
+//			}
+//		});
+//		addInput(component, "Greater Spires", new ActionListener()
+//		{
+//			public void actionPerformed(ActionEvent e)
+//			{
+//				destination.greaterSpire = getDigit(e);
+//			}
+//		});
 	}
 
 	private JButton addButton(JPanel container, String string, ActionListener actionListener)
@@ -652,6 +719,7 @@ public class EcSwingX extends JXPanel
 	}
 
 	int	gridy	= 0;
+	private JXStatusBar	statusbar;
 
 	private JTextField addInput(JPanel container, String name, final ActionListener a)
 	{

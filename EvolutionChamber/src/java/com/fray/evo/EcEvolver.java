@@ -153,7 +153,11 @@ public class EcEvolver extends FitnessFunction
 				if (destination.isSatisfied(s))
 				{
 					if (debug)
-						log.println("Satisfied." + s.invalidActions + "&" + s.actionLength + "("+i+")");
+					{
+						log.println("Satisfied.");
+						log.println("Invalid actions left to trim out: " + s.invalidActions);
+						log.println("Number of actions in build order: " + i);
+					}
 					return s;
 				}
 			}
