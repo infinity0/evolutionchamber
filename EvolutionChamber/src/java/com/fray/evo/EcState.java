@@ -148,7 +148,7 @@ public class EcState
 		s.actionLength = actionLength;
 	}
 
-	int supply()
+	public int supply()
 	{
 		return (overlords+overseers) * 8 + 2 * bases();
 	}
@@ -160,7 +160,7 @@ public class EcState
 		d.drones = 6;
 		d.overlords = 1;
 
-		d.hatcheries = 1;
+		d.hatcheries = 0;
 //		d.lairs = 1;
 		// d.hives = 1;
 //		d.spawningPools = 1;

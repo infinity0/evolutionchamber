@@ -76,7 +76,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				frame.getContentPane().add(new EcSwingX());
-				frame.setPreferredSize(new Dimension(800, 650));
+				frame.setPreferredSize(new Dimension(800, 768));
 				frame.pack();
 				frame.setLocationRelativeTo(null);
 				frame.setVisible(true);
@@ -178,6 +178,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 		sb.append("\nTo start, enter in some units you would like to have.");
 		sb.append("\nWhen you have decided what you would like, hit Start.");
 		sb.append("\n");
+		outputText.setText(sb.toString());
 	}
 
 	EvolutionChamber	ec	= new EvolutionChamber();
@@ -561,21 +562,21 @@ public class EcSwingX extends JXPanel implements EcReportable
 				destination.hatcheries = getDigit(e);
 			}
 		});
-//		addInput(component, "Lairs", new ActionListener()
-//		{
-//			public void actionPerformed(ActionEvent e)
-//			{
-//				destination.lairs = getDigit(e);
-//			}
-//		});
-//		gridy++;
-//		addInput(component, "Hives", new ActionListener()
-//		{
-//			public void actionPerformed(ActionEvent e)
-//			{
-//				destination.hives = getDigit(e);
-//			}
-//		});
+		addInput(component, "Lairs", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination.lairs = getDigit(e);
+			}
+		});
+		gridy++;
+		addInput(component, "Hives", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination.hives = getDigit(e);
+			}
+		});
 		addInput(component, "Gas Extractors", new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -598,66 +599,66 @@ public class EcSwingX extends JXPanel implements EcReportable
 				destination.spineCrawlers = getDigit(e);
 			}
 		});
-//		gridy++;
-//		addInput(component, "Spawning Pools", new ActionListener()
-//		{
-//			public void actionPerformed(ActionEvent e)
-//			{
-//				destination.spawningPools = getDigit(e);
-//			}
-//		});
-//		addInput(component, "Baneling Nests", new ActionListener()
-//		{
-//			public void actionPerformed(ActionEvent e)
-//			{
-//				destination.banelingNest = getDigit(e);
-//			}
-//		});
-//		gridy++;
-//		addInput(component, "Roach Warrens", new ActionListener()
-//		{
-//			public void actionPerformed(ActionEvent e)
-//			{
-//				destination.roachWarrens = getDigit(e);
-//			}
-//		});
-//		addInput(component, "Hydralisk Dens", new ActionListener()
-//		{
-//			public void actionPerformed(ActionEvent e)
-//			{
-//				destination.hydraliskDen = getDigit(e);
-//			}
-//		});
-//		gridy++;
-//		addInput(component, "Infestation Pits", new ActionListener()
-//		{
-//			public void actionPerformed(ActionEvent e)
-//			{
-//				destination.infestationPit = getDigit(e);
-//			}
-//		});
-//		addInput(component, "Spires", new ActionListener()
-//		{
-//			public void actionPerformed(ActionEvent e)
-//			{
-//				destination.spire = getDigit(e);
-//			}
-//		});
-//		gridy++;
-//		addInput(component, "Ultralisk Caverns", new ActionListener()
-//		{
-//			public void actionPerformed(ActionEvent e)
-//			{
-//				destination.ultraliskCavern = getDigit(e);
-//			}
-//		});
-//		addInput(component, "Greater Spires", new ActionListener()
-//		{
-//			public void actionPerformed(ActionEvent e)
-//			{
-//				destination.greaterSpire = getDigit(e);
-//			}
-//		});
+		gridy++;
+		addInput(component, "Spawning Pools", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination.spawningPools = getDigit(e);
+			}
+		});
+		addInput(component, "Baneling Nests", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination.banelingNest = getDigit(e);
+			}
+		});
+		gridy++;
+		addInput(component, "Roach Warrens", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination.roachWarrens = getDigit(e);
+			}
+		});
+		addInput(component, "Hydralisk Dens", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination.hydraliskDen = getDigit(e);
+			}
+		});
+		gridy++;
+		addInput(component, "Infestation Pits", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination.infestationPit = getDigit(e);
+			}
+		});
+		addInput(component, "Spires", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination.spire = getDigit(e);
+			}
+		});
+		gridy++;
+		addInput(component, "Ultralisk Caverns", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination.ultraliskCavern = getDigit(e);
+			}
+		});
+		addInput(component, "Greater Spires", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination.greaterSpire = getDigit(e);
+			}
+		});
 	}
 
 	private JButton addButton(JPanel container, String string, ActionListener actionListener)

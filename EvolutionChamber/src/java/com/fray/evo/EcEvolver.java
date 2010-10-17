@@ -2,6 +2,7 @@ package com.fray.evo;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.util.WeakHashMap;
 
 import org.jgap.FitnessFunction;
 import org.jgap.Gene;
@@ -9,78 +10,49 @@ import org.jgap.IChromosome;
 import org.jgap.impl.IntegerGene;
 
 import com.fray.evo.action.EcAction;
+import com.fray.evo.util.EcCacheMap;
 
 public class EcEvolver extends FitnessFunction
 {
 	EcState			source;
 	private EcState	destination;
 	public boolean	debug	= false;
+	
+	public EcCacheMap<String,Double> scoreMap = new EcCacheMap<String, Double>();
 
 	public EcEvolver(EcState source, EcState destination)
 	{
 		this.source = source;
 		this.destination = destination;
 	}
-//
-//	public double evaluate(char[] charArray)
-//	{
-//		EcBuildOrder s;
-//		try
-//		{
-//			s = (EcBuildOrder) source.clone();
-//			for (char g1 : charArray)
-//			{
-//				int g = g1 - '0';
-//				switch (g)
-//				{
-//				case 0:
-//					s.addAction(new EcActionBuildDrone());
-//					break;
-//				case 1:
-//					s.addAction(new EcActionBuildOverlord());
-//					break;
-//				case 2:
-//					s.addAction(new EcActionBuildSpawningPool());
-//					break;
-//				case 3:
-//					s.addAction(new EcActionBuildZergling());
-//					break;
-//				case 4:
-//					s.addAction(new EcActionBuildQueen());
-//					break;
-//				case 5:
-//					s.addAction(new EcActionBuildHatchery());
-//					break;
-//				case 6:
-//					s.addAction(new EcActionBuildExtractor());
-//					break;
-//				case 7:
-//					s.addAction(new EcActionBuildRoachWarren());
-//					break;
-//				case 8:
-//					s.addAction(new EcActionBuildRoach());
-//					break;
-//				}
-//			}
-//
-//			return destination.score(doEvaluate(s));
-//		}
-//		catch (CloneNotSupportedException e)
-//		{
-//			e.printStackTrace();
-//		}
-//		return Double.NEGATIVE_INFINITY;
-//	}
 
+	protected String getAlleleAsString(IChromosome c)
+	{
+		StringBuilder sb = new StringBuilder();
+		for (Gene g : c.getGenes())
+		{
+			if (((Integer)g.getAllele()).intValue() >= 10)
+				sb.append(((char)((int)'a'+(Integer)g.getAllele()-10)));
+			else
+				sb.append(g.getAllele().toString());
+		}
+		return sb.toString();
+	}
+	
 	@Override
 	protected double evaluate(IChromosome arg0)
 	{
 		EcBuildOrder s;
 		try
 		{
+			String chrome = getAlleleAsString(arg0);
+			Double score = scoreMap.get(chrome);
+			if (score != null)
+				return score.doubleValue();
 			s = populateBuildOrder((EcBuildOrder) source, arg0);
-
-			return destination.score(doEvaluate(s));
+			score = destination.score(doEvaluate(s));
+			scoreMap.put(chrome,score);
+			return score;
 		}
 		catch (CloneNotSupportedException e)
 		{

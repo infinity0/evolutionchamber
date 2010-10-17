@@ -38,6 +38,8 @@ public class EcActionExtractorTrick extends EcAction implements Serializable
 	{
 		if (s.extractors() < s.gasExtractors+s.extractorsBuilding)
 			return true;
+		if (s.supplyUsed < s.supply() - 1)
+			return true;
 		return false;
 	}
 

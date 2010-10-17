@@ -113,9 +113,10 @@ public class EcBuildOrder extends EcState implements Serializable
 	public double mineMinerals()
 	{
 		int drones = dronesOnMinerals;
-		for (int i = 0; i < mineralPatches(); i++)
+		int mineralPatches = mineralPatches();
+		for (int i = 0; i < mineralPatches; i++)
 			patches[i] = 0;
-		for (int i = 0; i < mineralPatches(); i++)
+		for (int i = 0; i < mineralPatches; i++)
 			// Assign first drone
 			if (drones > 0)
 			{
@@ -123,7 +124,7 @@ public class EcBuildOrder extends EcState implements Serializable
 				drones--;
 			}
 		if (drones > 0)
-			for (int i = 0; i < mineralPatches(); i++)
+			for (int i = 0; i < mineralPatches; i++)
 				// Assign second drone
 				if (drones > 0)
 				{
@@ -131,7 +132,7 @@ public class EcBuildOrder extends EcState implements Serializable
 					drones--;
 				}
 		if (drones > 0)
-			for (int i = 0; i < mineralPatches(); i++)
+			for (int i = 0; i < mineralPatches; i++)
 				// Assign third drone
 				if (drones > 0)
 				{
@@ -141,8 +142,8 @@ public class EcBuildOrder extends EcState implements Serializable
 		// Assume half the patches are close, and half are far, and the close
 		// ones have more SCVs. (perfect)
 		double mineralsMined = 0.0;
-		for (int i = 0; i < mineralPatches(); i++)
-			if (i < mineralPatches() / 2) // Close patch
+		for (int i = 0; i < mineralPatches; i++)
+			if (i < mineralPatches / 2) // Close patch
 				if (patches[i] == 0)
 					;
 				else if (patches[i] == 1)
