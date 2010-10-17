@@ -28,7 +28,7 @@ public abstract class EcActionUpgrade extends EcAction implements Serializable
 			@Override
 			public void run()
 			{
-				if (e.debug) System.out.println("@" + s.timestamp() + " "+name);
+				if (e.debug) e.log.println("@" + s.timestamp() + " "+name);
 				afterTime(s,e);
 			}
 		});

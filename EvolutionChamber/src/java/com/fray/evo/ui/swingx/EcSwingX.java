@@ -28,9 +28,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneLayout;
 import javax.swing.SwingUtilities;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -39,6 +41,7 @@ import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXList;
 import org.jdesktop.swingx.JXMultiSplitPane;
 import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.JXTextArea;
 import org.jdesktop.swingx.MultiSplitLayout;
 import org.jgap.InvalidConfigurationException;
 
@@ -55,6 +58,14 @@ public class EcSwingX extends JXPanel
 			@Override
 			public void run()
 			{
+				try
+				{
+					javax.swing.UIManager.setLookAndFeel("com.jgoodies.looks.plastic.Plastic3DLookAndFeel");
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
 				JFrame frame = new JFrame();
 
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -67,24 +78,30 @@ public class EcSwingX extends JXPanel
 		});
 	}
 
-	private JXList	outputList;
+	private JTextArea	outputList;
 
 	public EcSwingX()
 	{
+		try
+		{
+			destination = (EcState) ec.getInternalDestination().clone();
+		}
+		catch (CloneNotSupportedException e)
+		{
+			e.printStackTrace();
+		}
+
 		setName("Evolution Chamber");
 		setLayout(new BorderLayout());
 
 		JSplitPane outside = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-		JSplitPane inside = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-		outside.setLeftComponent(inside);
-		JPanel lefttop = new JPanel();
-		inside.setTopComponent(lefttop);
+
 		JPanel leftbottom = new JPanel(new GridBagLayout());
-		inside.setBottomComponent(new JScrollPane(leftbottom));
+		JScrollPane stuffPanel = new JScrollPane(leftbottom);
+		outside.setLeftComponent(stuffPanel);
 		JPanel right = new JPanel(new FlowLayout());
 		outside.setRightComponent(new JScrollPane(right));
 
-		addGraphContainer(lefttop);
 		addInputContainer(leftbottom);
 		addOutputContainer(right);
 
@@ -93,15 +110,27 @@ public class EcSwingX extends JXPanel
 
 	private void addOutputContainer(JPanel component)
 	{
-		component.add(outputList = new JXList());
+		component.add(outputList = new JTextArea());
+		outputList.setAlignmentX(0);
+		outputList.setAlignmentY(0);
 	}
 
-	EvolutionChamber	ec			= new EvolutionChamber();
-	EcState				destination	= ec.getInternalDestination();
+	EvolutionChamber	ec	= new EvolutionChamber();
+	EcState				destination;
+	private JButton		goButton;
 
 	private void addInputContainer(JPanel component)
 	{
-		addButton(component, "Go", new ActionListener()
+		addButton(component, "Stop", new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent arg0)
+			{
+				ec.stop();
+				goButton.setText("Start");
+			}
+		});
+		goButton = addButton(component, "Start", new ActionListener()
 		{
 			@Override
 			public void actionPerformed(ActionEvent e)
@@ -117,26 +146,13 @@ public class EcSwingX extends JXPanel
 							public void run()
 							{
 								EcState destination = (EcState) e.getSource();
-								StringReader sr = new StringReader(e.getActionCommand());
-								BufferedReader br = new BufferedReader(sr);
-								List<String> list = new ArrayList<String>();
-								String line;
-								try
-								{
-									while ((line = br.readLine()) != null)
-										list.add(line);
-								}
-								catch (IOException e1)
-								{
-									// TODO Auto-generated catch block
-									e1.printStackTrace();
-								}
-								outputList.setListData(list.toArray());
+								outputList.setText(e.getActionCommand());
 							}
 						});
 					}
 				};
 				restartChamber();
+				goButton.setText("Restart");
 			}
 		});
 		gridy++;
@@ -154,6 +170,21 @@ public class EcSwingX extends JXPanel
 				ec.setThreads(getDigit(e));
 			}
 		}).setText("4");
+		gridy++;
+		addInput(component, "Population Size", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				ec.POPULATION_SIZE = getDigit(e);
+			}
+		}).setText("30");
+		addInput(component, "Chromosome Length", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				ec.CHROMOSOME_LENGTH = getDigit(e);
+			}
+		}).setText("120");
 		gridy++;
 		addInput(component, "Drones", new ActionListener()
 		{
@@ -572,7 +603,7 @@ public class EcSwingX extends JXPanel
 		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
 		gridBagConstraints.weightx = .25;
 		gridBagConstraints.gridy = gridy;
-		gridBagConstraints.gridwidth = 4;
+		gridBagConstraints.gridwidth = 2;
 		gridBagConstraints.insets = new Insets(1, 1, 1, 1);
 		container.add(button, gridBagConstraints);
 		button.addActionListener(actionListener);
@@ -600,12 +631,16 @@ public class EcSwingX extends JXPanel
 			ec.stop();
 		try
 		{
+			ec.setDestination((EcState) destination.clone());
 			ec.go();
 		}
 		catch (InvalidConfigurationException e1)
 		{
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
+		}
+		catch (CloneNotSupportedException e)
+		{
+			e.printStackTrace();
 		}
 	}
 
@@ -626,7 +661,7 @@ public class EcSwingX extends JXPanel
 		strictTextFieldLabel.setAlignmentX(.5f);
 		gridBagConstraints = new GridBagConstraints();
 		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
-		gridBagConstraints.anchor = GridBagConstraints.WEST;
+		gridBagConstraints.anchor = GridBagConstraints.NORTHWEST;
 		gridBagConstraints.weightx = .25;
 		gridBagConstraints.gridy = gridy;
 		gridBagConstraints.insets = new Insets(1, 1, 1, 1);
@@ -636,7 +671,7 @@ public class EcSwingX extends JXPanel
 		nonStrictTextField.setColumns(5);
 		nonStrictTextField.setText("0");
 		gridBagConstraints = new GridBagConstraints();
-		gridBagConstraints.anchor = GridBagConstraints.WEST;
+		gridBagConstraints.anchor = GridBagConstraints.NORTHWEST;
 		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
 		gridBagConstraints.weightx = .25;
 		gridBagConstraints.gridy = gridy;
@@ -688,8 +723,4 @@ public class EcSwingX extends JXPanel
 		});
 	}
 
-	private void addGraphContainer(JPanel component)
-	{
-		component.add(new JXGraph());
-	}
 }

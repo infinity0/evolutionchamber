@@ -36,9 +36,9 @@ public class EvolutionChamber
 	private static final String	SEEDS_EVO_2	= "c:\\seeds2.evo";
 
 	static final double	BASE_CHANCE	= 1;
-	final int	CHROMOSOME_LENGTH = 120;
-	int	NUM_THREADS = 10;
-	final int	POPULATION_SIZE	= 30;
+	public int	CHROMOSOME_LENGTH = 120;
+	int	NUM_THREADS = 4;
+	public int	POPULATION_SIZE	= 30;
 
 	public Double	bestScore	= new Double(0);
 
