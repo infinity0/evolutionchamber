@@ -3,6 +3,7 @@ package com.fray.evo;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -28,13 +29,29 @@ import org.jgap.impl.DefaultConfiguration;
 import org.jgap.impl.IntegerGene;
 
 import com.fray.evo.action.EcAction;
+import com.fray.evo.util.EcFileSystem;
 
 public class EvolutionChamber
 {
 	//The seeds files. (one and a backup, in case execution stops while the file is half written)
-	private static final String	SEEDS_EVO	= "c:\\seeds.evo";
-	private static final String	SEEDS_EVO_2	= "c:\\seeds2.evo";
+	private static File	SEEDS_EVO = null;
+	private static File	SEEDS_EVO_2 = null;
 
+	static
+	{
+		try
+		{
+			SEEDS_EVO	= new File(EcFileSystem.getTempPath(),"seeds.evo");
+			SEEDS_EVO.getParentFile().mkdirs();
+			SEEDS_EVO_2	= new File(EcFileSystem.getTempPath(),"seeds2.evo");
+		}
+		catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	static final double	BASE_CHANCE	= 1;
 	public int	CHROMOSOME_LENGTH = 120;
 	int	NUM_THREADS = 4;
