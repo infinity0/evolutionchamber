@@ -103,11 +103,12 @@ public class EcBuildOrder extends EcState implements Serializable
 	{
 		if (patches.length < bases() * 8)
 			patches = new int[bases() * 8];
-		return hatcheries * 8;
+		return bases() * 8;
 	}
 
 	int[]		patches				= new int[24];
 	public int	extractorsBuilding	= 0;
+	public int	hatcheriesBuilding = 0;
 
 	// Mines minerals on all bases perfectly per one second.
 	public double mineMinerals()
@@ -219,7 +220,7 @@ public class EcBuildOrder extends EcState implements Serializable
 
 	public int extractors()
 	{
-		return (bases()) * 2;
+		return (bases()+hatcheriesBuilding) * 2;
 	}
 
 }

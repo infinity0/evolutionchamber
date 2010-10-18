@@ -40,7 +40,9 @@ public class EcActionBuildQueen extends EcAction implements Serializable
 	{
 		if (s.spawningPools == 0)
 			return true;
-		if (s.queensBuilding+s.queens >= s.bases())
+		if (s.queensBuilding+s.queens >= s.hatcheriesBuilding + s.hatcheries + s.lairs + s.hives)
+			return true;
+		if (s.hatcheries + s.lairs + s.hives < 1)
 			return true;
 		return false;
 	}

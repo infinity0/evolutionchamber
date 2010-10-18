@@ -18,7 +18,7 @@ public class EcEvolver extends FitnessFunction
 	private EcState	destination;
 	public boolean	debug	= false;
 	
-	public EcCacheMap<String,Double> scoreMap = new EcCacheMap<String, Double>();
+//	public EcCacheMap<String,Double> scoreMap = new EcCacheMap<String, Double>();
 
 	public EcEvolver(EcState source, EcState destination)
 	{
@@ -46,12 +46,13 @@ public class EcEvolver extends FitnessFunction
 		try
 		{
 			String chrome = getAlleleAsString(arg0);
-			Double score = scoreMap.get(chrome);
-			if (score != null)
-				return score.doubleValue();
+			Double score;
+//			score = scoreMap.get(chrome);
+//			if (score != null)
+//				return score.doubleValue();
 			s = populateBuildOrder((EcBuildOrder) source, arg0);
 			score = destination.score(doEvaluate(s));
-			scoreMap.put(chrome,score);
+//			scoreMap.put(chrome,score);
 			return score;
 		}
 		catch (CloneNotSupportedException e)

@@ -27,7 +27,7 @@ public class EcCacheMap<E, T> implements Map<E, T>
 		long current = System.currentTimeMillis();
 		if (current == lastCleaned)
 			return;
-		if (current < lastCleaned + 5 * 1000 * 60)
+		if (current < lastCleaned + 1000 * 60)
 			return;
 		for (E e : new ArrayList<E>(keySet()))
 			if (getInner(e) == null)

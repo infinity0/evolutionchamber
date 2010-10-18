@@ -35,7 +35,7 @@ public class EcActionBuildLair extends EcAction implements Serializable
 			return false;
 		if (s.gas < 100)
 			return false;
-		if (s.hatcheries < 1)
+		if (s.hatcheries<=s.queensBuilding)
 			return false;
 		return true;
 	}

@@ -10,17 +10,19 @@ import com.fray.evo.EcEvolver;
 
 public class EcActionWait extends EcAction implements Serializable
 {
-	boolean go = false;
+	boolean	go	= false;
+
 	@Override
 	public void execute(EcBuildOrder s, EcEvolver e)
 	{
-		s.waits +=1;
+		s.waits += 1;
 	}
 
 	@Override
 	public boolean canExecute(EcBuildOrder s)
 	{
-		if (isPossible(s)) return true;
+		if (isPossible(s))
+			return true;
 		s.seconds += 1;
 		Collection<Runnable> futureActions = s.getFutureActions(s.seconds);
 		if (futureActions != null)

@@ -178,6 +178,9 @@ public class EcSwingX extends JXPanel implements EcReportable
 		sb.append("\nTo start, enter in some units you would like to have.");
 		sb.append("\nWhen you have decided what you would like, hit Start.");
 		sb.append("\n");
+		sb.append("\nFixes since 0001:");
+		sb.append("\n-Only hatcheries were allowed to have mineral patches.");
+		sb.append("\nThis was the cause of the 2 hatch 6 muta bug, and other myriad problems.");
 		outputText.setText(sb.toString());
 	}
 

@@ -51,6 +51,8 @@ public class EcActionBuildUltraliskCavern extends EcAction implements Serializab
 	{
 		if (s.hives == 0)
 			return true;
+		if (s.ultraliskCavern == 1)
+			return true;
 		return super.isInvalid(s);
 	}
 
