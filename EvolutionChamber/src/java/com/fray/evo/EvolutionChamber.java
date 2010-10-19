@@ -225,7 +225,7 @@ public class EvolutionChamber
 		}
 		catch (FileNotFoundException e)
 		{
-			e.printStackTrace();
+			System.out.println("Seeds file not found.");
 		}
 		catch (IOException e)
 		{
@@ -238,7 +238,7 @@ public class EvolutionChamber
 			}
 			catch (FileNotFoundException e1)
 			{
-				e1.printStackTrace();
+				System.out.println("Seeds file not found.");
 			}
 			catch (IOException e1)
 			{
