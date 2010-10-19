@@ -22,7 +22,7 @@ public class EcActionUpgradeTunnelingClaws extends EcActionUpgrade
 	{
 		if (s.roachWarrens == 0)
 			return true;
-		if (s.lairs == 0)// Need to account for evolving lairs->hives
+		if (s.lairs == 0 && s.evolvingLairs == 0 && s.hives == 0 && s.evolvingHives == 0)
 			return true;
 		return false;
 	}

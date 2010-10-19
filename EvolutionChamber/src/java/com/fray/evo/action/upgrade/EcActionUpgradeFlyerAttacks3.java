@@ -22,7 +22,7 @@ public class EcActionUpgradeFlyerAttacks3 extends EcActionUpgrade
 	{
 		if (s.spire == 0)
 			return true;
-		if (s.hives == 0)
+		if (s.hives == 0 && s.evolvingHives == 0)
 			return true;
 		if (s.flyerAttack2 == false)
 			return true;

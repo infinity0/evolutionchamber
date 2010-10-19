@@ -22,7 +22,7 @@ public class EcActionUpgradeAdrenalGlands extends EcActionUpgrade
 	{
 		if (s.spawningPools == 0)
 			return true;
-		if (s.hives == 0)
+		if (s.hives == 0 && s.evolvingHives == 0)
 			return true;
 		return false;
 	}

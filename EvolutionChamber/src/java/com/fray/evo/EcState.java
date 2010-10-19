@@ -6,7 +6,9 @@ public class EcState
 	public double	gas					= 0;
 	public double	supplyUsed			= 6;
 
-	public int		evolvinghatcheries	= 0;
+	public int		evolvingHatcheries	= 0;
+	public int		evolvingLairs		= 0;
+	public int		evolvingHives		= 0;
 	public int		hatcheries			= 1;
 	public int		lairs				= 0;
 	public int		hives				= 0;
@@ -69,7 +71,6 @@ public class EcState
 	public int		invalidActions		= 0;
 	public double	actionLength		= 0;
 	public int		waits;
-	public int	evolvingLairs;
 
 	@Override
 	public Object clone() throws CloneNotSupportedException
@@ -150,7 +151,7 @@ public class EcState
 
 	public int supply()
 	{
-		return (overlords+overseers) * 8 + 2 * bases();
+		return (overlords + overseers) * 8 + 2 * bases();
 	}
 
 	public static EcState defaultDestination()
@@ -161,9 +162,9 @@ public class EcState
 		d.overlords = 1;
 
 		d.hatcheries = 0;
-//		d.lairs = 1;
+		// d.lairs = 1;
 		// d.hives = 1;
-//		d.spawningPools = 1;
+		// d.spawningPools = 1;
 		// d.evolutionChambers = 1;
 		// d.roachWarrens = 1;
 		// //d.hydraliskDen = 1;
@@ -172,21 +173,21 @@ public class EcState
 		// d.greaterSpire = 1;
 		// d.ultraliskCavern = 1;
 		// d.gasExtractors = 1;
-//		d.spire = 1;
-//		d.spineCrawlers = 2;
+		// d.spire = 1;
+		// d.spineCrawlers = 2;
 		//
-//		d.zerglings = 6;
-//		d.queens = 1;
+		// d.zerglings = 6;
+		// d.queens = 1;
 		// d.banelings = 1;
 		// d.roaches = 7;
-//		d.mutalisks = 5;
+		// d.mutalisks = 5;
 		// d.infestors = 5;
 		// d.hydralisks = 50;
 		// d.corruptors = 1;
 		// d.ultralisks = 1;
 		// d.broodlords = 1;
 
-//		d.metabolicBoost = true;
+		// d.metabolicBoost = true;
 		// d.adrenalGlands = true;
 		// d.glialReconstitution = true;
 		// d.tunnelingClaws = true;
@@ -415,7 +416,7 @@ public class EcState
 
 	public int bases()
 	{
-		return hatcheries + lairs + evolvinghatcheries + evolvingLairs + hives;
+		return hatcheries + lairs + evolvingHatcheries + evolvingLairs + hives + evolvingHives;
 	}
 
 	public int getSumStuff()

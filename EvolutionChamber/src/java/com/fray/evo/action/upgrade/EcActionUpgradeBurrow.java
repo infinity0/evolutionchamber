@@ -17,9 +17,23 @@ public class EcActionUpgradeBurrow extends EcActionUpgrade
 	}
 
 	@Override
+	public void execute(EcBuildOrder s, EcEvolver e)
+	{
+		super.execute(s, e);
+		s.consumeHatch(time);
+	}
+	
+	@Override
+	public boolean isPossible(EcBuildOrder s) {
+		if (s.hatcheries == 0 && s.lairs == 0 && s.hives == 0)
+			return false;
+		return super.isPossible(s);
+	};
+
+	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{
-		if (s.lairs == 0 && s.evolvingLairs == 0 && s.hives == 0)
+		if (s.lairs == 0 && s.evolvingLairs == 0 && s.hives == 0 && s.evolvingHives == 0)
 			return true;
 		return false;
 	}

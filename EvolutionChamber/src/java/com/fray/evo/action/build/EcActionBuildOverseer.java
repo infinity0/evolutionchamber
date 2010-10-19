@@ -28,7 +28,7 @@ public class EcActionBuildOverseer extends EcAction implements Serializable
 	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{
-		if (s.lairs == 0)
+		if (s.lairs == 0 && s.evolvingLairs == 0 && s.hives == 0 && s.evolvingHives == 0)
 			return true;
 		return false;
 	}

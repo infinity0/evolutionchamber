@@ -22,7 +22,7 @@ public class EcActionUpgradeMelee3 extends EcActionUpgrade
 	{
 		if (s.evolutionChambers == 0)
 			return true;
-		if (s.hives == 0)
+		if (s.hives == 0 && s.evolvingHives == 0)
 			return true;
 		if (s.melee2 == false)
 			return true;

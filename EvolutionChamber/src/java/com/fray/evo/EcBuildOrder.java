@@ -223,4 +223,51 @@ public class EcBuildOrder extends EcState implements Serializable
 		return (bases()+hatcheriesBuilding) * 2;
 	}
 
+	public void consumeHatch(int seconds)
+	{
+		boolean usehatch = false;
+		boolean uselair = false;
+		if (hatcheries > 0)
+		{
+			hatcheries--;
+			evolvingHatcheries++;
+			usehatch = true;
+		}
+		else if (lairs > 0)
+		{
+			lairs--;
+			evolvingLairs++;
+			uselair = true;
+		}
+		else
+		{
+			hives--;
+			evolvingHives++;
+		}
+		final boolean useHatch = usehatch;
+		final boolean useLair = uselair;
+		addFutureAction(seconds, new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				if (useHatch)
+				{
+					evolvingHatcheries--;
+					hatcheries++;
+				}
+				else if (useLair)
+				{
+					evolvingLairs--;
+					lairs++;
+				}
+				else
+				{
+					evolvingHives--;
+					hives++;
+				}
+			}
+		});
+	}
+
 }

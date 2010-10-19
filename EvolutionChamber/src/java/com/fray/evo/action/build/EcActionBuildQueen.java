@@ -15,7 +15,7 @@ public class EcActionBuildQueen extends EcAction implements Serializable
 	{
 		s.supplyUsed+=2;
 		s.minerals-=150;
-		s.queensBuilding++;
+		s.consumeHatch(50);
 		s.addFutureAction(50, new Runnable(){
 
 			@Override
@@ -23,14 +23,13 @@ public class EcActionBuildQueen extends EcAction implements Serializable
 			{
 				if (e.debug) e.log.println("@"+s.timestamp()+" Queen+1");
 				s.queens+=1;
-				s.queensBuilding--;
 				s.addFutureAction(45, new Runnable(){
 					@Override
 					public void run()
 					{
 						if (e.debug) e.log.println("@"+s.timestamp()+" Larva+4");
 						s.larva += 4;
-						s.addFutureAction(40,this);
+						s.addFutureAction(45,this);
 					}});
 			}});
 	}
@@ -40,9 +39,9 @@ public class EcActionBuildQueen extends EcAction implements Serializable
 	{
 		if (s.spawningPools == 0)
 			return true;
-		if (s.queensBuilding+s.queens >= s.hatcheriesBuilding + s.hatcheries + s.lairs + s.hives)
+		if (s.queensBuilding+s.queens >= s.hatcheriesBuilding + s.bases())
 			return true;
-		if (s.hatcheries + s.lairs + s.hives < 1)
+		if (s.hatcheries + s.lairs + s.hives == 0)
 			return true;
 		return false;
 	}

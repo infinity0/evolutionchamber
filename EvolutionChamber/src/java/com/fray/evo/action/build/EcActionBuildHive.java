@@ -17,7 +17,7 @@ public class EcActionBuildHive extends EcAction implements Serializable
 		s.minerals -=200;
 		s.gas -= 150;
 		s.lairs -= 1;
-		s.evolvinghatcheries +=1;
+		s.evolvingLairs +=1;
 		s.addFutureAction(100,new Runnable(){
 			@Override
 			public void run()

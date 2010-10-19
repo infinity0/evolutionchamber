@@ -120,7 +120,7 @@ public class EcEvolver extends FitnessFunction
 				if (s.seconds >= s.targetSeconds)
 				{
 					if (debug)
-						log.println("Expired on " + a + ", " + s.invalidActions + "&" + s.actionLength);
+						log.println("Expired on " + a);
 					return s;
 				}
 				if (destination.isSatisfied(s))
@@ -128,8 +128,7 @@ public class EcEvolver extends FitnessFunction
 					if (debug)
 					{
 						log.println("Satisfied.");
-						log.println("Invalid actions left to trim out: " + s.invalidActions);
-						log.println("Number of actions in build order: " + i);
+						log.println("Number of actions in build order: " + (i-s.invalidActions));
 					}
 					return s;
 				}

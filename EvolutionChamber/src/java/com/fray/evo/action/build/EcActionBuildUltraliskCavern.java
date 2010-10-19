@@ -49,7 +49,7 @@ public class EcActionBuildUltraliskCavern extends EcAction implements Serializab
 	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{
-		if (s.hives == 0)
+		if (s.hives == 0 && s.evolvingHives == 0)
 			return true;
 		if (s.ultraliskCavern == 1)
 			return true;

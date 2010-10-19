@@ -21,7 +21,7 @@ public class EcActionUpgradeFlyerAttacks2 extends EcActionUpgrade
 	{
 		if (s.spire == 0)
 			return true;
-		if (s.lairs == 0 && s.hives == 0 && s.evolvingLairs == 0)
+		if (s.lairs == 0 && s.hives == 0 && s.evolvingLairs == 0 && s.evolvingHives == 0)
 			return true;
 		if (s.flyerAttack1 == false)
 			return true;

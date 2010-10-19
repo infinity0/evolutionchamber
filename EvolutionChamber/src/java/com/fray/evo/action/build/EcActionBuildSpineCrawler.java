@@ -12,19 +12,29 @@ public class EcActionBuildSpineCrawler extends EcAction implements Serializable
 {
 
 	@Override
-	public void execute(final EcBuildOrder s,final EcEvolver e)
+	public void execute(final EcBuildOrder s, final EcEvolver e)
 	{
-		s.minerals -=100;
-		s.drones -=1;
-		s.dronesOnMinerals -=1;
-		s.supplyUsed -=1;
-		s.addFutureAction(50,new Runnable(){
+		s.minerals -= 100;
+		s.drones -= 1;
+		s.dronesOnMinerals -= 1;
+		s.supplyUsed -= 1;
+		s.addFutureAction(50, new Runnable()
+		{
 			@Override
 			public void run()
 			{
-				if (e.debug) e.log.println("@"+s.timestamp()+" Spine Crawler+1");
-				s.spineCrawlers +=1;
-			}});
+				if (e.debug)
+					e.log.println("@" + s.timestamp() + " Spine Crawler+1");
+				s.spineCrawlers += 1;
+			}
+		});
+	}
+
+	public boolean isInvalid(EcBuildOrder s)
+	{
+		if (s.spawningPools == 0)
+			return true;
+		return false;
 	}
 
 	@Override

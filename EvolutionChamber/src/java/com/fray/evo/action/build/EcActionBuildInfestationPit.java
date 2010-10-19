@@ -49,7 +49,7 @@ public class EcActionBuildInfestationPit extends EcAction implements Serializabl
 	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{
-		if (s.lairs == 0)
+		if (s.lairs == 0 && s.evolvingLairs == 0 && s.hives == 0 && s.evolvingHives == 0)
 			return true;
 		return super.isInvalid(s);
 	}

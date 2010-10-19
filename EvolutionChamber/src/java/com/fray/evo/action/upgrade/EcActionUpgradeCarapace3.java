@@ -22,7 +22,7 @@ public class EcActionUpgradeCarapace3 extends EcActionUpgrade
 	{
 		if (s.evolutionChambers == 0)
 			return true;
-		if (s.hives == 0)
+		if (s.hives == 0 && s.evolvingHives == 0)
 			return true;
 		if (s.armor2 == false)
 			return true;

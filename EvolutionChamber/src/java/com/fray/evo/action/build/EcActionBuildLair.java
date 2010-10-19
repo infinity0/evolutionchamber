@@ -17,14 +17,14 @@ public class EcActionBuildLair extends EcAction implements Serializable
 		s.minerals -=150;
 		s.gas -= 100;
 		s.hatcheries -= 1;
-		s.evolvinghatcheries +=1;
+		s.evolvingHatcheries +=1;
 		s.addFutureAction(80,new Runnable(){
 			@Override
 			public void run()
 			{
 				if (e.debug) e.log.println("@"+s.timestamp()+" Lairs+1");
 				s.lairs +=1;
-				s.evolvinghatcheries -=1;
+				s.evolvingHatcheries -=1;
 			}});
 	}
 

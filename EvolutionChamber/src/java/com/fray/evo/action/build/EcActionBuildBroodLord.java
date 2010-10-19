@@ -40,7 +40,7 @@ public class EcActionBuildBroodLord extends EcAction implements Serializable
 	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{
-		if (s.hives == 0)
+		if (s.hives == 0 && s.evolvingHives == 0)
 			return true;
 		if (s.greaterSpire == 0)
 			return true;
