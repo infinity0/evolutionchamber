@@ -52,6 +52,7 @@ public class EcActionBuildBroodLord extends EcAction implements Serializable
 	{
 		ArrayList<EcAction> l = new ArrayList<EcAction>();
 		l.add(new EcActionBuildGreaterSpire());
+		l.add(new EcActionBuildCorruptor());
 		return l;
 	}
 }
