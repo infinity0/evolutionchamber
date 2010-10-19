@@ -17,9 +17,17 @@ public class EcActionUpgradeNeuralParasite extends EcActionUpgrade
 	}
 
 	@Override
+	public void execute(EcBuildOrder s, EcEvolver e)
+	{
+		// TODO Auto-generated method stub
+		super.execute(s, e);
+		s.infestationPitInUse++;
+	}
+	
+	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{
-		if (s.infestationPit == 0)
+		if (s.infestationPit-s.infestationPitInUse == 0)
 			return true;
 		return false;
 	}
@@ -28,6 +36,7 @@ public class EcActionUpgradeNeuralParasite extends EcActionUpgrade
 	public void afterTime(EcBuildOrder s, EcEvolver e)
 	{
 		s.neuralParasite = true;
+		s.infestationPitInUse--;
 	}
 
 	@Override

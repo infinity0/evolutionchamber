@@ -109,6 +109,9 @@ public class EcBuildOrder extends EcState implements Serializable
 	int[]		patches				= new int[24];
 	public int	extractorsBuilding	= 0;
 	public int	hatcheriesBuilding = 0;
+	public int	spawningPoolsInUse = 0;
+	public int	roachWarrensInUse = 0;
+	public int	infestationPitInUse = 0;
 
 	// Mines minerals on all bases perfectly per one second.
 	public double mineMinerals()

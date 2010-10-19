@@ -90,6 +90,7 @@ public class EcState
 		s.lairs = lairs;
 		s.hives = hives;
 		s.spawningPools = spawningPools;
+		s.banelingNest = banelingNest;
 		s.evolutionChambers = evolutionChambers;
 		s.roachWarrens = roachWarrens;
 		s.hydraliskDen = hydraliskDen;

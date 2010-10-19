@@ -29,9 +29,11 @@ public class EcCacheMap<E, T> implements Map<E, T>
 			return;
 		if (current < lastCleaned + 1000 * 60)
 			return;
+		System.out.println("Cleaning... Before: " + map.size());
 		for (E e : new ArrayList<E>(keySet()))
 			if (getInner(e) == null)
 				remove(e);
+		System.out.println("Cleaning... After: " + map.size());
 		lastCleaned = current;
 	}
 

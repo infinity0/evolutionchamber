@@ -18,9 +18,16 @@ public class EcActionUpgradeGlialReconstitution extends EcActionUpgrade
 	}
 
 	@Override
+	public void execute(EcBuildOrder s, EcEvolver e)
+	{
+		super.execute(s, e);
+		s.roachWarrensInUse++;
+	}
+	
+	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{
-		if (s.roachWarrens == 0)
+		if (s.roachWarrens+s.roachWarrensInUse == 0)
 			return true;
 		if (s.lairs == 0 && s.evolvingLairs == 0 && s.hives == 0 && s.evolvingHives == 0)
 			return true;
@@ -31,6 +38,7 @@ public class EcActionUpgradeGlialReconstitution extends EcActionUpgrade
 	public void afterTime(EcBuildOrder s, EcEvolver e)
 	{
 		s.glialReconstitution = true;
+		s.roachWarrensInUse--;
 	}
 
 	@Override

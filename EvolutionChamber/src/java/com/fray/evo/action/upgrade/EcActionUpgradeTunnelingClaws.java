@@ -18,9 +18,17 @@ public class EcActionUpgradeTunnelingClaws extends EcActionUpgrade
 	}
 
 	@Override
+	public void execute(EcBuildOrder s, EcEvolver e)
+	{
+		// TODO Auto-generated method stub
+		super.execute(s, e);
+		s.roachWarrensInUse++;
+	}
+	
+	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{
-		if (s.roachWarrens == 0)
+		if (s.roachWarrens-s.roachWarrensInUse == 0)
 			return true;
 		if (s.lairs == 0 && s.evolvingLairs == 0 && s.hives == 0 && s.evolvingHives == 0)
 			return true;
@@ -31,6 +39,7 @@ public class EcActionUpgradeTunnelingClaws extends EcActionUpgrade
 	public void afterTime(EcBuildOrder s, EcEvolver e)
 	{
 		s.tunnelingClaws = true;
+		s.roachWarrensInUse--;
 	}
 
 	@Override

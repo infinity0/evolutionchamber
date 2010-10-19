@@ -37,7 +37,7 @@ public class EcActionBuildUltralisk extends EcAction implements Serializable
 	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{
-		if (s.spire == 0 && s.evolvingSpires == 0 && s.greaterSpire == 0)
+		if (s.ultraliskCavern == 0)
 			return true;
 		return false;
 	}

@@ -37,8 +37,6 @@ public class EcActionBuildHive extends EcAction implements Serializable
 			return false;
 		if (s.lairs < 1)
 			return false;
-		if (s.lairs+s.hatcheries <= s.queensBuilding)
-			return false;
 		return true;
 	}
 

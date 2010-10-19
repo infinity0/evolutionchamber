@@ -17,9 +17,17 @@ public class EcActionUpgradeMetabolicBoost extends EcActionUpgrade
 	}
 
 	@Override
+	public void execute(EcBuildOrder s, EcEvolver e)
+	{
+		// TODO Auto-generated method stub
+		super.execute(s, e);
+		s.spawningPoolsInUse++;
+	}
+	
+	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{
-		if (s.spawningPools == 0)
+		if (s.spawningPools-s.spawningPoolsInUse == 0)
 			return true;
 		return false;
 	}
@@ -28,6 +36,7 @@ public class EcActionUpgradeMetabolicBoost extends EcActionUpgrade
 	public void afterTime(EcBuildOrder s, EcEvolver e)
 	{
 		s.metabolicBoost = true;
+		s.spawningPoolsInUse--;
 	}
 
 	@Override

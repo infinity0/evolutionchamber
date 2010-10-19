@@ -171,6 +171,7 @@ public class EvolutionChamber
 			}
 		});
 		t1.start();
+		t1.setPriority(1);
 		threads.add(t1);
 	}
 

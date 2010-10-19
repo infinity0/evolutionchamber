@@ -60,7 +60,7 @@ public class EcActionBuildUltraliskCavern extends EcAction implements Serializab
 	public List<EcAction> requirements()
 	{
 		ArrayList<EcAction> l = new ArrayList<EcAction>();
-		l.add(new EcActionBuildInfestationPit());
+		l.add(new EcActionBuildHive());
 		return l;
 	}
 }
