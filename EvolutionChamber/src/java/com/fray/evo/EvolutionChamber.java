@@ -65,6 +65,7 @@ public class EvolutionChamber
 	private boolean	kill = false;
 	public double	BASE_CHANCE	= 5;
 	public static Double[] bestScores; 
+	public static Integer[] evolutionsSinceDiscovery; 
 
 	public static void main(String[] args) throws InvalidConfigurationException
 	{
@@ -80,6 +81,7 @@ public class EvolutionChamber
 		CHROMOSOME_LENGTH = d.getSumStuff()+70;
 		bestScore = new Double(0);
 		bestScores = new Double[NUM_THREADS];
+		evolutionsSinceDiscovery = new Integer[NUM_THREADS];
 		
 		//We are using the 'many small villages' vs 'one large city' method of evolution.
 		for (int threadIndex = 0; threadIndex < NUM_THREADS; threadIndex++)
@@ -118,6 +120,7 @@ public class EvolutionChamber
 	private void spawnEvolutionaryChamber(final EcState s, final EcState d, final int threadIndex) throws InvalidConfigurationException
 	{
 		bestScores[threadIndex] = new Double(0);
+		evolutionsSinceDiscovery[threadIndex] = new Integer(0);
 		DefaultConfiguration.reset(threadIndex + " thread.");
 		Configuration conf = new DefaultConfiguration(threadIndex + " thread.", threadIndex + " thread.");
 
@@ -146,12 +149,11 @@ public class EvolutionChamber
 		final Thread t1 = new Thread(population);
 		conf.getEventManager().addEventListener(GeneticEvent.GENOTYPE_EVOLVED_EVENT, new GeneticEventListener()
 		{
-			int evolutionsSinceDiscovery = 0;
 			@Override
 			public void geneticEventFired(GeneticEvent a_firedEvent)
 			{
 				BASE_CHANCE += .1;
-				if (BASE_CHANCE >= CHROMOSOME_LENGTH)
+				if (BASE_CHANCE >= CHROMOSOME_LENGTH/2)
 					BASE_CHANCE = 1;
 				IChromosome fittestChromosome = population.getFittestChromosome();
 				if (kill)
@@ -160,13 +162,13 @@ public class EvolutionChamber
 				if (fitnessValue > bestScores[threadIndex])
 				{
 					bestScores[threadIndex] = fitnessValue;
-					evolutionsSinceDiscovery = 0;
+					evolutionsSinceDiscovery[threadIndex] = 0;
 					BASE_CHANCE = 1;
 				}
 				else
-					evolutionsSinceDiscovery++;
+					evolutionsSinceDiscovery[threadIndex]++;
 				
-				if (evolutionsSinceDiscovery > 1000 && fitnessValue < bestScore)
+				if (evolutionsSinceDiscovery[threadIndex] > 1000 && fitnessValue < bestScore)
 				{
 					//Stagnation. Suicide village and try again.
 					System.out.println("Restarting thread " + threadIndex);
@@ -181,13 +183,11 @@ public class EvolutionChamber
 					t1.interrupt();
 				}
 				
-				if (fitnessValue > bestScore)
-				{
 					synchronized (bestScore)
 					{
+				if (fitnessValue > bestScore)
+				{
 						BASE_CHANCE = 1;
-						if (fitnessValue <= bestScore)
-							return;
 						bestScore = fitnessValue;
 						
 						ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();

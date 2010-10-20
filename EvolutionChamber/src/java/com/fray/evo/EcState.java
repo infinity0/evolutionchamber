@@ -251,8 +251,8 @@ public class EcState
 		if (isSatisfied(c))
 			score *= ((double) c.targetSeconds / (double) c.seconds) * ((double) c.targetSeconds / (double) c.seconds);
 
-		score = Math.max(score - candidate.invalidActions - candidate.actionLength - candidate.waits, 0);
-//		score = Math.max(score - candidate.waits, 0);
+//		score = Math.max(score - candidate.invalidActions - candidate.actionLength - candidate.waits, 0);
+		score = Math.max(score - candidate.waits, 0);
 		return score;
 	}
 

@@ -140,6 +140,8 @@ public class EcRequirementTree
 			add(actions,new EcActionUpgradeTunnelingClaws());
 		if (target.ventralSacs)
 			add(actions,new EcActionUpgradeVentralSacs());
+		if (target.gasExtractors>0)
+			add(actions,new EcActionBuildExtractor());
 		if (target.banelingNest > 0)
 			add(actions,new EcActionBuildBanelingNest());
 		if (target.banelings > 0)

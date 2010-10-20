@@ -200,15 +200,15 @@ public class EcSwingX extends JXPanel implements EcReportable
 						double evalseconds = (System.currentTimeMillis()-timeStarted);
 						evalseconds = evalseconds / 1000.0;
 						double permsPerSecond = EcEvolver.evaluations;
-						permsPerSecond /= evalseconds;
-						StringBuilder stats = new StringBuilder();
+						permsPerSecond /= evalseconds;						
+						StringBuilder stats = new StringBuilder();						
 						int threadIndex = 0;
 						stats.append(EcEvolver.evaluations/1000+"K games played.");
 						stats.append("\n"+EcEvolver.cachehits/1000+"K cache hits (games already played).");
 						stats.append("\n"+(int)permsPerSecond+" games played/second.");
 						stats.append("\nEvolution Rate: "+ec.BASE_CHANCE/ec.CHROMOSOME_LENGTH);
 						for (Double d : ec.bestScores)
-							stats.append("\nProcessor " + threadIndex++ + " best score: " + d);
+							stats.append("\nProcessor " + threadIndex + " age: (" + ec.evolutionsSinceDiscovery[threadIndex++]+") score: " + d );
 						statsText.setText(stats.toString());
 					}
 				}
