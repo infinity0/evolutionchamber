@@ -51,6 +51,8 @@ public class EcActionBuildHydraliskDen extends EcAction implements Serializable
 	{
 		if (s.lairs == 0 && s.evolvingLairs == 0 && s.hives == 0 && s.evolvingHives == 0)
 			return true;
+		if (s.hydraliskDen == 2)
+			return true;
 		return super.isInvalid(s);
 	}
 

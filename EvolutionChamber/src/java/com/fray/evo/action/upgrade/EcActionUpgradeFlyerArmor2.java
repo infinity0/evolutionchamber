@@ -55,7 +55,7 @@ public class EcActionUpgradeFlyerArmor2 extends EcActionUpgrade
 	{
 		ArrayList<EcAction> l = new ArrayList<EcAction>();
 		l.add(new EcActionBuildSpire());
-		l.add(new EcActionUpgradeFlyerAttacks1());
+		l.add(new EcActionUpgradeFlyerArmor1());
 		return l;
 	}
 }

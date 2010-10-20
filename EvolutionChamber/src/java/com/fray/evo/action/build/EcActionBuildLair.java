@@ -55,6 +55,7 @@ public class EcActionBuildLair extends EcAction implements Serializable
 	{
 		ArrayList<EcAction> l = new ArrayList<EcAction>();
 		l.add(new EcActionBuildSpawningPool());
+		l.add(new EcActionBuildExtractor());
 		return l;
 	}
 

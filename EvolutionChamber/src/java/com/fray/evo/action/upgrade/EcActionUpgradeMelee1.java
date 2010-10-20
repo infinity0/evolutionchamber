@@ -7,6 +7,7 @@ import com.fray.evo.EcBuildOrder;
 import com.fray.evo.EcEvolver;
 import com.fray.evo.action.EcAction;
 import com.fray.evo.action.build.EcActionBuildEvolutionChamber;
+import com.fray.evo.action.build.EcActionBuildExtractor;
 
 public class EcActionUpgradeMelee1 extends EcActionUpgrade
 {
@@ -51,6 +52,7 @@ public class EcActionUpgradeMelee1 extends EcActionUpgrade
 	{
 		ArrayList<EcAction> l = new ArrayList<EcAction>();
 		l.add(new EcActionBuildEvolutionChamber());
+		l.add(new EcActionBuildExtractor());
 		return l;
 	}
 }

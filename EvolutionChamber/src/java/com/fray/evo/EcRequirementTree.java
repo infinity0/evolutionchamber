@@ -71,7 +71,6 @@ public class EcRequirementTree
 
 		add(actions,new EcActionBuildQueen());
 		add(actions,new EcActionBuildDrone());
-		add(actions,new EcActionBuildExtractor());
 		add(actions,new EcActionExtractorTrick());
 		add(actions,new EcActionBuildHatchery());
 		add(actions,new EcActionBuildOverlord());

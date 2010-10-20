@@ -51,6 +51,8 @@ public class EcActionBuildInfestationPit extends EcAction implements Serializabl
 	{
 		if (s.lairs == 0 && s.evolvingLairs == 0 && s.hives == 0 && s.evolvingHives == 0)
 			return true;
+		if (s.infestationPit == 2)
+			return true;
 		return super.isInvalid(s);
 	}
 

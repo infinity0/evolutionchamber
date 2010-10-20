@@ -8,37 +8,39 @@ import com.fray.evo.EcBuildOrder;
 import com.fray.evo.EcEvolver;
 import com.fray.evo.action.EcAction;
 
-public class EcActionBuildSpawningPool extends EcAction implements Serializable
+public class EcActionBuildSporeCrawler extends EcAction implements Serializable
 {
 
 	@Override
-	public void execute(final EcBuildOrder s,final EcEvolver e)
+	public void execute(final EcBuildOrder s, final EcEvolver e)
 	{
-		s.minerals -=200;
-		s.drones -=1;
-		s.dronesOnMinerals -=1;
-		s.supplyUsed -=1;
-		s.addFutureAction(65,new Runnable(){
+		s.minerals -= 75;
+		s.drones -= 1;
+		s.dronesOnMinerals -= 1;
+		s.supplyUsed -= 1;
+		s.addFutureAction(50, new Runnable()
+		{
 			@Override
 			public void run()
 			{
-				if (e.debug) e.log.println("@"+s.timestamp()+" Spawning Pool+1");
-				s.spawningPools +=1;
-			}});
+				if (e.debug)
+					e.log.println("@" + s.timestamp() + " Spore Crawler+1");
+				s.sporeCrawlers += 1;
+			}
+		});
+	}
+
+	public boolean isInvalid(EcBuildOrder s)
+	{
+		if (s.evolutionChambers == 0)
+			return true;
+		return false;
 	}
 
 	@Override
-	public boolean isInvalid(EcBuildOrder s)
-	{
-		if (s.spawningPools == 2)
-			return true;
-		return super.isInvalid(s);
-	}
-	
-	@Override
 	public boolean isPossible(EcBuildOrder s)
 	{
-		if (s.minerals < 200)
+		if (s.minerals < 75)
 			return false;
 		if (s.drones < 1)
 			return false;
@@ -49,6 +51,8 @@ public class EcActionBuildSpawningPool extends EcAction implements Serializable
 	public List<EcAction> requirements()
 	{
 		ArrayList<EcAction> l = new ArrayList<EcAction>();
+		l.add(new EcActionBuildEvolutionChamber());
 		return l;
 	}
+
 }

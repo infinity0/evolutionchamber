@@ -47,6 +47,8 @@ public class EcActionBuildGreaterSpire extends EcAction implements Serializable
 			return true;
 		if (s.spire == 0)
 			return true;
+		if (s.greaterSpire == 2)
+			return true;
 		return super.isInvalid(s);
 	}
 

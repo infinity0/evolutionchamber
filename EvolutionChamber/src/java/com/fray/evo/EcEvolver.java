@@ -2,6 +2,8 @@ package com.fray.evo;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.util.Collections;
+import java.util.Map;
 import java.util.WeakHashMap;
 
 import org.jgap.FitnessFunction;
@@ -18,7 +20,7 @@ public class EcEvolver extends FitnessFunction
 	private EcState	destination;
 	public boolean	debug	= false;
 	
-	public EcCacheMap<Integer,Double> scoreMap = new EcCacheMap<Integer, Double>();
+	public static Map<Integer,Double> scoreMap = Collections.synchronizedMap(new EcCacheMap<Integer, Double>());
 
 	public EcEvolver(EcState source, EcState destination)
 	{

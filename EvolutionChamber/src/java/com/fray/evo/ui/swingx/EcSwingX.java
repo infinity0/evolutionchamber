@@ -1,7 +1,6 @@
 package com.fray.evo.ui.swingx;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
@@ -11,18 +10,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
@@ -33,30 +24,31 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.ScrollPaneLayout;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import org.jdesktop.swingx.JXGraph;
 import org.jdesktop.swingx.JXLabel;
-import org.jdesktop.swingx.JXList;
-import org.jdesktop.swingx.JXMultiSplitPane;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXStatusBar;
-import org.jdesktop.swingx.JXTextArea;
-import org.jdesktop.swingx.MultiSplitLayout;
 import org.jgap.InvalidConfigurationException;
 
 import com.fray.evo.EcReportable;
 import com.fray.evo.EcState;
 import com.fray.evo.EvolutionChamber;
-import com.fray.evo.action.EcAction;
 
 public class EcSwingX extends JXPanel implements EcReportable
 {
+	private JTextArea			outputText;
+	private JLabel				status2;
+	private JLabel				status1;
+	protected long				timeStarted;
+	protected long				lastUpdate;
+	int							gridy		= 0;
+	private JXStatusBar			statusbar;
+	private List<JComponent>	textBoxes	= new ArrayList<JComponent>();
+
 	public static void main(String[] args)
 	{
 		SwingUtilities.invokeLater(new Runnable()
@@ -73,22 +65,16 @@ public class EcSwingX extends JXPanel implements EcReportable
 					e.printStackTrace();
 				}
 				JFrame frame = new JFrame();
-
+				frame.setTitle("Evolution Chamber");
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				frame.getContentPane().add(new EcSwingX());
-				frame.setPreferredSize(new Dimension(800, 768));
+				frame.setPreferredSize(new Dimension(800, 800));
 				frame.pack();
 				frame.setLocationRelativeTo(null);
 				frame.setVisible(true);
 			}
 		});
 	}
-
-	private JTextArea	outputText;
-	private JLabel	status2;
-	private JLabel	status1;
-	protected long	timeStarted;
-	protected long	lastUpdate;
 
 	public EcSwingX()
 	{
@@ -101,23 +87,21 @@ public class EcSwingX extends JXPanel implements EcReportable
 			e.printStackTrace();
 		}
 
-		setName("Evolution Chamber");
 		setLayout(new BorderLayout());
 
 		JSplitPane outside = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-
 		JPanel leftbottom = new JPanel(new GridBagLayout());
 		JScrollPane stuffPanel = new JScrollPane(leftbottom);
 		outside.setLeftComponent(stuffPanel);
 		JPanel right = new JPanel(new FlowLayout());
 		outside.setRightComponent(new JScrollPane(right));
-		
 
 		addInputContainer(leftbottom);
 		addStatusBar(leftbottom);
 		addOutputContainer(right);
 
 		add(outside);
+		outside.setDividerLocation(340);
 	}
 
 	private void addStatusBar(JPanel leftbottom)
@@ -127,16 +111,15 @@ public class EcSwingX extends JXPanel implements EcReportable
 		status2 = new JLabel("Not Running.");
 		statusbar.add(status1);
 		statusbar.add(status2);
-		
 
 		GridBagConstraints gridBagConstraints = new GridBagConstraints();
 		gridBagConstraints.anchor = GridBagConstraints.SOUTH;
 		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
 		gridBagConstraints.weightx = .5;
-			gridBagConstraints.gridwidth = 4;
-		gridBagConstraints.gridy = gridy+1;
+		gridBagConstraints.gridwidth = 4;
+		gridBagConstraints.gridy = gridy + 1;
 		gridBagConstraints.insets = new Insets(1, 1, 1, 1);
-		leftbottom.add(statusbar,gridBagConstraints);
+		leftbottom.add(statusbar, gridBagConstraints);
 		Timer t = new Timer(1000, new ActionListener()
 		{
 			@Override
@@ -146,21 +129,21 @@ public class EcSwingX extends JXPanel implements EcReportable
 					status1.setText("Ready");
 				else
 				{
-					long ms = new Date().getTime()-timeStarted;
-					long seconds = ms/1000;
-					long minutes = seconds/60;
-					long hours = minutes/60;
-					status1.setText("Running for " + hours%60 + ":" + minutes%60 + ":" + seconds%60);
+					long ms = new Date().getTime() - timeStarted;
+					long seconds = ms / 1000;
+					long minutes = seconds / 60;
+					long hours = minutes / 60;
+					status1.setText("Running for " + hours % 60 + ":" + minutes % 60 + ":" + seconds % 60);
 				}
 				if (lastUpdate == 0)
-					status2.setText("Not Running");
+					;
 				else
 				{
-					long ms = new Date().getTime()-lastUpdate;
-					long seconds = ms/1000;
-					long minutes = seconds/60;
-					long hours = minutes/60;
-					status2.setText("Last update: " + hours%60 + ":" + minutes%60 + ":" + seconds%60 + " ago");
+					long ms = new Date().getTime() - lastUpdate;
+					long seconds = ms / 1000;
+					long minutes = seconds / 60;
+					long hours = minutes / 60;
+					status2.setText("Last update: " + hours % 60 + ":" + minutes % 60 + ":" + seconds % 60 + " ago");
 				}
 				statusbar.invalidate();
 			}
@@ -177,12 +160,25 @@ public class EcSwingX extends JXPanel implements EcReportable
 		sb.append("Hello! Welcome to the Evolution Chamber.");
 		sb.append("\nTo start, enter in some units you would like to have.");
 		sb.append("\nWhen you have decided what you would like, hit Start.");
+		sb.append("\n\nPlease report any issues at \nhttp://code.google.com/p/evolutionchamber/issues/list");
+		sb.append("\n\nFixed in this release (0005):");
+		sb.append("\nFields in editable state after starting the calculation");
+		sb.append("\nExtremely slow mouse scroll on the results text area.");
+		sb.append("\nApplication window has no title");
+		sb.append("\nLast updated field keeps running after pressing stop");
+		sb.append("\nMultiple upgrades can be researched at the same time from one building");
+		sb.append("\nFileNotFoundException etc\\seeds.evo raised from EvolutionChamber.java:222");
+		sb.append("\nBuildExtractor executed twice in a b/o targeting mineral only units.");
+		sb.append("\n\nAdded in this release (0005):");
+		sb.append("\nPerformance improvement (may cause memory issues)");
+		sb.append("\nSpore Crawlers");
 		outputText.setText(sb.toString());
 	}
 
 	EvolutionChamber	ec	= new EvolutionChamber();
 	EcState				destination;
 	private JButton		goButton;
+	private JButton		stopButton;
 
 	private void addInputContainer(JPanel component)
 	{
@@ -194,16 +190,21 @@ public class EcSwingX extends JXPanel implements EcReportable
 			}
 		}).setText("4");
 		gridy++;
-		addButton(component, "Stop", new ActionListener()
+		stopButton = addButton(component, "Stop", new ActionListener()
 		{
 			@Override
 			public void actionPerformed(ActionEvent arg0)
 			{
 				ec.stop();
-				goButton.setText("Start");
+				goButton.setEnabled(true);
+				stopButton.setEnabled(false);
 				timeStarted = 0;
+				for (JComponent j : textBoxes)
+					j.setEnabled(true);
+				lastUpdate = 0;
 			}
 		});
+		stopButton.setEnabled(false);
 		goButton = addButton(component, "Start", new ActionListener()
 		{
 			@Override
@@ -226,33 +227,36 @@ public class EcSwingX extends JXPanel implements EcReportable
 						});
 					}
 				};
+				for (JComponent j : textBoxes)
+					j.setEnabled(false);
 				restartChamber();
 				timeStarted = new Date().getTime();
-				goButton.setText("Restart");
+				goButton.setEnabled(false);
+				stopButton.setEnabled(true);
 			}
 		});
 		gridy++;
-//		addInput(component, "Target number of seconds", new ActionListener()
-//		{
-//			public void actionPerformed(ActionEvent e)
-//			{
-//				destination.targetSeconds = getDigit(e);
-//			}
-//		}).setText("600");
-//		addInput(component, "", new ActionListener()
-//		{
-//			public void actionPerformed(ActionEvent e)
-//			{
-//				ec.POPULATION_SIZE = getDigit(e);
-//			}
-//		}).setText("30");
-//		addInput(component, "Chromosome Length", new ActionListener()
-//		{
-//			public void actionPerformed(ActionEvent e)
-//			{
-//				ec.CHROMOSOME_LENGTH = getDigit(e);
-//			}
-//		}).setText("120");
+		// addInput(component, "Target number of seconds", new ActionListener()
+		// {
+		// public void actionPerformed(ActionEvent e)
+		// {
+		// destination.targetSeconds = getDigit(e);
+		// }
+		// }).setText("600");
+		// addInput(component, "", new ActionListener()
+		// {
+		// public void actionPerformed(ActionEvent e)
+		// {
+		// ec.POPULATION_SIZE = getDigit(e);
+		// }
+		// }).setText("30");
+		// addInput(component, "Chromosome Length", new ActionListener()
+		// {
+		// public void actionPerformed(ActionEvent e)
+		// {
+		// ec.CHROMOSOME_LENGTH = getDigit(e);
+		// }
+		// }).setText("120");
 		addInput(component, "Drones", new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -591,11 +595,19 @@ public class EcSwingX extends JXPanel implements EcReportable
 				destination.evolutionChambers = getDigit(e);
 			}
 		});
+		gridy++;
 		addInput(component, "Spine Crawlers", new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination.spineCrawlers = getDigit(e);
+			}
+		});
+		addInput(component, "Spore Crawlers", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination.sporeCrawlers = getDigit(e);
 			}
 		});
 		gridy++;
@@ -718,34 +730,31 @@ public class EcSwingX extends JXPanel implements EcReportable
 		return tf.isSelected();
 	}
 
-	int	gridy	= 0;
-	private JXStatusBar	statusbar;
-
 	private JTextField addInput(JPanel container, String name, final ActionListener a)
 	{
 		GridBagConstraints gridBagConstraints;
 
-		JXLabel strictTextFieldLabel = new JXLabel("  " + name);
-		strictTextFieldLabel.setAlignmentX(.5f);
+		JXLabel label = new JXLabel("  " + name);
+		label.setAlignmentX(.5f);
 		gridBagConstraints = new GridBagConstraints();
 		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
 		gridBagConstraints.anchor = GridBagConstraints.NORTHWEST;
 		gridBagConstraints.weightx = .25;
 		gridBagConstraints.gridy = gridy;
 		gridBagConstraints.insets = new Insets(1, 1, 1, 1);
-		container.add(strictTextFieldLabel, gridBagConstraints);
+		container.add(label, gridBagConstraints);
 
-		final JTextField nonStrictTextField = new JTextField();
-		nonStrictTextField.setColumns(5);
-		nonStrictTextField.setText("0");
+		final JTextField textField = new JTextField();
+		textField.setColumns(5);
+		textField.setText("0");
 		gridBagConstraints = new GridBagConstraints();
 		gridBagConstraints.anchor = GridBagConstraints.NORTHWEST;
 		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
 		gridBagConstraints.weightx = .25;
 		gridBagConstraints.gridy = gridy;
 		gridBagConstraints.insets = new Insets(1, 1, 1, 1);
-		container.add(nonStrictTextField, gridBagConstraints);
-		nonStrictTextField.addFocusListener(new FocusListener()
+		container.add(textField, gridBagConstraints);
+		textField.addFocusListener(new FocusListener()
 		{
 
 			@Override
@@ -757,19 +766,18 @@ public class EcSwingX extends JXPanel implements EcReportable
 			@Override
 			public void focusGained(FocusEvent e)
 			{
-				// TODO Auto-generated method stub
-
 			}
 		});
-		return nonStrictTextField;
+		textBoxes.add(textField);
+		return textField;
 	}
 
 	private void addCheck(JPanel container, String name, final ActionListener a)
 	{
 		GridBagConstraints gridBagConstraints;
 
-		final JCheckBox nonStrictTextField = new JCheckBox();
-		nonStrictTextField.setText(name);
+		final JCheckBox checkBox = new JCheckBox();
+		checkBox.setText(name);
 		gridBagConstraints = new GridBagConstraints();
 		gridBagConstraints.anchor = GridBagConstraints.WEST;
 		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
@@ -780,15 +788,16 @@ public class EcSwingX extends JXPanel implements EcReportable
 			gridBagConstraints.gridwidth = 2;
 		gridBagConstraints.gridy = gridy;
 		gridBagConstraints.insets = new Insets(1, 1, 1, 1);
-		container.add(nonStrictTextField, gridBagConstraints);
-		nonStrictTextField.addChangeListener(new ChangeListener()
+		container.add(checkBox, gridBagConstraints);
+		checkBox.addChangeListener(new ChangeListener()
 		{
 			@Override
 			public void stateChanged(ChangeEvent arg0)
 			{
-				a.actionPerformed(new ActionEvent(nonStrictTextField, 0, "changed"));
+				a.actionPerformed(new ActionEvent(checkBox, 0, "changed"));
 			}
 		});
+		textBoxes.add(checkBox);
 	}
 
 }

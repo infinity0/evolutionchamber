@@ -35,6 +35,8 @@ public class EcActionBuildBanelingNest extends EcAction implements Serializable
 	{
 		if (s.spawningPools == 0)
 			return true;
+		if (s.banelingNest == 1)
+			return true;
 		return false;
 	}
 
@@ -55,6 +57,7 @@ public class EcActionBuildBanelingNest extends EcAction implements Serializable
 	{
 		ArrayList<EcAction> l = new ArrayList<EcAction>();
 		l.add(new EcActionBuildSpawningPool());
+		l.add(new EcActionBuildExtractor());
 		return l;
 	}
 }

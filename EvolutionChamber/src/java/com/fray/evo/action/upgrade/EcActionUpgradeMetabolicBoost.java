@@ -6,6 +6,7 @@ import java.util.List;
 import com.fray.evo.EcBuildOrder;
 import com.fray.evo.EcEvolver;
 import com.fray.evo.action.EcAction;
+import com.fray.evo.action.build.EcActionBuildExtractor;
 import com.fray.evo.action.build.EcActionBuildSpawningPool;
 
 public class EcActionUpgradeMetabolicBoost extends EcActionUpgrade
@@ -44,6 +45,7 @@ public class EcActionUpgradeMetabolicBoost extends EcActionUpgrade
 	{
 		ArrayList<EcAction> l = new ArrayList<EcAction>();
 		l.add(new EcActionBuildSpawningPool());
+		l.add(new EcActionBuildExtractor());
 		return l;
 	}
 }

@@ -28,6 +28,14 @@ public class EcActionBuildEvolutionChamber extends EcAction implements Serializa
 	}
 
 	@Override
+	public boolean isInvalid(EcBuildOrder s)
+	{
+		if (s.evolutionChambers == 3)
+			return true;
+		return super.isInvalid(s);
+	}
+	
+	@Override
 	public boolean isPossible(EcBuildOrder s)
 	{
 		if (s.minerals < 75)

@@ -53,6 +53,7 @@ public class EcActionBuildRoach extends EcAction implements Serializable
 	{
 		ArrayList<EcAction> l = new ArrayList<EcAction>();
 		l.add(new EcActionBuildRoachWarren());
+		l.add(new EcActionBuildExtractor());
 		return l;
 	}
 }

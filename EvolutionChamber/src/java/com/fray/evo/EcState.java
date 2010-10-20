@@ -23,6 +23,7 @@ public class EcState
 	public int		gasExtractors		= 0;
 	public int		spire				= 0;
 	public int		spineCrawlers		= 0;
+	public int		sporeCrawlers		= 0;
 
 	public int		drones				= 6;
 	public int		overlords			= 1;
@@ -101,6 +102,7 @@ public class EcState
 		s.spire = spire;
 		s.greaterSpire = greaterSpire;
 		s.spineCrawlers = spineCrawlers;
+		s.sporeCrawlers = sporeCrawlers;
 
 		s.zerglings = zerglings;
 		s.banelings = banelings;
@@ -248,7 +250,8 @@ public class EcState
 		score = augmentScore(score, c.spire, spire, 400, 4);
 		score = augmentScore(score, c.infestationPit, infestationPit, 200, 2.0);
 		score = augmentScore(score, c.evolutionChambers, evolutionChambers, 75, 0.75);
-		score = augmentScore(score, c.spineCrawlers, evolutionChambers, 100, 1.00);
+		score = augmentScore(score, c.spineCrawlers, spineCrawlers, 100, 1.00);
+		score = augmentScore(score, c.sporeCrawlers, sporeCrawlers, 75, .75);
 		score = augmentScore(score, (int) c.minerals, (int) minerals, .001, .001);
 		score = augmentScore(score, (int) c.gas, (int) gas, .002, .002);
 
@@ -356,6 +359,8 @@ public class EcState
 			return false;
 		if (c.spineCrawlers < spineCrawlers)
 			return false;
+		if (c.sporeCrawlers < sporeCrawlers)
+			return false;
 
 		if ((!c.metabolicBoost) & metabolicBoost)
 			return false;
@@ -424,7 +429,7 @@ public class EcState
 	{
 		int i = hatcheries + lairs + hives + spawningPools + evolutionChambers + roachWarrens + hydraliskDen
 				+ banelingNest + infestationPit + greaterSpire + ultraliskCavern + gasExtractors + spire
-				+ spineCrawlers
+				+ spineCrawlers + sporeCrawlers
 
 				+ drones + overlords + overseers + zerglings + banelings + roaches + mutalisks + infestors + queens
 				+ hydralisks + corruptors + ultralisks + broodlords;
