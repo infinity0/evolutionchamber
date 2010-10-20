@@ -54,6 +54,7 @@ public class EcEvolver extends FitnessFunction
 				return score.doubleValue();
 			s = populateBuildOrder((EcBuildOrder) source, arg0);
 			score = destination.score(doEvaluate(s));
+			//System.out.println(chrome);
 			scoreMap.put(chrome.hashCode(),score);
 			return score;
 		}
@@ -119,11 +120,11 @@ public class EcEvolver extends FitnessFunction
 			}
 			while (!a.canExecute(s))
 			{
-				if (s.seconds >= s.targetSeconds)
+				if (s.seconds >= s.targetSeconds || destination.waypointMissed(s))
 				{
 					if (debug)
 					{
-						log.println("Expired on " + a);
+						log.println("Failed to meet waypoint.");
 						log.println(s.toLongString());
 					}					
 					return s;

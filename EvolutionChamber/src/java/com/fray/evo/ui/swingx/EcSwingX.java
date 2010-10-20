@@ -22,6 +22,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -49,6 +50,12 @@ public class EcSwingX extends JXPanel implements EcReportable
 	private JXStatusBar			statusbar;
 	private List<JComponent>	textBoxes	= new ArrayList<JComponent>();
 
+	EvolutionChamber	ec	= new EvolutionChamber();
+	EcState[]			destination;
+	private JButton		goButton;
+	private JButton		stopButton;
+	
+
 	public static void main(String[] args)
 	{
 		SwingUtilities.invokeLater(new Runnable()
@@ -68,7 +75,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 				frame.setTitle("Evolution Chamber");
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				frame.getContentPane().add(new EcSwingX());
-				frame.setPreferredSize(new Dimension(800, 800));
+				frame.setPreferredSize(new Dimension(900, 800));
 				frame.pack();
 				frame.setLocationRelativeTo(null);
 				frame.setVisible(true);
@@ -80,7 +87,12 @@ public class EcSwingX extends JXPanel implements EcReportable
 	{
 		try
 		{
-			destination = (EcState) ec.getInternalDestination().clone();
+			destination = new EcState[5];
+			destination[0] = (EcState) ec.getInternalDestination().clone();
+			destination[1] = (EcState) ec.getInternalDestination().clone();
+			destination[2] = (EcState) ec.getInternalDestination().clone();
+			destination[3] = (EcState) ec.getInternalDestination().clone();
+			destination[4] = (EcState) ec.getInternalDestination().clone();
 		}
 		catch (CloneNotSupportedException e)
 		{
@@ -96,12 +108,33 @@ public class EcSwingX extends JXPanel implements EcReportable
 		JPanel right = new JPanel(new FlowLayout());
 		outside.setRightComponent(new JScrollPane(right));
 
-		addInputContainer(leftbottom);
+		addControlParts(leftbottom);
+		JTabbedPane tabpane = new JTabbedPane(JTabbedPane.LEFT);
+		for (int i = 0;i < 5;i++)
+		{
+			JPanel lb = new JPanel(new GridBagLayout());
+			if (i == 4)
+				tabpane.addTab("Final",lb);
+			else
+				tabpane.addTab("WP" + Integer.toString(i),lb);
+			addInputContainer(i,lb);
+		}
+		tabpane.setSelectedIndex(4);
+		
+		GridBagConstraints gridBagConstraints = new GridBagConstraints();
+		gridBagConstraints.anchor = GridBagConstraints.WEST;
+		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+		gridBagConstraints.weightx = .25;
+		gridBagConstraints.gridy = gridy;
+		gridBagConstraints.gridwidth = 4;
+		gridBagConstraints.insets = new Insets(1, 1, 1, 1);
+		leftbottom.add(tabpane,gridBagConstraints);
+		
 		addStatusBar(leftbottom);
 		addOutputContainer(right);
 
 		add(outside);
-		outside.setDividerLocation(340);
+		outside.setDividerLocation(395);
 	}
 
 	private void addStatusBar(JPanel leftbottom)
@@ -135,9 +168,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 					long hours = minutes / 60;
 					status1.setText("Running for " + hours % 60 + ":" + minutes % 60 + ":" + seconds % 60);
 				}
-				if (lastUpdate == 0)
-					;
-				else
+				if (lastUpdate != 0)
 				{
 					long ms = new Date().getTime() - lastUpdate;
 					long seconds = ms / 1000;
@@ -162,6 +193,12 @@ public class EcSwingX extends JXPanel implements EcReportable
 		sb.append("\nTo start, enter in some units you would like to have.");
 		sb.append("\nWhen you have decided what you would like, hit Start.");
 		sb.append("\n\nPlease report any issues at \nhttp://code.google.com/p/evolutionchamber/issues/list");
+		sb.append("\n\nNew in this release (0007): Waypoints");
+		sb.append("\nTo use waypoints, enter first what you would like at the end of the build.");
+		sb.append("\nThen go to a waypoint slot, enter a deadline time, and units.");
+		sb.append("\nAll the waypoints are cumulative, so if you enter 6 zergling@3:00 on WP1,");
+		sb.append("\n7 roach@6:00 on WP2, and 6 muta on final, you will end up with 6 lings,");
+		sb.append("\n7 roaches, and 6 mutas by the time it finds a valid build.");
 		sb.append("\n\nFixed in this release (0005):");
 		sb.append("\nFields in editable state after starting the calculation");
 		sb.append("\nExtremely slow mouse scroll on the results text area.");
@@ -176,12 +213,445 @@ public class EcSwingX extends JXPanel implements EcReportable
 		outputText.setText(sb.toString());
 	}
 
-	EvolutionChamber	ec	= new EvolutionChamber();
-	EcState				destination;
-	private JButton		goButton;
-	private JButton		stopButton;
+	private void addInputContainer(final int i, JPanel component)
+	{
+		// addInput(component, "", new ActionListener()
+		// {
+		// public void actionPerformed(ActionEvent e)
+		// {
+		// ec.POPULATION_SIZE = getDigit(e);
+		// }
+		// }).setText("30");
+		// addInput(component, "Chromosome Length", new ActionListener()
+		// {
+		// public void actionPerformed(ActionEvent e)
+		// {
+		// ec.CHROMOSOME_LENGTH = getDigit(e);
+		// }
+		// }).setText("120");
+		addInput(component, "Drones", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].drones = getDigit(e);
+			}
+		});
+		addInput(component, "Deadline", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].targetSeconds = getDigit(e);
+			}
+		}).setText("120:00");
+		gridy++;
+		addInput(component, "Overlords", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].overlords = getDigit(e);
+			}
+		});
+		addInput(component, "Overseers", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].overseers = getDigit(e);
+			}
+		});
+		gridy++;
+		addCheck(component, "Pneumatized Carapace", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].pneumatizedCarapace = getTrue(e);
+			}
+		});
+		addCheck(component, "Ventral Sacs", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].ventralSacs = getTrue(e);
+			}
+		});
+		gridy++;
+		addInput(component, "Queens", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].queens = getDigit(e);
+			}
+		});
+		addCheck(component, "Burrow", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].burrow = getTrue(e);
+			}
+		});
+		gridy++;
+		addInput(component, "Zerglings", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].zerglings = getDigit(e);
+			}
+		});
+		gridy++;
+		addCheck(component, "Metabolic Boost", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].metabolicBoost = getTrue(e);
+			}
+		});
+		addCheck(component, "Adrenal Glands", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].adrenalGlands = getTrue(e);
+			}
+		});
+		gridy++;
+		addInput(component, "Banelings", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].banelings = getDigit(e);
+			}
+		});
+		addCheck(component, "Centrifugal Hooks", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].centrifugalHooks = getTrue(e);
+			}
+		});
+		gridy++;
+		addInput(component, "Roaches", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].roaches = getDigit(e);
 
-	private void addInputContainer(JPanel component)
+			}
+		});
+		gridy++;
+		addCheck(component, "Glial Reconstitution", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].glialReconstitution = getTrue(e);
+			}
+		});
+		addCheck(component, "Tunneling Claws", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].tunnelingClaws = getTrue(e);
+			}
+		});
+		gridy++;
+		addInput(component, "Hydralisks", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].hydralisks = getDigit(e);
+			}
+		});
+		addCheck(component, "Grooved Spines", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].groovedSpines = getTrue(e);
+			}
+		});
+		gridy++;
+		addInput(component, "Infestors", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].infestors = getDigit(e);
+			}
+		});
+		gridy++;
+		addCheck(component, "Neural Parasite", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].neuralParasite = getTrue(e);
+			}
+		});
+		addCheck(component, "Pathogen Glands", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].pathogenGlands = getTrue(e);
+			}
+		});
+		gridy++;
+		addInput(component, "Mutalisks", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].mutalisks = getDigit(e);
+			}
+		});
+		gridy++;
+		addInput(component, "Ultralisks", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].ultralisks = getDigit(e);
+			}
+		});
+		addCheck(component, "Chitinous Plating", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].chitinousPlating = getTrue(e);
+			}
+		});
+		gridy++;
+		addInput(component, "Corruptors", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].corruptors = getDigit(e);
+			}
+		});
+		addInput(component, "Broodlords", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].broodlords = getDigit(e);
+			}
+		});
+		gridy++;
+		addCheck(component, "Melee +1", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].melee1 = getTrue(e);
+			}
+		});
+		addCheck(component, "+2", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].melee2 = getTrue(e);
+			}
+		});
+		addCheck(component, "+3", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].melee3 = getTrue(e);
+			}
+		});
+		gridy++;
+		addCheck(component, "Missile +1", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].missile1 = getTrue(e);
+			}
+		});
+		addCheck(component, "+2", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].missile2 = getTrue(e);
+			}
+		});
+		addCheck(component, "+3", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].missile3 = getTrue(e);
+			}
+		});
+		gridy++;
+		addCheck(component, "Carapace +1", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].armor1 = getTrue(e);
+			}
+		});
+		addCheck(component, "+2", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].armor2 = getTrue(e);
+			}
+		});
+		addCheck(component, "+3", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].armor3 = getTrue(e);
+			}
+		});
+		gridy++;
+		addCheck(component, "Flyer Attack +1", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].flyerAttack1 = getTrue(e);
+			}
+		});
+		addCheck(component, "+2", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].flyerAttack2 = getTrue(e);
+			}
+		});
+		addCheck(component, "+3", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].flyerAttack3 = getTrue(e);
+			}
+		});
+		gridy++;
+		addCheck(component, "Flyer Armor +1", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].flyerArmor1 = getTrue(e);
+			}
+		});
+		addCheck(component, "+2", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].flyerArmor2 = getTrue(e);
+			}
+		});
+		addCheck(component, "+3", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].flyerArmor3 = getTrue(e);
+			}
+		});
+		gridy++;
+		addInput(component, "Hatcheries", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].hatcheries = getDigit(e);
+			}
+		});
+		addInput(component, "Lairs", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].lairs = getDigit(e);
+			}
+		});
+		gridy++;
+		addInput(component, "Hives", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].hives = getDigit(e);
+			}
+		});
+		addInput(component, "Gas Extractors", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].gasExtractors = getDigit(e);
+			}
+		});
+		gridy++;
+		addInput(component, "Evolution Chambers", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].evolutionChambers = getDigit(e);
+			}
+		});
+		gridy++;
+		addInput(component, "Spine Crawlers", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].spineCrawlers = getDigit(e);
+			}
+		});
+		addInput(component, "Spore Crawlers", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].sporeCrawlers = getDigit(e);
+			}
+		});
+		gridy++;
+		addInput(component, "Spawning Pools", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].spawningPools = getDigit(e);
+			}
+		});
+		addInput(component, "Baneling Nests", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].banelingNest = getDigit(e);
+			}
+		});
+		gridy++;
+		addInput(component, "Roach Warrens", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].roachWarrens = getDigit(e);
+			}
+		});
+		addInput(component, "Hydralisk Dens", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].hydraliskDen = getDigit(e);
+			}
+		});
+		gridy++;
+		addInput(component, "Infestation Pits", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].infestationPit = getDigit(e);
+			}
+		});
+		addInput(component, "Spires", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].spire = getDigit(e);
+			}
+		});
+		gridy++;
+		addInput(component, "Ultralisk Caverns", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].ultraliskCavern = getDigit(e);
+			}
+		});
+		addInput(component, "Greater Spires", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].greaterSpire = getDigit(e);
+			}
+		});
+	}
+
+	private void addControlParts(JPanel component)
 	{
 		addInput(component, "Processors", new ActionListener()
 		{
@@ -237,440 +707,6 @@ public class EcSwingX extends JXPanel implements EcReportable
 			}
 		});
 		gridy++;
-		// addInput(component, "Target number of seconds", new ActionListener()
-		// {
-		// public void actionPerformed(ActionEvent e)
-		// {
-		// destination.targetSeconds = getDigit(e);
-		// }
-		// }).setText("600");
-		// addInput(component, "", new ActionListener()
-		// {
-		// public void actionPerformed(ActionEvent e)
-		// {
-		// ec.POPULATION_SIZE = getDigit(e);
-		// }
-		// }).setText("30");
-		// addInput(component, "Chromosome Length", new ActionListener()
-		// {
-		// public void actionPerformed(ActionEvent e)
-		// {
-		// ec.CHROMOSOME_LENGTH = getDigit(e);
-		// }
-		// }).setText("120");
-		addInput(component, "Drones", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.drones = getDigit(e);
-			}
-		}).setText("6");
-		addCheck(component, "Burrow", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.burrow = getTrue(e);
-			}
-		});
-		gridy++;
-		addInput(component, "Overlords", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.overlords = getDigit(e);
-			}
-		}).setText("1");
-		addInput(component, "Overseers", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.overseers = getDigit(e);
-			}
-		});
-		gridy++;
-		addCheck(component, "Pneumatized Carapace", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.pneumatizedCarapace = getTrue(e);
-			}
-		});
-		addCheck(component, "Ventral Sacs", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.ventralSacs = getTrue(e);
-			}
-		});
-		gridy++;
-		addInput(component, "Queens", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.queens = getDigit(e);
-			}
-		});
-		gridy++;
-		addInput(component, "Zerglings", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.zerglings = getDigit(e);
-			}
-		});
-		gridy++;
-		addCheck(component, "Metabolic Boost", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.metabolicBoost = getTrue(e);
-			}
-		});
-		addCheck(component, "Adrenal Glands", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.adrenalGlands = getTrue(e);
-			}
-		});
-		gridy++;
-		addInput(component, "Banelings", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.banelings = getDigit(e);
-			}
-		});
-		addCheck(component, "Centrifugal Hooks", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.centrifugalHooks = getTrue(e);
-			}
-		});
-		gridy++;
-		addInput(component, "Roaches", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.roaches = getDigit(e);
-
-			}
-		});
-		gridy++;
-		addCheck(component, "Glial Reconstitution", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.glialReconstitution = getTrue(e);
-			}
-		});
-		addCheck(component, "Tunneling Claws", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.tunnelingClaws = getTrue(e);
-			}
-		});
-		gridy++;
-		addInput(component, "Hydralisks", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.hydralisks = getDigit(e);
-			}
-		});
-		addCheck(component, "Grooved Spines", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.groovedSpines = getTrue(e);
-			}
-		});
-		gridy++;
-		addInput(component, "Infestors", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.infestors = getDigit(e);
-			}
-		});
-		gridy++;
-		addCheck(component, "Neural Parasite", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.neuralParasite = getTrue(e);
-			}
-		});
-		addCheck(component, "Pathogen Glands", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.pathogenGlands = getTrue(e);
-			}
-		});
-		gridy++;
-		addInput(component, "Mutalisks", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.mutalisks = getDigit(e);
-			}
-		});
-		gridy++;
-		addInput(component, "Ultralisks", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.ultralisks = getDigit(e);
-			}
-		});
-		addCheck(component, "Chitinous Plating", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.chitinousPlating = getTrue(e);
-			}
-		});
-		gridy++;
-		addInput(component, "Corruptors", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.corruptors = getDigit(e);
-			}
-		});
-		addInput(component, "Broodlords", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.broodlords = getDigit(e);
-			}
-		});
-		gridy++;
-		addCheck(component, "Melee +1", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.melee1 = getTrue(e);
-			}
-		});
-		addCheck(component, "+2", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.melee2 = getTrue(e);
-			}
-		});
-		addCheck(component, "+3", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.melee3 = getTrue(e);
-			}
-		});
-		gridy++;
-		addCheck(component, "Missile +1", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.missile1 = getTrue(e);
-			}
-		});
-		addCheck(component, "+2", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.missile2 = getTrue(e);
-			}
-		});
-		addCheck(component, "+3", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.missile3 = getTrue(e);
-			}
-		});
-		gridy++;
-		addCheck(component, "Carapace +1", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.armor1 = getTrue(e);
-			}
-		});
-		addCheck(component, "+2", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.armor2 = getTrue(e);
-			}
-		});
-		addCheck(component, "+3", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.armor3 = getTrue(e);
-			}
-		});
-		gridy++;
-		addCheck(component, "Flyer Attack +1", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.flyerAttack1 = getTrue(e);
-			}
-		});
-		addCheck(component, "+2", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.flyerAttack2 = getTrue(e);
-			}
-		});
-		addCheck(component, "+3", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.flyerAttack3 = getTrue(e);
-			}
-		});
-		gridy++;
-		addCheck(component, "Flyer Armor +1", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.flyerArmor1 = getTrue(e);
-			}
-		});
-		addCheck(component, "+2", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.flyerArmor2 = getTrue(e);
-			}
-		});
-		addCheck(component, "+3", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.flyerArmor3 = getTrue(e);
-			}
-		});
-		gridy++;
-		addInput(component, "Hatcheries", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.hatcheries = getDigit(e);
-			}
-		});
-		addInput(component, "Lairs", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.lairs = getDigit(e);
-			}
-		});
-		gridy++;
-		addInput(component, "Hives", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.hives = getDigit(e);
-			}
-		});
-		addInput(component, "Gas Extractors", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.gasExtractors = getDigit(e);
-			}
-		});
-		gridy++;
-		addInput(component, "Evolution Chambers", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.evolutionChambers = getDigit(e);
-			}
-		});
-		gridy++;
-		addInput(component, "Spine Crawlers", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.spineCrawlers = getDigit(e);
-			}
-		});
-		addInput(component, "Spore Crawlers", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.sporeCrawlers = getDigit(e);
-			}
-		});
-		gridy++;
-		addInput(component, "Spawning Pools", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.spawningPools = getDigit(e);
-			}
-		});
-		addInput(component, "Baneling Nests", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.banelingNest = getDigit(e);
-			}
-		});
-		gridy++;
-		addInput(component, "Roach Warrens", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.roachWarrens = getDigit(e);
-			}
-		});
-		addInput(component, "Hydralisk Dens", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.hydraliskDen = getDigit(e);
-			}
-		});
-		gridy++;
-		addInput(component, "Infestation Pits", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.infestationPit = getDigit(e);
-			}
-		});
-		addInput(component, "Spires", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.spire = getDigit(e);
-			}
-		});
-		gridy++;
-		addInput(component, "Ultralisk Caverns", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.ultraliskCavern = getDigit(e);
-			}
-		});
-		addInput(component, "Greater Spires", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination.greaterSpire = getDigit(e);
-			}
-		});
 	}
 
 	private JButton addButton(JPanel container, String string, ActionListener actionListener)
@@ -683,7 +719,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
 		gridBagConstraints.weightx = .25;
 		gridBagConstraints.gridy = gridy;
-		gridBagConstraints.gridwidth = 2;
+		gridBagConstraints.gridwidth = 1;
 		gridBagConstraints.insets = new Insets(1, 1, 1, 1);
 		container.add(button, gridBagConstraints);
 		button.addActionListener(actionListener);
@@ -696,11 +732,23 @@ public class EcSwingX extends JXPanel implements EcReportable
 		String text = tf.getText();
 		try
 		{
+			if (text.contains(":"))
+			{
+				String[] split = text.split(":");
+				return Integer.parseInt(split[0])*60+Integer.parseInt(split[1]);
+			}
+			
 			Integer i = Integer.parseInt(text);
 			return i;
 		}
+		catch (ArrayIndexOutOfBoundsException ex)
+		{
+			tf.setText("0");
+			return 0;
+		}
 		catch (NumberFormatException ex)
 		{
+			tf.setText("0");
 			return 0;
 		}
 	}
@@ -711,7 +759,11 @@ public class EcSwingX extends JXPanel implements EcReportable
 			ec.stop();
 		try
 		{
-			ec.setDestination((EcState) destination.clone());
+			EcState finalDestination = (EcState) destination[destination.length-1].clone();
+			for (int i = 0;i < destination.length-1;i++)
+				finalDestination.waypoints.add(destination[i]);
+			
+			ec.setDestination(finalDestination);
 			ec.go();
 		}
 		catch (InvalidConfigurationException e1)

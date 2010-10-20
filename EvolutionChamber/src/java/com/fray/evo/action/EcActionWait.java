@@ -36,6 +36,14 @@ public class EcActionWait extends EcAction implements Serializable
 	}
 
 	@Override
+	public boolean isInvalid(EcBuildOrder s)
+	{
+		if (s.nothingGoingToHappen(s.seconds))
+			return true;
+		return super.isInvalid(s);
+	}
+	
+	@Override
 	public boolean isPossible(EcBuildOrder s)
 	{
 		return go;

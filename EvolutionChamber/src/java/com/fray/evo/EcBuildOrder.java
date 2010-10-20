@@ -49,8 +49,8 @@ public class EcBuildOrder extends EcState implements Serializable
 	{
 		StringBuilder sb = new StringBuilder();
 		sb.append("\nFinal time: " + timestamp());
-		sb.append("\nMinerals: " + (int) minerals + "\tGas:      " + (int) gas + "\tSupply:   " + ((int) supplyUsed) + "/"
-				+ supply());
+		sb.append("\nMinerals: " + (int) minerals + "\tGas:      " + (int) gas + "\tSupply:   " + ((int) supplyUsed)
+				+ "/" + supply());
 
 		append(sb, "Drones", drones);
 		append(sb, "Overlords", overlords);
@@ -148,6 +148,13 @@ public class EcBuildOrder extends EcState implements Serializable
 			return null;
 		return (Collection<Runnable>) result;
 	}
+	public boolean nothingGoingToHappen(double time)
+	{
+		for (double t : (Collection<Double>)futureAction.keySet())
+			if (t > time)
+				return false;
+		return true;
+	}
 
 	public void consumeLarva(final EcEvolver e)
 	{
@@ -162,7 +169,7 @@ public class EcBuildOrder extends EcState implements Serializable
 				public void run()
 				{
 					if (e.debug)
-						e.obtained(t," Larva+1");
+						e.obtained(t, " Larva+1");
 					larva = Math.max(Math.min(larva + bases(), bases() * 3), larva);
 					if (larva < 3 * bases())
 						addFutureAction(15, this);
@@ -353,5 +360,6 @@ public class EcBuildOrder extends EcState implements Serializable
 			}
 		});
 	}
+
 
 }

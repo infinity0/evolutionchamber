@@ -1,5 +1,8 @@
 package com.fray.evo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class EcState
 {
 	public double	minerals			= 50;
@@ -72,6 +75,8 @@ public class EcState
 	public int		invalidActions		= 0;
 	public double	actionLength		= 0;
 	public int		waits;
+	
+	public transient List<EcState>	waypoints			= new ArrayList<EcState>();
 
 	@Override
 	public Object clone() throws CloneNotSupportedException
@@ -83,6 +88,17 @@ public class EcState
 
 	protected void assign(EcState s)
 	{
+		for (EcState st : waypoints)
+			try
+			{
+				s.waypoints.add((EcState) st.clone());
+			}
+			catch (CloneNotSupportedException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		
 		s.minerals = minerals;
 		s.gas = gas;
 		s.supplyUsed = supplyUsed;
@@ -161,8 +177,8 @@ public class EcState
 	{
 		EcState d = new EcState();
 
-		d.drones = 6;
-		d.overlords = 1;
+		d.drones = 0;
+		d.overlords = 0;
 
 		d.hatcheries = 0;
 		// d.lairs = 1;
@@ -226,6 +242,21 @@ public class EcState
 	{
 		EcState c = candidate;
 		double score = 0;
+		score = augmentScore(c, score);
+		for (EcState s : waypoints)
+			score = s.augmentScore(c,score);
+		score = augmentScore(score, (int) c.minerals, (int) minerals, .001, .001);
+		score = augmentScore(score, (int) c.gas, (int) gas, .001, .001);
+
+		if (isSatisfied(c))
+			score *= ((double) c.targetSeconds / (double) c.seconds) * ((double) c.targetSeconds / (double) c.seconds);
+
+		score = Math.max(score - candidate.invalidActions - candidate.actionLength - candidate.waits, 0);
+		return score;
+	}
+
+	private double augmentScore(EcState c, double score)
+	{
 		score = augmentScore(score, c.drones, drones, 50, 2);
 		score = augmentScore(score, c.zerglings, zerglings, 25, .25);
 		score = augmentScore(score, c.banelings, banelings, 75, .75);
@@ -252,8 +283,6 @@ public class EcState
 		score = augmentScore(score, c.evolutionChambers, evolutionChambers, 75, 0.75);
 		score = augmentScore(score, c.spineCrawlers, spineCrawlers, 100, 1.00);
 		score = augmentScore(score, c.sporeCrawlers, sporeCrawlers, 75, .75);
-		score = augmentScore(score, (int) c.minerals, (int) minerals, .001, .001);
-		score = augmentScore(score, (int) c.gas, (int) gas, .001, .001);
 
 		score = augmentScore(score, c.metabolicBoost, metabolicBoost, 200, 2.0);
 		score = augmentScore(score, c.adrenalGlands, adrenalGlands, 400, 4.0);
@@ -282,11 +311,7 @@ public class EcState
 		score = augmentScore(score, c.flyerArmor2, flyerArmor2, 450, 4.5);
 		score = augmentScore(score, c.flyerArmor3, flyerArmor3, 600, 6.0);
 		score = augmentScore(score, c.chitinousPlating, chitinousPlating, 300, 3.0);
-
-		if (isSatisfied(c))
-			score *= ((double) c.targetSeconds / (double) c.seconds) * ((double) c.targetSeconds / (double) c.seconds);
-
-		return Math.max(score - candidate.invalidActions - candidate.actionLength - candidate.waits, 0);
+		return score;
 	}
 
 	private double augmentScore(double score, boolean a, boolean b, int mula, double mulb)
@@ -489,5 +514,18 @@ public class EcState
 		if (chitinousPlating)
 			i++;
 		return i;
+	}
+
+	public boolean waypointMissed(EcBuildOrder candidate)
+	{
+		for (EcState s : waypoints)
+		{
+			if (candidate.seconds < s.targetSeconds)
+				continue;
+			if (s.isSatisfied(candidate))
+				continue;
+			return true;
+		}
+		return false;
 	}
 }

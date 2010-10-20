@@ -77,6 +77,15 @@ public class EcRequirementTree
 		add(actions,new EcActionBuildSpawningPool());
 		add(actions,new EcActionWait());
 
+		actions(target, actions);
+
+		for (Class a : actions.values())
+			System.out.println(a.getSimpleName());
+
+	}
+
+	private static void actions(EcState target, Map<Integer, Class> actions)
+	{
 		if (target.adrenalGlands)
 			add(actions,new EcActionUpgradeAdrenalGlands());
 		if (target.armor1)
@@ -171,10 +180,8 @@ public class EcRequirementTree
 			add(actions,new EcActionBuildSpineCrawler());
 		if (target.overseers > 0)
 			add(actions,new EcActionBuildOverseer());
-
-		for (Class a : actions.values())
-			System.out.println(a.getSimpleName());
-
+		for (EcState s : target.waypoints)
+			actions(s,actions);
 	}
 
 	private static void add(Map<Integer, Class> actions, EcAction action)
