@@ -48,7 +48,7 @@ public class EcBuildOrder extends EcState implements Serializable
 	public String toLongString()
 	{
 		StringBuilder sb = new StringBuilder();
-		sb.append("\nFinal time: " + timestamp());
+		sb.append("At time: " + timestamp());
 		sb.append("\nMinerals: " + (int) minerals + "\tGas:      " + (int) gas + "\tSupply:   " + ((int) supplyUsed)
 				+ "/" + supply());
 
@@ -306,7 +306,7 @@ public class EcBuildOrder extends EcState implements Serializable
 
 	public String timestamp()
 	{
-		return seconds / 60 + ":" + seconds % 60;
+		return seconds / 60 + ":" + (seconds%60 < 10 ? "0" : "") + seconds % 60;
 	}
 
 	public int extractors()

@@ -36,7 +36,7 @@ public class EcActionExtractorTrick extends EcAction implements Serializable
 	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{
-		if (s.extractors() < s.gasExtractors+s.extractorsBuilding)
+		if (s.gasExtractors + s.extractorsBuilding >= s.extractors())
 			return true;
 		if (s.supplyUsed < s.supply() - 1)
 			return true;

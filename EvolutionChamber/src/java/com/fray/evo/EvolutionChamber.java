@@ -52,7 +52,6 @@ public class EvolutionChamber
 		}
 	}
 	
-	static final double	BASE_CHANCE	= 1;
 	public int	CHROMOSOME_LENGTH = 120;
 	int	NUM_THREADS = 4;
 	public int	POPULATION_SIZE	= 200;
@@ -64,6 +63,8 @@ public class EvolutionChamber
 	public ActionListener	onNewBuild;
 	public List<Thread>	threads = new ArrayList<Thread>();
 	private boolean	kill = false;
+	public double	BASE_CHANCE	= 5;
+	public static Double[] bestScores; 
 
 	public static void main(String[] args) throws InvalidConfigurationException
 	{
@@ -78,10 +79,12 @@ public class EvolutionChamber
 		EcAction.setup(d);
 		CHROMOSOME_LENGTH = d.getSumStuff()+70;
 		bestScore = new Double(0);
-
+		bestScores = new Double[NUM_THREADS];
+		
 		//We are using the 'many small villages' vs 'one large city' method of evolution.
 		for (int threadIndex = 0; threadIndex < NUM_THREADS; threadIndex++)
 		{
+			bestScores[threadIndex] = new Double(0);
 			spawnEvolutionaryChamber(s, d, threadIndex);
 		}
 		if (onNewBuild == null)
@@ -113,7 +116,7 @@ public class EvolutionChamber
 
 	}
 	
-	private void spawnEvolutionaryChamber(EcState s, EcState d, int threadIndex) throws InvalidConfigurationException
+	private void spawnEvolutionaryChamber(EcState s, EcState d, final int threadIndex) throws InvalidConfigurationException
 	{
 		DefaultConfiguration.reset(threadIndex + " thread.");
 		Configuration conf = new DefaultConfiguration(threadIndex + " thread.", threadIndex + " thread.");
@@ -127,7 +130,7 @@ public class EvolutionChamber
 		conf.addGeneticOperator(EcGeneticUtil.getSwapOperator(this));
 		conf.setPopulationSize(POPULATION_SIZE);
 		conf.setSelectFromPrevGen(.9);
-		conf.setPreservFittestIndividual(true);
+		conf.setPreservFittestIndividual(false);
 		conf.setAlwaysCaculateFitness(false);
 		conf.setKeepPopulationSizeConstant(false);
 
@@ -146,14 +149,26 @@ public class EvolutionChamber
 			@Override
 			public void geneticEventFired(GeneticEvent a_firedEvent)
 			{
+				BASE_CHANCE += .1;
+				if (BASE_CHANCE >= CHROMOSOME_LENGTH)
+					BASE_CHANCE = 1;
 				IChromosome fittestChromosome = population.getFittestChromosome();
 				if (kill)
 					t1.interrupt();
-				if (fittestChromosome.getFitnessValue() > bestScore)
+				double fitnessValue = fittestChromosome.getFitnessValue();
+				if (fitnessValue > bestScores[threadIndex])
+				{
+					bestScores[threadIndex] = fitnessValue;
+					BASE_CHANCE = 1;
+				}
+				if (fitnessValue > bestScore)
 				{
 					synchronized (bestScore)
 					{
-						bestScore = fittestChromosome.getFitnessValue();
+						BASE_CHANCE = 1;
+						if (fitnessValue <= bestScore)
+							return;
+						bestScore = fitnessValue;
 						
 						ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 						PrintStream ps = new PrintStream(byteArrayOutputStream);
@@ -161,7 +176,7 @@ public class EvolutionChamber
 							myFunc.log = ps;
 							
 						displayBuildOrder(myFunc, fittestChromosome);
-						myFunc.log.println(new Date() + ": " + fittestChromosome.getFitnessValue());
+						myFunc.log.println(new Date() + ": " + fitnessValue);
 						displayChromosome(fittestChromosome);
 						saveSeeds(fittestChromosome);
 						onNewBuild.actionPerformed(new ActionEvent(myFunc.evaluateGetBuildOrder(fittestChromosome),bestScore.intValue(),new String(byteArrayOutputStream.toByteArray())));

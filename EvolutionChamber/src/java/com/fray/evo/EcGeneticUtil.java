@@ -22,7 +22,7 @@ public class EcGeneticUtil
 				for (int i = 0; i < arg0.size(); i++)
 				{
 					if (Math.random() > c.BASE_CHANCE/c.CHROMOSOME_LENGTH)
-						return;
+						continue;
 					IChromosome chromosome = (IChromosome) arg0.getChromosome(i).clone();
 					Gene[] beforeArray = chromosome.getGenes();
 					for (int j = (int) (Math.random() * beforeArray.length); j < beforeArray.length - 1; j++)
@@ -52,7 +52,7 @@ public class EcGeneticUtil
 				for (int i = 0; i < arg0.size(); i++)
 				{
 					if (Math.random() > c.BASE_CHANCE/c.CHROMOSOME_LENGTH)
-						return;
+						continue;
 					IChromosome chromosome = (IChromosome) arg0.getChromosome(i).clone();
 					Gene[] beforeArray = chromosome.getGenes();
 					int randomPoint = (int) (Math.random() * beforeArray.length);
@@ -81,10 +81,10 @@ public class EcGeneticUtil
 			@Override
 			public void operate(Population arg0, List arg1)
 			{
-				if (Math.random() > c.BASE_CHANCE/c.CHROMOSOME_LENGTH)
-					return;
 				for (int i = 0; i < arg0.size(); i++)
 				{
+				if (Math.random() > c.BASE_CHANCE/c.CHROMOSOME_LENGTH)
+					continue;
 					IChromosome chromosome = arg0.getChromosome(i);
 					Gene[] beforeArray = chromosome.getGenes();
 					Gene[] afterArray = new Gene[beforeArray.length + 1];
@@ -174,7 +174,7 @@ public class EcGeneticUtil
 				for (int i = 0; i < arg0.size(); i++)
 				{
 					if (Math.random() > c.BASE_CHANCE/c.CHROMOSOME_LENGTH)
-						return;
+						continue;
 					IChromosome chromosome = (IChromosome) arg0.getChromosome(i).clone();
 					Gene[] beforeArray = chromosome.getGenes();
 					int randomPoint = (int) (Math.random() * beforeArray.length);
@@ -207,7 +207,7 @@ public class EcGeneticUtil
 				for (int i = 0; i < arg0.size(); i++)
 				{
 					if (Math.random() > c.BASE_CHANCE/c.CHROMOSOME_LENGTH)
-						return;
+						continue;
 					IChromosome chromosome = (IChromosome) arg0.getChromosome(i).clone();
 					Gene[] beforeArray = chromosome.getGenes();
 					int randomPoint = (int) (Math.random() * beforeArray.length);

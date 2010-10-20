@@ -35,6 +35,7 @@ import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXStatusBar;
 import org.jgap.InvalidConfigurationException;
 
+import com.fray.evo.EcEvolver;
 import com.fray.evo.EcReportable;
 import com.fray.evo.EcState;
 import com.fray.evo.EvolutionChamber;
@@ -54,6 +55,9 @@ public class EcSwingX extends JXPanel implements EcReportable
 	EcState[]			destination;
 	private JButton		goButton;
 	private JButton		stopButton;
+	private JLabel	status3;
+	private JTextArea	statsText;
+	private JTabbedPane	tabPane;
 	
 
 	public static void main(String[] args)
@@ -109,17 +113,20 @@ public class EcSwingX extends JXPanel implements EcReportable
 		outside.setRightComponent(new JScrollPane(right));
 
 		addControlParts(leftbottom);
-		JTabbedPane tabpane = new JTabbedPane(JTabbedPane.LEFT);
+		tabPane = new JTabbedPane(JTabbedPane.LEFT);
 		for (int i = 0;i < 5;i++)
 		{
 			JPanel lb = new JPanel(new GridBagLayout());
 			if (i == 4)
-				tabpane.addTab("Final",lb);
+				tabPane.addTab("Final",lb);
 			else
-				tabpane.addTab("WP" + Integer.toString(i),lb);
+				tabPane.addTab("WP" + Integer.toString(i),lb);
 			addInputContainer(i,lb);
 		}
-		tabpane.setSelectedIndex(4);
+		JPanel stats = new JPanel(new GridBagLayout());
+		addStats(stats);
+		tabPane.addTab("Stats",stats);
+		tabPane.setSelectedIndex(4);
 		
 		GridBagConstraints gridBagConstraints = new GridBagConstraints();
 		gridBagConstraints.anchor = GridBagConstraints.WEST;
@@ -128,7 +135,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 		gridBagConstraints.gridy = gridy;
 		gridBagConstraints.gridwidth = 4;
 		gridBagConstraints.insets = new Insets(1, 1, 1, 1);
-		leftbottom.add(tabpane,gridBagConstraints);
+		leftbottom.add(tabPane,gridBagConstraints);
 		
 		addStatusBar(leftbottom);
 		addOutputContainer(right);
@@ -137,13 +144,23 @@ public class EcSwingX extends JXPanel implements EcReportable
 		outside.setDividerLocation(395);
 	}
 
+	private void addStats(JPanel stats)
+	{
+		stats.add(statsText = new JTextArea());
+		statsText.setAlignmentX(0);
+		statsText.setAlignmentY(0);
+		statsText.setTabSize(4);
+	}
+
 	private void addStatusBar(JPanel leftbottom)
 	{
 		statusbar = new JXStatusBar();
 		status1 = new JLabel("Ready.");
-		status2 = new JLabel("Not Running.");
 		statusbar.add(status1);
+		status2 = new JLabel("Not Running.");
 		statusbar.add(status2);
+		status3 = new JLabel("");
+		statusbar.add(status3);
 
 		GridBagConstraints gridBagConstraints = new GridBagConstraints();
 		gridBagConstraints.anchor = GridBagConstraints.SOUTH;
@@ -153,7 +170,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 		gridBagConstraints.gridy = gridy + 1;
 		gridBagConstraints.insets = new Insets(1, 1, 1, 1);
 		leftbottom.add(statusbar, gridBagConstraints);
-		Timer t = new Timer(1000, new ActionListener()
+		Timer t = new Timer(200, new ActionListener()
 		{
 			@Override
 			public void actionPerformed(ActionEvent e)
@@ -175,6 +192,21 @@ public class EcSwingX extends JXPanel implements EcReportable
 					long minutes = seconds / 60;
 					long hours = minutes / 60;
 					status2.setText("Last update: " + hours % 60 + ":" + minutes % 60 + ":" + seconds % 60 + " ago");
+					{
+						double evalseconds = (System.currentTimeMillis()-timeStarted);
+						evalseconds = evalseconds / 1000.0;
+						double permsPerSecond = EcEvolver.evaluations;
+						permsPerSecond /= evalseconds;
+						StringBuilder stats = new StringBuilder();
+						int threadIndex = 0;
+						stats.append(EcEvolver.evaluations/1000+"K games played.");
+						stats.append("\n"+EcEvolver.cachehits/1000+"K cache hits (games already played).");
+						stats.append("\n"+(int)permsPerSecond+" games played/second.");
+						stats.append("\nEvolution Rate: "+ec.BASE_CHANCE/ec.CHROMOSOME_LENGTH);
+						for (Double d : ec.bestScores)
+							stats.append("\nProcessor " + threadIndex++ + " best score: " + d);
+						statsText.setText(stats.toString());
+					}
 				}
 				statusbar.invalidate();
 			}
@@ -701,6 +733,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 				for (JComponent j : textBoxes)
 					j.setEnabled(false);
 				restartChamber();
+				tabPane.setSelectedIndex(5);
 				timeStarted = new Date().getTime();
 				goButton.setEnabled(false);
 				stopButton.setEnabled(true);
