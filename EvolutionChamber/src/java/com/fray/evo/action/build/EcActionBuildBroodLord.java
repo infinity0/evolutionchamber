@@ -11,18 +11,21 @@ import com.fray.evo.action.EcAction;
 public class EcActionBuildBroodLord extends EcAction implements Serializable
 {
 	@Override
-	public void execute(final EcBuildOrder s,final EcEvolver e)
+	public void execute(final EcBuildOrder s, final EcEvolver e)
 	{
-		s.minerals -=150;
+		s.minerals -= 150;
 		s.gas -= 150;
 		s.corruptors -= 1;
-		s.addFutureAction(34,new Runnable(){
+		s.addFutureAction(34, new Runnable()
+		{
 			@Override
 			public void run()
 			{
-				if (e.debug) e.log.println("@"+s.timestamp()+" Brood Lord+1");
-				s.broodlords +=1;
-			}});
+				if (e.debug)
+					e.obtained(s," Brood Lord+1");
+				s.broodlords += 1;
+			}
+		});
 	}
 
 	@Override

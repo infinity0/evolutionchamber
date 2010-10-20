@@ -12,20 +12,23 @@ public class EcActionBuildGreaterSpire extends EcAction implements Serializable
 {
 
 	@Override
-	public void execute(final EcBuildOrder s,final EcEvolver e)
+	public void execute(final EcBuildOrder s, final EcEvolver e)
 	{
-		s.minerals -=100;
+		s.minerals -= 100;
 		s.gas -= 150;
 		s.spire -= 1;
-		s.evolvingSpires +=1;
-		s.addFutureAction(100,new Runnable(){
+		s.evolvingSpires += 1;
+		s.addFutureAction(100, new Runnable()
+		{
 			@Override
 			public void run()
 			{
-				if (e.debug) e.log.println("@"+s.timestamp()+" Greater Spire+1");
-				s.greaterSpire +=1;
-				s.evolvingSpires -=1;
-			}});
+				if (e.debug)
+					e.obtained(s," Greater Spire+1");
+				s.greaterSpire += 1;
+				s.evolvingSpires -= 1;
+			}
+		});
 	}
 
 	@Override

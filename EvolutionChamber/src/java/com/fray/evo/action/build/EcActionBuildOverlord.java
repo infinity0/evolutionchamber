@@ -11,17 +11,20 @@ import com.fray.evo.action.EcAction;
 public class EcActionBuildOverlord extends EcAction implements Serializable
 {
 	@Override
-	public void execute(final EcBuildOrder s,final EcEvolver e)
+	public void execute(final EcBuildOrder s, final EcEvolver e)
 	{
 		s.minerals -= 100;
 		s.consumeLarva(e);
-		s.addFutureAction(25,new Runnable(){
+		s.addFutureAction(25, new Runnable()
+		{
 			@Override
 			public void run()
 			{
-				if (e.debug) e.log.println("@"+s.timestamp()+" Overlord+1");
-				s.overlords +=1;
-			}});
+				if (e.debug)
+					e.obtained(s," Overlord+1");
+				s.overlords += 1;
+			}
+		});
 	}
 
 	@Override

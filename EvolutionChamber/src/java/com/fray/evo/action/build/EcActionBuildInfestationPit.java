@@ -10,9 +10,9 @@ import com.fray.evo.action.EcAction;
 
 public class EcActionBuildInfestationPit extends EcAction implements Serializable
 {
-	private static final int	time	= 50;
+	private static final int	time		= 50;
 	private static final int	minerals	= 100;
-	private static final int	gas	= 100;
+	private static final int	gas			= 100;
 
 	@Override
 	public void execute(final EcBuildOrder s, final EcEvolver e)
@@ -28,7 +28,7 @@ public class EcActionBuildInfestationPit extends EcAction implements Serializabl
 			public void run()
 			{
 				if (e.debug)
-					e.log.println("@" + s.timestamp() + " Infestation Pit+1");
+					e.obtained(s, " Infestation Pit+1");
 				s.infestationPit += 1;
 			}
 		});

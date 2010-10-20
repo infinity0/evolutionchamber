@@ -24,7 +24,7 @@ public class EcActionBuildBanelingNest extends EcAction implements Serializable
 			public void run()
 			{
 				if (e.debug)
-					e.log.println("@" + s.timestamp() + " Baneling Nest+1");
+					e.obtained(s, " Baneling Nest+1");
 				s.banelingNest += 1;
 			}
 		});

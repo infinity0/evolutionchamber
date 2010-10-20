@@ -11,27 +11,33 @@ import com.fray.evo.action.EcAction;
 public class EcActionBuildQueen extends EcAction implements Serializable
 {
 	@Override
-	public void execute(final EcBuildOrder s,final EcEvolver e)
+	public void execute(final EcBuildOrder s, final EcEvolver e)
 	{
-		s.supplyUsed+=2;
-		s.minerals-=150;
+		s.supplyUsed += 2;
+		s.minerals -= 150;
 		s.consumeHatch(50);
-		s.addFutureAction(50, new Runnable(){
+		s.addFutureAction(50, new Runnable()
+		{
 
 			@Override
 			public void run()
 			{
-				if (e.debug) e.log.println("@"+s.timestamp()+" Queen+1");
-				s.queens+=1;
-				s.addFutureAction(45, new Runnable(){
+				if (e.debug)
+					e.obtained(s," Queen+1");
+				s.queens += 1;
+				s.addFutureAction(45, new Runnable()
+				{
 					@Override
 					public void run()
 					{
-						if (e.debug) e.log.println("@"+s.timestamp()+" Larva+4");
+						if (e.debug)
+							e.obtained(s," Larva+4");
 						s.larva += 4;
-						s.addFutureAction(45,this);
-					}});
-			}});
+						s.addFutureAction(45, this);
+					}
+				});
+			}
+		});
 	}
 
 	@Override
@@ -39,12 +45,13 @@ public class EcActionBuildQueen extends EcAction implements Serializable
 	{
 		if (s.spawningPools == 0)
 			return true;
-		if (s.queensBuilding+s.queens >= s.hatcheriesBuilding + s.bases())
+		if (s.queensBuilding + s.queens >= s.hatcheriesBuilding + s.bases())
 			return true;
 		if (s.hatcheries + s.lairs + s.hives == 0)
 			return true;
 		return false;
 	}
+
 	@Override
 	public boolean isPossible(EcBuildOrder s)
 	{

@@ -11,19 +11,22 @@ import com.fray.evo.action.EcAction;
 public class EcActionBuildRoach extends EcAction implements Serializable
 {
 	@Override
-	public void execute(final EcBuildOrder s,final EcEvolver e)
+	public void execute(final EcBuildOrder s, final EcEvolver e)
 	{
-		s.minerals -=75;
-		s.gas -=25;
+		s.minerals -= 75;
+		s.gas -= 25;
 		s.consumeLarva(e);
 		s.supplyUsed += 2;
-		s.addFutureAction(27,new Runnable(){
+		s.addFutureAction(27, new Runnable()
+		{
 			@Override
 			public void run()
 			{
-				if (e.debug) e.log.println("@"+s.timestamp()+" Roach+1");
-				s.roaches +=1;
-			}});
+				if (e.debug)
+					e.obtained(s," Roach+1");
+				s.roaches += 1;
+			}
+		});
 	}
 
 	@Override

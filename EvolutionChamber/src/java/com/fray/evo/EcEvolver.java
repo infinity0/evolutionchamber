@@ -122,7 +122,10 @@ public class EcEvolver extends FitnessFunction
 				if (s.seconds >= s.targetSeconds)
 				{
 					if (debug)
+					{
 						log.println("Expired on " + a);
+						log.println(s.toLongString());
+					}					
 					return s;
 				}
 				if (destination.isSatisfied(s))
@@ -131,16 +134,32 @@ public class EcEvolver extends FitnessFunction
 					{
 						log.println("Satisfied.");
 						log.println("Number of actions in build order: " + (i-s.invalidActions));
+						log.println(s.toLongString());
 					}
 					return s;
 				}
 			}
 			if (debug)
-				log.println(s.toString() + " -- " + a);
+				log.println(s.toString() + "\t" + a);
 
 			a.execute(s, this);
 		}
+		if (debug)
+		{
+			log.println("Ran out of things to do.");
+			log.println(s.toLongString());
+		}		
 		return s;
+	}
+
+	public void obtained(EcBuildOrder s, String string)
+	{
+		log.println("@"+s.timestamp()+"\tSpawned:\t"+string.trim());
+	}
+
+	public void evolved(EcBuildOrder s, String string)
+	{
+		log.println("@"+s.timestamp()+"\tEvolved:\t"+string.trim());
 	}
 
 }

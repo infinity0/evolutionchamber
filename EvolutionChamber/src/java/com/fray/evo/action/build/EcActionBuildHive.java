@@ -12,20 +12,23 @@ public class EcActionBuildHive extends EcAction implements Serializable
 {
 
 	@Override
-	public void execute(final EcBuildOrder s,final EcEvolver e)
+	public void execute(final EcBuildOrder s, final EcEvolver e)
 	{
-		s.minerals -=200;
+		s.minerals -= 200;
 		s.gas -= 150;
 		s.lairs -= 1;
-		s.evolvingLairs +=1;
-		s.addFutureAction(100,new Runnable(){
+		s.evolvingLairs += 1;
+		s.addFutureAction(100, new Runnable()
+		{
 			@Override
 			public void run()
 			{
-				if (e.debug) e.log.println("@"+s.timestamp()+" Hives+1");
-				s.hives +=1;
-				s.evolvingLairs -=1;
-			}});
+				if (e.debug)
+					e.obtained(s," Hives+1");
+				s.hives += 1;
+				s.evolvingLairs -= 1;
+			}
+		});
 	}
 
 	@Override

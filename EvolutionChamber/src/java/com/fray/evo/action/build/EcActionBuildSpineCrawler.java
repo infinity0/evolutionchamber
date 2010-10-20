@@ -24,12 +24,13 @@ public class EcActionBuildSpineCrawler extends EcAction implements Serializable
 			public void run()
 			{
 				if (e.debug)
-					e.log.println("@" + s.timestamp() + " Spine Crawler+1");
+					e.obtained(s, " Spine Crawler+1");
 				s.spineCrawlers += 1;
 			}
 		});
 	}
 
+	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{
 		if (s.spawningPools == 0)

@@ -156,6 +156,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 		component.add(outputText = new JTextArea());
 		outputText.setAlignmentX(0);
 		outputText.setAlignmentY(0);
+		outputText.setTabSize(4);
 		StringBuilder sb = new StringBuilder();
 		sb.append("Hello! Welcome to the Evolution Chamber.");
 		sb.append("\nTo start, enter in some units you would like to have.");
@@ -764,10 +765,9 @@ public class EcSwingX extends JXPanel implements EcReportable
 			}
 
 			@Override
-			public void focusGained(FocusEvent e)
-			{
-			}
+			public void focusGained(FocusEvent e){}
 		});
+		textBoxes.add(label);
 		textBoxes.add(textField);
 		return textField;
 	}

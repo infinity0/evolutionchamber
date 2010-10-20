@@ -14,17 +14,20 @@ public class EcActionBuildRoachWarren extends EcAction implements Serializable
 	@Override
 	public void execute(final EcBuildOrder s, final EcEvolver e)
 	{
-		s.minerals -=150;
-		s.drones -=1;
-		s.dronesOnMinerals -=1;
-		s.supplyUsed -=1;
-		s.addFutureAction(55,new Runnable(){
+		s.minerals -= 150;
+		s.drones -= 1;
+		s.dronesOnMinerals -= 1;
+		s.supplyUsed -= 1;
+		s.addFutureAction(55, new Runnable()
+		{
 			@Override
 			public void run()
 			{
-				if (e.debug) e.log.println("@"+s.timestamp()+" Roach Warren+1");
-				s.roachWarrens +=1;
-			}});
+				if (e.debug)
+					e.obtained(s," Roach Warren+1");
+				s.roachWarrens += 1;
+			}
+		});
 	}
 
 	@Override

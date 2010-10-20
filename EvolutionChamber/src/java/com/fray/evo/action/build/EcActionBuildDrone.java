@@ -11,19 +11,22 @@ import com.fray.evo.action.EcAction;
 public class EcActionBuildDrone extends EcAction implements Serializable
 {
 	@Override
-	public void execute(final EcBuildOrder s,final EcEvolver e)
+	public void execute(final EcBuildOrder s, final EcEvolver e)
 	{
-		s.minerals -=50;
+		s.minerals -= 50;
 		s.consumeLarva(e);
 		s.supplyUsed += 1;
-		s.addFutureAction(17,new Runnable(){
+		s.addFutureAction(17, new Runnable()
+		{
 			@Override
 			public void run()
 			{
-				if (e.debug) e.log.println("@"+s.timestamp()+" Drone+1");
-				s.drones +=1;
-				s.dronesOnMinerals +=1;
-			}});
+				if (e.debug)
+					e.obtained(s," Drone+1");
+				s.drones += 1;
+				s.dronesOnMinerals += 1;
+			}
+		});
 	}
 
 	@Override

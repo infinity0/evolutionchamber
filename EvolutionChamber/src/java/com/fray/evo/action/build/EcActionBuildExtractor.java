@@ -23,9 +23,10 @@ public class EcActionBuildExtractor extends EcAction implements Serializable
 			@Override
 			public void run()
 			{
-				if (s.extractorsBuilding == 0) return;
+				if (s.extractorsBuilding == 0)
+					return;
 				if (e.debug)
-					e.log.println("@" + s.timestamp() + " Extractor+1");
+					e.obtained(s, " Extractor+1");
 				s.gasExtractors += 1;
 				s.dronesOnGas += 3;
 				s.dronesOnMinerals -= 3;
@@ -37,7 +38,7 @@ public class EcActionBuildExtractor extends EcAction implements Serializable
 	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{
-		if (s.gasExtractors+s.extractorsBuilding == s.extractors())
+		if (s.gasExtractors + s.extractorsBuilding >= s.extractors())
 			return true;
 		return false;
 	}

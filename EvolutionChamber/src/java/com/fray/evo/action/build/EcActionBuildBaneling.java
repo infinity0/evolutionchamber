@@ -11,18 +11,21 @@ import com.fray.evo.action.EcAction;
 public class EcActionBuildBaneling extends EcAction implements Serializable
 {
 	@Override
-	public void execute(final EcBuildOrder s,final EcEvolver e)
+	public void execute(final EcBuildOrder s, final EcEvolver e)
 	{
-		s.minerals -=25;
-		s.gas -=25;
-		s.zerglings -=1;
-		s.addFutureAction(20,new Runnable(){
+		s.minerals -= 25;
+		s.gas -= 25;
+		s.zerglings -= 1;
+		s.addFutureAction(20, new Runnable()
+		{
 			@Override
 			public void run()
 			{
-				if (e.debug) e.log.println("@"+s.timestamp()+" Baneling+1");
-				s.banelings +=1;
-			}});
+				if (e.debug)
+					e.obtained(s, " Baneling+1");
+				s.banelings += 1;
+			}
+		});
 	}
 
 	@Override

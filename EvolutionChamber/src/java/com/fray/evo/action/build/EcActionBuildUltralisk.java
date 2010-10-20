@@ -28,7 +28,7 @@ public class EcActionBuildUltralisk extends EcAction implements Serializable
 			public void run()
 			{
 				if (e.debug)
-					e.log.println("@" + s.timestamp() + " Ultralisk+1");
+					e.obtained(s, " Ultralisk+1");
 				s.ultralisks += 1;
 			}
 		});

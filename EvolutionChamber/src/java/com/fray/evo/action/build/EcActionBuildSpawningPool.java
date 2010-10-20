@@ -12,19 +12,22 @@ public class EcActionBuildSpawningPool extends EcAction implements Serializable
 {
 
 	@Override
-	public void execute(final EcBuildOrder s,final EcEvolver e)
+	public void execute(final EcBuildOrder s, final EcEvolver e)
 	{
-		s.minerals -=200;
-		s.drones -=1;
-		s.dronesOnMinerals -=1;
-		s.supplyUsed -=1;
-		s.addFutureAction(65,new Runnable(){
+		s.minerals -= 200;
+		s.drones -= 1;
+		s.dronesOnMinerals -= 1;
+		s.supplyUsed -= 1;
+		s.addFutureAction(65, new Runnable()
+		{
 			@Override
 			public void run()
 			{
-				if (e.debug) e.log.println("@"+s.timestamp()+" Spawning Pool+1");
-				s.spawningPools +=1;
-			}});
+				if (e.debug)
+					e.obtained(s," Spawning Pool+1");
+				s.spawningPools += 1;
+			}
+		});
 	}
 
 	@Override
@@ -34,7 +37,7 @@ public class EcActionBuildSpawningPool extends EcAction implements Serializable
 			return true;
 		return super.isInvalid(s);
 	}
-	
+
 	@Override
 	public boolean isPossible(EcBuildOrder s)
 	{

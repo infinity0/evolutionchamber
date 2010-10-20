@@ -10,9 +10,9 @@ import com.fray.evo.action.EcAction;
 
 public class EcActionBuildUltraliskCavern extends EcAction implements Serializable
 {
-	private static final int	time	= 65;
+	private static final int	time		= 65;
 	private static final int	minerals	= 150;
-	private static final int	gas	= 200;
+	private static final int	gas			= 200;
 
 	@Override
 	public void execute(final EcBuildOrder s, final EcEvolver e)
@@ -28,7 +28,7 @@ public class EcActionBuildUltraliskCavern extends EcAction implements Serializab
 			public void run()
 			{
 				if (e.debug)
-					e.log.println("@" + s.timestamp() + " Ultralisk Cavern+1");
+					e.obtained(s, " Ultralisk Cavern+1");
 				s.ultraliskCavern += 1;
 			}
 		});

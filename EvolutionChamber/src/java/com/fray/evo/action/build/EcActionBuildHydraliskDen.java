@@ -10,9 +10,9 @@ import com.fray.evo.action.EcAction;
 
 public class EcActionBuildHydraliskDen extends EcAction implements Serializable
 {
-	private static final int	time	= 40;
+	private static final int	time		= 40;
 	private static final int	minerals	= 100;
-	private static final int	gas	= 100;
+	private static final int	gas			= 100;
 
 	@Override
 	public void execute(final EcBuildOrder s, final EcEvolver e)
@@ -28,7 +28,7 @@ public class EcActionBuildHydraliskDen extends EcAction implements Serializable
 			public void run()
 			{
 				if (e.debug)
-					e.log.println("@" + s.timestamp() + " Hydralisk Den+1");
+					e.obtained(s, " Hydralisk Den+1");
 				s.hydraliskDen += 1;
 			}
 		});

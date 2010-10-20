@@ -12,19 +12,22 @@ public class EcActionBuildEvolutionChamber extends EcAction implements Serializa
 {
 
 	@Override
-	public void execute(final EcBuildOrder s,final EcEvolver e)
+	public void execute(final EcBuildOrder s, final EcEvolver e)
 	{
-		s.minerals -=75;
-		s.drones -=1;
-		s.dronesOnMinerals -=1;
-		s.supplyUsed -=1;
-		s.addFutureAction(35,new Runnable(){
+		s.minerals -= 75;
+		s.drones -= 1;
+		s.dronesOnMinerals -= 1;
+		s.supplyUsed -= 1;
+		s.addFutureAction(35, new Runnable()
+		{
 			@Override
 			public void run()
 			{
-				if (e.debug) e.log.println("@"+s.timestamp()+" Evolution Chamber+1");
-				s.evolutionChambers +=1;
-			}});
+				if (e.debug)
+					e.obtained(s," Evolution Chamber+1");
+				s.evolutionChambers += 1;
+			}
+		});
 	}
 
 	@Override
@@ -34,7 +37,7 @@ public class EcActionBuildEvolutionChamber extends EcAction implements Serializa
 			return true;
 		return super.isInvalid(s);
 	}
-	
+
 	@Override
 	public boolean isPossible(EcBuildOrder s)
 	{

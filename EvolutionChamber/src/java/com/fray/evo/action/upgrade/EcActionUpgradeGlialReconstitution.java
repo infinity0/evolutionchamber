@@ -27,7 +27,7 @@ public class EcActionUpgradeGlialReconstitution extends EcActionUpgrade
 	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{
-		if (s.roachWarrens+s.roachWarrensInUse == 0)
+		if (s.roachWarrens-s.roachWarrensInUse == 0)
 			return true;
 		if (s.lairs == 0 && s.evolvingLairs == 0 && s.hives == 0 && s.evolvingHives == 0)
 			return true;

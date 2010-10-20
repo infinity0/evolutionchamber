@@ -12,19 +12,22 @@ public class EcActionBuildHydralisk extends EcAction implements Serializable
 {
 
 	@Override
-	public void execute(final EcBuildOrder s,final EcEvolver e)
+	public void execute(final EcBuildOrder s, final EcEvolver e)
 	{
-		s.minerals -=100;
-		s.gas -=50;
+		s.minerals -= 100;
+		s.gas -= 50;
 		s.consumeLarva(e);
 		s.supplyUsed += 2;
-		s.addFutureAction(33,new Runnable(){
+		s.addFutureAction(33, new Runnable()
+		{
 			@Override
 			public void run()
 			{
-				if (e.debug) e.log.println("@"+s.timestamp()+" Hydralisk+1");
-				s.hydralisks +=1;
-			}});
+				if (e.debug)
+					e.obtained(s," Hydralisk+1");
+				s.hydralisks += 1;
+			}
+		});
 	}
 
 	@Override

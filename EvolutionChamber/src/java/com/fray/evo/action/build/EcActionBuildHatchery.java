@@ -14,23 +14,28 @@ public class EcActionBuildHatchery extends EcAction implements Serializable
 	public void execute(final EcBuildOrder s, final EcEvolver e)
 	{
 		s.minerals -= 300;
-		s.drones -=1;
-		s.dronesOnMinerals -=1;
-		s.supplyUsed -=1;
-		s.hatcheriesBuilding +=1;
-		s.addFutureAction(70,new Runnable(){
+		s.drones -= 1;
+		s.dronesOnMinerals -= 1;
+		s.supplyUsed -= 1;
+		s.hatcheriesBuilding += 1;
+		s.addFutureAction(70, new Runnable()
+		{
 			@Override
 			public void run()
 			{
-			}});
-		s.addFutureAction(100,new Runnable(){
+			}
+		});
+		s.addFutureAction(100, new Runnable()
+		{
 			@Override
 			public void run()
 			{
-				if (e.debug) e.log.println("@"+s.timestamp()+" Hatchery+1");
-				s.hatcheries +=1;
-				s.hatcheriesBuilding -=1;
-			}});
+				if (e.debug)
+					e.obtained(s," Hatchery+1");
+				s.hatcheries += 1;
+				s.hatcheriesBuilding -= 1;
+			}
+		});
 	}
 
 	@Override

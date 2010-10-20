@@ -12,20 +12,23 @@ public class EcActionBuildLair extends EcAction implements Serializable
 {
 
 	@Override
-	public void execute(final EcBuildOrder s,final EcEvolver e)
+	public void execute(final EcBuildOrder s, final EcEvolver e)
 	{
-		s.minerals -=150;
+		s.minerals -= 150;
 		s.gas -= 100;
 		s.hatcheries -= 1;
-		s.evolvingHatcheries +=1;
-		s.addFutureAction(80,new Runnable(){
+		s.evolvingHatcheries += 1;
+		s.addFutureAction(80, new Runnable()
+		{
 			@Override
 			public void run()
 			{
-				if (e.debug) e.log.println("@"+s.timestamp()+" Lairs+1");
-				s.lairs +=1;
-				s.evolvingHatcheries -=1;
-			}});
+				if (e.debug)
+					e.obtained(s," Lairs+1");
+				s.lairs += 1;
+				s.evolvingHatcheries -= 1;
+			}
+		});
 	}
 
 	@Override
@@ -35,7 +38,7 @@ public class EcActionBuildLair extends EcAction implements Serializable
 			return false;
 		if (s.gas < 100)
 			return false;
-		if (s.hatcheries<=s.queensBuilding)
+		if (s.hatcheries <= s.queensBuilding)
 			return false;
 		return true;
 	}

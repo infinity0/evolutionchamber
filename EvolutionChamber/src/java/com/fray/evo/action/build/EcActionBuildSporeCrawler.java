@@ -24,12 +24,13 @@ public class EcActionBuildSporeCrawler extends EcAction implements Serializable
 			public void run()
 			{
 				if (e.debug)
-					e.log.println("@" + s.timestamp() + " Spore Crawler+1");
+					e.obtained(s, " Spore Crawler+1");
 				s.sporeCrawlers += 1;
 			}
 		});
 	}
 
+	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{
 		if (s.evolutionChambers == 0)

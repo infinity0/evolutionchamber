@@ -253,7 +253,7 @@ public class EcState
 		score = augmentScore(score, c.spineCrawlers, spineCrawlers, 100, 1.00);
 		score = augmentScore(score, c.sporeCrawlers, sporeCrawlers, 75, .75);
 		score = augmentScore(score, (int) c.minerals, (int) minerals, .001, .001);
-		score = augmentScore(score, (int) c.gas, (int) gas, .002, .002);
+		score = augmentScore(score, (int) c.gas, (int) gas, .001, .001);
 
 		score = augmentScore(score, c.metabolicBoost, metabolicBoost, 200, 2.0);
 		score = augmentScore(score, c.adrenalGlands, adrenalGlands, 400, 4.0);
@@ -431,8 +431,8 @@ public class EcState
 				+ banelingNest + infestationPit + greaterSpire + ultraliskCavern + gasExtractors + spire
 				+ spineCrawlers + sporeCrawlers
 
-				+ drones + overlords + overseers + zerglings + banelings + roaches + mutalisks + infestors + queens
-				+ hydralisks + corruptors + ultralisks + broodlords;
+				+ drones + overlords + overseers + zerglings + banelings*2 + roaches + mutalisks + infestors + queens
+				+ hydralisks + corruptors + ultralisks + broodlords*2;
 
 		if (metabolicBoost)
 			i++;
