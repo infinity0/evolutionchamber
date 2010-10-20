@@ -14,6 +14,8 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -231,11 +233,28 @@ public class EvolutionChamber
 		myFunc.debug = false;
 	}
 
-	private synchronized void loadOldBuildOrders(Genotype population, Configuration conf, EcEvolver myFunc)
+	private synchronized void loadOldBuildOrders(Genotype population, final Configuration conf, final EcEvolver myFunc)
 	{
 		loadSeeds();
 
 		int cindex = 0;
+		
+		Collections.sort(seeds,new Comparator<EcBuildOrder>(){
+
+			@Override
+			public int compare(EcBuildOrder arg0, EcBuildOrder arg1)
+			{
+				double score=0;
+				try
+				{
+					score = myFunc.getFitnessValue(buildChromosome(conf, arg1))-myFunc.getFitnessValue(buildChromosome(conf, arg0));
+				}
+				catch (InvalidConfigurationException e)
+				{
+					e.printStackTrace();
+				}
+				return (int) score;
+			}});
 		for (EcBuildOrder bo : seeds)
 		{
 			try

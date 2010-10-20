@@ -12,6 +12,7 @@ import org.jgap.IChromosome;
 import org.jgap.impl.IntegerGene;
 
 import com.fray.evo.action.EcAction;
+import com.fray.evo.action.EcActionWait;
 import com.fray.evo.util.EcCacheMap;
 
 public class EcEvolver extends FitnessFunction
@@ -132,7 +133,7 @@ public class EcEvolver extends FitnessFunction
 				{
 					if (debug)
 					{
-						log.println("Failed to meet waypoint.");
+						log.println("Failed to meet waypoint. " + a);
 						log.println(s.toLongString());
 					}
 					return s;
@@ -142,7 +143,7 @@ public class EcEvolver extends FitnessFunction
 					int waypointIndex = 0;
 					for (EcState se : destination.waypoints)
 					{
-						if (se.targetSeconds == s.seconds)
+						if (se.targetSeconds == s.seconds && se.getSumStuff() > 0)
 						{
 							log.println("---Waypoint " + waypointIndex + "---");
 							log.println(s.toLongString());
@@ -164,7 +165,8 @@ public class EcEvolver extends FitnessFunction
 					return s;
 				}
 			}
-			if (debug)
+			
+			if (debug && !(a instanceof EcActionWait))
 				log.println(s.toString() + "\t" + a);
 
 			a.execute(s, this);

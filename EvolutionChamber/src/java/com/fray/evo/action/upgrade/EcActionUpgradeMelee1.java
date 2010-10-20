@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.fray.evo.EcBuildOrder;
 import com.fray.evo.EcEvolver;
+import com.fray.evo.EcState;
 import com.fray.evo.action.EcAction;
 import com.fray.evo.action.build.EcActionBuildEvolutionChamber;
 import com.fray.evo.action.build.EcActionBuildExtractor;
@@ -48,7 +49,7 @@ public class EcActionUpgradeMelee1 extends EcActionUpgrade
 	}
 
 	@Override
-	public List<EcAction> requirements()
+	public List<EcAction> requirements(EcState destination)
 	{
 		ArrayList<EcAction> l = new ArrayList<EcAction>();
 		l.add(new EcActionBuildEvolutionChamber());

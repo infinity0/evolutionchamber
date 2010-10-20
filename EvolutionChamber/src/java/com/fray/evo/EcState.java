@@ -242,28 +242,43 @@ public class EcState
 	{
 		EcState c = candidate;
 		double score = 0;
-		score = augmentScore(c, score,false);
+		
+		boolean keepgoing = true;
 		for (EcState s : waypoints)
-			score = s.augmentScore(c,score,true);
-		score = augmentScore(score, (int) c.minerals, (int) minerals, .0011, .0011, false);
-		score = augmentScore(score, (int) c.gas, (int) gas, .0015, .0015, false);
-
+		{
+			if (keepgoing)
+				score = s.augmentScore(c,score,true);
+			if (!s.isSatisfied(c))
+				keepgoing = false;
+		}
+		if (keepgoing)
+			score = augmentScore(c, score,false);
+		
+		
 		if (isSatisfied(c))
+		{
 			score *= ((double) c.targetSeconds / (double) c.seconds) * ((double) c.targetSeconds / (double) c.seconds);
 
+			score = augmentScore(score, (int) c.minerals, (int) minerals, .011, .011, false);
+			score = augmentScore(score, (int) c.gas, (int) gas, .015, .015, false);
+		}
+		else
+		{
+
+			score = augmentScore(score, (int) c.minerals, (int) minerals, .0010, .0010, false);
+			score = augmentScore(score, (int) c.gas, (int) gas, .0015, .0015, false);
+		}
 //		score = Math.max(score - candidate.invalidActions - candidate.actionLength - candidate.waits, 0);
-		score = Math.max(score - candidate.waits, 0);
+		score = Math.max(score, 0);
 		return score;
 	}
 
 	private double augmentScore(EcState c, double score, boolean waypoint)
 	{
-		score = augmentScore(score, c.drones, drones, 50, 2, waypoint);
+		score = augmentScore(score, c.drones, drones, 50, .5, waypoint);
 		score = augmentScore(score, c.zerglings, zerglings, 25, .25, waypoint);
 		score = augmentScore(score, c.banelings, banelings, 75, .75, waypoint);
 		score = augmentScore(score, c.roaches, roaches, 100, 1, waypoint);
-		score = augmentScore(score, c.hatcheries, hatcheries, 300, 3, waypoint);
-		score = augmentScore(score, c.lairs, lairs, 550, 5.5, waypoint);
 		score = augmentScore(score, c.mutalisks, mutalisks, 200, 2, waypoint);
 		score = augmentScore(score, c.queens, queens, 150, 1.5, waypoint);
 		score = augmentScore(score, c.hydralisks, hydralisks, 150, 1.5, waypoint);
@@ -273,15 +288,19 @@ public class EcState
 		score = augmentScore(score, c.broodlords, broodlords, 400, 4, waypoint);
 		score = augmentScore(score, c.overlords, overlords, 100, 1, waypoint);
 		score = augmentScore(score, c.overseers, overseers, 250, 2.5, waypoint);
-		score = augmentScore(score, c.spawningPools, spawningPools, 200, 2, waypoint);
-		score = augmentScore(score, c.roachWarrens, roachWarrens, 150, 1.5, waypoint);
-		score = augmentScore(score, c.hydraliskDen, hydraliskDen, 200, 2, waypoint);
-		score = augmentScore(score, c.banelingNest, banelingNest, 150, 1.5, waypoint);
-		score = augmentScore(score, c.greaterSpire, greaterSpire, 650, 6.5, waypoint);
-		score = augmentScore(score, c.ultraliskCavern, ultraliskCavern, 350, 3.5, waypoint);
-		score = augmentScore(score, c.spire, spire, 400, 4, waypoint);
-		score = augmentScore(score, c.infestationPit, infestationPit, 200, 2.0, waypoint);
-		score = augmentScore(score, c.evolutionChambers, evolutionChambers, 75, 0.75, waypoint);
+
+		score = augmentScore(score, c.hatcheries, hatcheries, 300, 3, waypoint);
+		score = augmentDropoffScore(score, c.lairs, lairs, 550, 5.5, waypoint);
+		score = augmentDropoffScore(score, c.hives, hives, 900, 9, waypoint);
+		score = augmentDropoffScore(score, c.spawningPools, spawningPools, 200, 2, waypoint);
+		score = augmentDropoffScore(score, c.roachWarrens, roachWarrens, 150, 1.5, waypoint);
+		score = augmentDropoffScore(score, c.hydraliskDen, hydraliskDen, 200, 2, waypoint);
+		score = augmentDropoffScore(score, c.banelingNest, banelingNest, 150, 1.5, waypoint);
+		score = augmentDropoffScore(score, c.greaterSpire, greaterSpire, 650, 6.5, waypoint);
+		score = augmentDropoffScore(score, c.ultraliskCavern, ultraliskCavern, 350, 3.5, waypoint);
+		score = augmentDropoffScore(score, c.spire, spire, 400, 4, waypoint);
+		score = augmentDropoffScore(score, c.infestationPit, infestationPit, 200, 2.0, waypoint);
+		score = augmentDropoffScore(score, c.evolutionChambers, evolutionChambers, 75, 0.75, waypoint);
 		score = augmentScore(score, c.spineCrawlers, spineCrawlers, 100, 1.00, waypoint);
 		score = augmentScore(score, c.sporeCrawlers, sporeCrawlers, 75, .75, waypoint);
 
@@ -325,6 +344,18 @@ public class EcState
 		score += Math.max(Math.min(a, b), 0) * mula;
 		if (!waypoint)
 			score += Math.max(a - b, 0) * mulb;
+		return score;
+	}
+	private double augmentDropoffScore(double score, int a, int b, double mula, double mulb, boolean waypoint)
+	{
+		score += Math.max(Math.min(a, b), 0) * mula;
+		if (!waypoint)
+			for (int i = 0;i < Math.max(a - b, 0);i++)
+			{
+				score += mulb;
+				mulb /= 2;
+			}
+//			score += Math.max(a - b, 0) * mulb;
 		return score;
 	}
 

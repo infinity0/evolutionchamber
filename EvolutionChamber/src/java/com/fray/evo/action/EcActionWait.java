@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.fray.evo.EcBuildOrder;
 import com.fray.evo.EcEvolver;
+import com.fray.evo.EcState;
 
 public class EcActionWait extends EcAction implements Serializable
 {
@@ -50,7 +51,7 @@ public class EcActionWait extends EcAction implements Serializable
 	}
 
 	@Override
-	public List<EcAction> requirements()
+	public List<EcAction> requirements(EcState destination)
 	{
 		ArrayList<EcAction> l = new ArrayList<EcAction>();
 		return l;
