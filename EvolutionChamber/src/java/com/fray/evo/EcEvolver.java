@@ -28,8 +28,6 @@ public class EcEvolver extends FitnessFunction
 	{
 		this.source = source;
 		this.destination = destination;
-		evaluations = 0;
-		cachehits = 0;
 	}
 
 	protected String getAlleleAsString(IChromosome c)

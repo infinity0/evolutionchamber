@@ -84,7 +84,6 @@ public class EvolutionChamber
 		//We are using the 'many small villages' vs 'one large city' method of evolution.
 		for (int threadIndex = 0; threadIndex < NUM_THREADS; threadIndex++)
 		{
-			bestScores[threadIndex] = new Double(0);
 			spawnEvolutionaryChamber(s, d, threadIndex);
 		}
 		if (onNewBuild == null)
@@ -116,8 +115,9 @@ public class EvolutionChamber
 
 	}
 	
-	private void spawnEvolutionaryChamber(EcState s, EcState d, final int threadIndex) throws InvalidConfigurationException
+	private void spawnEvolutionaryChamber(final EcState s, final EcState d, final int threadIndex) throws InvalidConfigurationException
 	{
+		bestScores[threadIndex] = new Double(0);
 		DefaultConfiguration.reset(threadIndex + " thread.");
 		Configuration conf = new DefaultConfiguration(threadIndex + " thread.", threadIndex + " thread.");
 
@@ -146,6 +146,7 @@ public class EvolutionChamber
 		final Thread t1 = new Thread(population);
 		conf.getEventManager().addEventListener(GeneticEvent.GENOTYPE_EVOLVED_EVENT, new GeneticEventListener()
 		{
+			int evolutionsSinceDiscovery = 0;
 			@Override
 			public void geneticEventFired(GeneticEvent a_firedEvent)
 			{
@@ -159,8 +160,27 @@ public class EvolutionChamber
 				if (fitnessValue > bestScores[threadIndex])
 				{
 					bestScores[threadIndex] = fitnessValue;
+					evolutionsSinceDiscovery = 0;
 					BASE_CHANCE = 1;
 				}
+				else
+					evolutionsSinceDiscovery++;
+				
+				if (evolutionsSinceDiscovery > 1000 && fitnessValue < bestScore)
+				{
+					//Stagnation. Suicide village and try again.
+					System.out.println("Restarting thread " + threadIndex);
+					try
+					{
+						spawnEvolutionaryChamber(s, d, threadIndex);
+					}
+					catch (InvalidConfigurationException e)
+					{
+						e.printStackTrace();
+					}
+					t1.interrupt();
+				}
+				
 				if (fitnessValue > bestScore)
 				{
 					synchronized (bestScore)

@@ -93,9 +93,13 @@ public class EcSwingX extends JXPanel implements EcReportable
 		{
 			destination = new EcState[5];
 			destination[0] = (EcState) ec.getInternalDestination().clone();
+			destination[0].targetSeconds = 3*60;
 			destination[1] = (EcState) ec.getInternalDestination().clone();
+			destination[1].targetSeconds = 6*60;
 			destination[2] = (EcState) ec.getInternalDestination().clone();
+			destination[2].targetSeconds = 9*60;
 			destination[3] = (EcState) ec.getInternalDestination().clone();
+			destination[3].targetSeconds = 12*60;
 			destination[4] = (EcState) ec.getInternalDestination().clone();
 		}
 		catch (CloneNotSupportedException e)
@@ -274,7 +278,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 			{
 				destination[i].targetSeconds = getDigit(e);
 			}
-		}).setText("120:00");
+		}).setText(Integer.toString(destination[i].targetSeconds/60)+":"+Integer.toString(destination[i].targetSeconds%60));
 		gridy++;
 		addInput(component, "Overlords", new ActionListener()
 		{
@@ -737,6 +741,9 @@ public class EcSwingX extends JXPanel implements EcReportable
 				timeStarted = new Date().getTime();
 				goButton.setEnabled(false);
 				stopButton.setEnabled(true);
+
+				EcEvolver.evaluations = 0;
+				EcEvolver.cachehits = 0;
 			}
 		});
 		gridy++;
