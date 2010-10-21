@@ -8,6 +8,7 @@ import com.fray.evo.EcEvolver;
 import com.fray.evo.EcState;
 import com.fray.evo.action.EcAction;
 import com.fray.evo.action.build.EcActionBuildBanelingNest;
+import com.fray.evo.action.build.EcActionBuildLair;
 
 public class EcActionUpgradeCentrifugalHooks extends EcActionUpgrade
 {
@@ -21,6 +22,8 @@ public class EcActionUpgradeCentrifugalHooks extends EcActionUpgrade
 	public boolean isInvalid(EcBuildOrder s)
 	{
 		if (s.banelingNest == 0)
+			return true;
+		if (s.lairs == 0 && s.evolvingLairs == 0 && s.hives == 0 && s.evolvingHives == 0)
 			return true;
 		return false;
 	}
@@ -36,6 +39,7 @@ public class EcActionUpgradeCentrifugalHooks extends EcActionUpgrade
 	{
 		ArrayList<EcAction> l = new ArrayList<EcAction>();
 		l.add(new EcActionBuildBanelingNest());
+		l.add(new EcActionBuildLair());
 		return l;
 	}
 }
