@@ -76,7 +76,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 					e.printStackTrace();
 				}
 				JFrame frame = new JFrame();
-				frame.setTitle("Evolution Chamber v0010");
+				frame.setTitle("Evolution Chamber v0013");
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				frame.getContentPane().add(new EcSwingX());
 				frame.setPreferredSize(new Dimension(900, 800));
@@ -671,6 +671,21 @@ public class EcSwingX extends JXPanel implements EcReportable
 			}
 		});
 		gridy++;
+		addInput(component, "Nydus Canal", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].nydusCanal = getDigit(e);
+			}
+		});
+		addInput(component, "Nydus Worm", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].nydusWorm = getDigit(e);
+			}
+		});
+		gridy++;
 		addInput(component, "Ultralisk Caverns", new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -696,7 +711,6 @@ public class EcSwingX extends JXPanel implements EcReportable
 				ec.setThreads(getDigit(e));
 			}
 		}).setText("4");
-		gridy++;
 		stopButton = addButton(component, "Stop", new ActionListener()
 		{
 			@Override

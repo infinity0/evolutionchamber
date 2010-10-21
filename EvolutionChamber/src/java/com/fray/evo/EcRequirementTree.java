@@ -21,6 +21,8 @@ import com.fray.evo.action.build.EcActionBuildInfestationPit;
 import com.fray.evo.action.build.EcActionBuildInfestor;
 import com.fray.evo.action.build.EcActionBuildLair;
 import com.fray.evo.action.build.EcActionBuildMutalisk;
+import com.fray.evo.action.build.EcActionBuildNydusCanal;
+import com.fray.evo.action.build.EcActionBuildNydusWorm;
 import com.fray.evo.action.build.EcActionBuildOverlord;
 import com.fray.evo.action.build.EcActionBuildOverseer;
 import com.fray.evo.action.build.EcActionBuildQueen;
@@ -182,6 +184,10 @@ public class EcRequirementTree
 			add(actions,new EcActionBuildSpineCrawler(), destination);
 		if (destination.overseers > 0)
 			add(actions,new EcActionBuildOverseer(), destination);
+		if (destination.nydusCanal > 0)
+			add(actions,new EcActionBuildNydusCanal(), destination);
+		if (destination.nydusWorm > 0)
+			add(actions,new EcActionBuildNydusWorm(), destination);
 		for (EcState s : destination.waypoints)
 			actions(s,actions);
 	}

@@ -39,21 +39,6 @@ public class EvolutionChamber
 	private static File	SEEDS_EVO = null;
 	private static File	SEEDS_EVO_2 = null;
 
-	static
-	{
-		try
-		{
-			SEEDS_EVO	= new File(EcFileSystem.getTempPath(),"seeds.evo");
-			SEEDS_EVO.getParentFile().mkdirs();
-			SEEDS_EVO_2	= new File(EcFileSystem.getTempPath(),"seeds2.evo");
-		}
-		catch (IOException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
 	public int	CHROMOSOME_LENGTH = 120;
 	int	NUM_THREADS = 4;
 	public int	POPULATION_SIZE	= 200;
@@ -68,6 +53,20 @@ public class EvolutionChamber
 	public double	BASE_CHANCE	= 5;
 	public static Double[] bestScores; 
 	public static Integer[] evolutionsSinceDiscovery; 
+	
+	static
+	{
+		try
+		{
+			SEEDS_EVO	= new File(EcFileSystem.getTempPath(),"seeds.evo");
+			SEEDS_EVO.getParentFile().mkdirs();
+			SEEDS_EVO_2	= new File(EcFileSystem.getTempPath(),"seeds2.evo");
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
 
 	public static void main(String[] args) throws InvalidConfigurationException
 	{
@@ -90,6 +89,7 @@ public class EvolutionChamber
 		{
 			spawnEvolutionaryChamber(s, d, threadIndex);
 		}
+		
 		if (onNewBuild == null)
 		while (true)
 			try
@@ -104,7 +104,7 @@ public class EvolutionChamber
 
 	public void stop()
 	{
-		kill  = true;
+		kill = true;
 		for (Thread t : threads)
 			try
 			{
@@ -112,7 +112,6 @@ public class EvolutionChamber
 			}
 			catch (InterruptedException e)
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		threads.clear();
@@ -301,12 +300,12 @@ public class EvolutionChamber
 			}
 			catch (ClassNotFoundException ex)
 			{
-				e.printStackTrace();
+				System.out.println("Seeds 2 file is in old format. Starting over. :-(");
 			}
 		}
 		catch (ClassNotFoundException e)
 		{
-			e.printStackTrace();
+			System.out.println("Seeds file is in old format. Starting over. :-(");
 		}
 	}
 
@@ -324,7 +323,6 @@ public class EvolutionChamber
 		}
 		catch (CloneNotSupportedException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -339,12 +337,10 @@ public class EvolutionChamber
 		}
 		catch (FileNotFoundException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		catch (IOException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -432,93 +428,3 @@ public class EvolutionChamber
 		return destination;
 	}
 }
-//public static void main2() throws InvalidConfigurationException
-//{
-//	Configuration conf = new DefaultConfiguration(" thread.", "No name.");
-//
-//	EcState s = importSource();
-//	EcState d = importDestination();
-//	boolean done = false;
-//	String genes = "";
-//	String best = null;
-//	double bestScore = 0.0;
-//
-//	final EcEvolver myFunc = new EcEvolver(s, d);
-//	while (genes.length() < 50)
-//	{
-//		genes = incrementGenes(genes.toCharArray());
-//		double score = myFunc.evaluate(genes.toCharArray());
-//		// System.out.println(score + ": " + genes);
-//		if (bestScore < score)
-//		{
-//			best = genes;
-//			bestScore = score;
-//			System.out.println(score + ": " + genes);
-//		}
-//	}
-//}
-//
-//private static IChromosome toChromosome(String geneString, Configuration conf) throws InvalidConfigurationException
-//{
-//	ArrayList<Gene> genes = new ArrayList<Gene>();
-//	for (int i = 0; i < geneString.length(); i++)
-//		try
-//		{
-//			IntegerGene g = new IntegerGene(conf, 0, 5);
-//			g.setAllele(geneString.charAt(i) - '0');
-//			genes.add(g);
-//		}
-//		catch (InvalidConfigurationException e)
-//		{
-//			e.printStackTrace();
-//		}
-//	Chromosome c = new Chromosome(conf);
-//	c.setGenes(genes.toArray(new Gene[0]));
-//	return c;
-//}
-//
-//private static String incrementGenes(char[] genes)
-//{
-//	boolean doExtend = true;
-//	char max = '5';
-//	char min = '0';
-//	for (int i = 0; i < genes.length; i++)
-//		if (genes[i] != max)
-//			doExtend = false;
-//
-//	if (!doExtend)
-//	{
-//		do
-//		{
-//			increment(genes, 0, min, max);
-//		} while (!isValid(genes, min, max));
-//		return new String(genes);
-//	}
-//	for (int i = 0; i < genes.length; i++)
-//		genes[i] = min;
-//	return new String(genes) + min;
-//}
-//
-//private static boolean isValid(char[] genes, char min, char max)
-//{
-//	boolean[] b = new boolean[max - min + 1];
-//	for (char c : genes)
-//	{
-//		b[c - min] = true; // Mark as seen.
-//		if (c == '3' || c == '4') // Zergling/Queen requires Spawning pool.
-//			if (b[2] == false)
-//				return false;
-//	}
-//	return true;
-//}
-//
-//private static void increment(char[] genes, int i, char min, char max)
-//{
-//	if (genes[i] == max)
-//	{
-//		genes[i] = min;
-//		increment(genes, i + 1, min, max);
-//	}
-//	else
-//		genes[i]++;
-//}

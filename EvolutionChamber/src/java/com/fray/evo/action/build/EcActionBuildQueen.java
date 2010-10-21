@@ -24,19 +24,48 @@ public class EcActionBuildQueen extends EcAction implements Serializable
 			public void run()
 			{
 				if (e.debug)
-					e.obtained(s," Queen+1");
+					e.obtained(s, " Queen+1");
 				s.queens += 1;
-				s.addFutureAction(45, new Runnable()
+				if (s.hatcheriesSpawningLarva < s.bases())
 				{
-					@Override
-					public void run()
+					s.hatcheriesSpawningLarva++;
+					s.addFutureAction(45, new Runnable()
 					{
-						if (e.debug)
-							e.obtained(s," Larva+4");
-						s.larva += 4;
-						s.addFutureAction(45, this);
-					}
-				});
+						@Override
+						public void run()
+						{
+							if (e.debug)
+								e.obtained(s, " Larva+4");
+							s.larva += 4;
+							s.addFutureAction(45, this);
+						}
+					});
+				}
+				else
+					s.addFutureAction(5, new Runnable()
+					{
+						@Override
+						public void run()
+						{
+							if (s.hatcheriesSpawningLarva < s.bases())
+							{
+								s.hatcheriesSpawningLarva++;
+								s.addFutureAction(45, new Runnable()
+								{
+									@Override
+									public void run()
+									{
+										if (e.debug)
+											e.obtained(s, " Larva+4");
+										s.larva += 4;
+										s.addFutureAction(45, this);
+									}
+								});
+							}
+							else
+								s.addFutureAction(5, this);
+						}
+					});
 			}
 		});
 	}
@@ -45,8 +74,6 @@ public class EcActionBuildQueen extends EcAction implements Serializable
 	public boolean isInvalid(EcBuildOrder s)
 	{
 		if (s.spawningPools == 0)
-			return true;
-		if (s.queensBuilding + s.queens >= s.hatcheriesBuilding + s.bases())
 			return true;
 		if (s.hatcheries + s.lairs + s.hives == 0)
 			return true;
@@ -68,7 +95,7 @@ public class EcActionBuildQueen extends EcAction implements Serializable
 	{
 		ArrayList<EcAction> l = new ArrayList<EcAction>();
 		l.add(new EcActionBuildSpawningPool());
-		destination.spawningPools = Math.max(destination.spawningPools,1);
+		destination.spawningPools = Math.max(destination.spawningPools, 1);
 		return l;
 	}
 

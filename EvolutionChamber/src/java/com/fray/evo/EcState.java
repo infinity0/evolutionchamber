@@ -5,77 +5,79 @@ import java.util.List;
 
 public class EcState
 {
-	public double	minerals			= 50;
-	public double	gas					= 0;
-	public double	supplyUsed			= 6;
+	public double					minerals			= 50;
+	public double					gas					= 0;
+	public double					supplyUsed			= 6;
 
-	public int		evolvingHatcheries	= 0;
-	public int		evolvingLairs		= 0;
-	public int		evolvingHives		= 0;
-	public int		hatcheries			= 1;
-	public int		lairs				= 0;
-	public int		hives				= 0;
-	public int		spawningPools		= 0;
-	public int		evolutionChambers	= 0;
-	public int		roachWarrens		= 0;
-	public int		hydraliskDen		= 0;
-	public int		banelingNest		= 0;
-	public int		infestationPit		= 0;
-	public int		greaterSpire		= 0;
-	public int		ultraliskCavern		= 0;
-	public int		gasExtractors		= 0;
-	public int		spire				= 0;
-	public int		spineCrawlers		= 0;
-	public int		sporeCrawlers		= 0;
+	public int						evolvingHatcheries	= 0;
+	public int						evolvingLairs		= 0;
+	public int						evolvingHives		= 0;
+	public int						hatcheries			= 1;
+	public int						lairs				= 0;
+	public int						hives				= 0;
+	public int						spawningPools		= 0;
+	public int						evolutionChambers	= 0;
+	public int						roachWarrens		= 0;
+	public int						hydraliskDen		= 0;
+	public int						banelingNest		= 0;
+	public int						infestationPit		= 0;
+	public int						greaterSpire		= 0;
+	public int						ultraliskCavern		= 0;
+	public int						gasExtractors		= 0;
+	public int						spire				= 0;
+	public int						spineCrawlers		= 0;
+	public int						sporeCrawlers		= 0;
+	public int						nydusCanal			= 0;
+	public int						nydusWorm			= 0;
 
-	public int		drones				= 6;
-	public int		overlords			= 1;
-	public int		overseers			= 0;
-	public int		zerglings			= 0;
-	public int		banelings			= 0;
-	public int		roaches				= 0;
-	public int		mutalisks			= 0;
-	public int		infestors			= 0;
-	public int		queens				= 0;
-	public int		hydralisks			= 0;
-	public int		corruptors			= 0;
-	public int		ultralisks			= 0;
-	public int		broodlords			= 0;
+	public int						drones				= 6;
+	public int						overlords			= 1;
+	public int						overseers			= 0;
+	public int						zerglings			= 0;
+	public int						banelings			= 0;
+	public int						roaches				= 0;
+	public int						mutalisks			= 0;
+	public int						infestors			= 0;
+	public int						queens				= 0;
+	public int						hydralisks			= 0;
+	public int						corruptors			= 0;
+	public int						ultralisks			= 0;
+	public int						broodlords			= 0;
 
-	public boolean	metabolicBoost		= false;
-	public boolean	adrenalGlands		= false;
-	public boolean	glialReconstitution	= false;
-	public boolean	tunnelingClaws		= false;
-	public boolean	burrow				= false;
-	public boolean	pneumatizedCarapace	= false;
-	public boolean	ventralSacs			= false;
-	public boolean	centrifugalHooks	= false;
-	public boolean	melee1				= false;
-	public boolean	melee2				= false;
-	public boolean	melee3				= false;
-	public boolean	missile1			= false;
-	public boolean	missile2			= false;
-	public boolean	missile3			= false;
-	public boolean	armor1				= false;
-	public boolean	armor2				= false;
-	public boolean	armor3				= false;
-	public boolean	groovedSpines		= false;
-	public boolean	neuralParasite		= false;
-	public boolean	pathogenGlands		= false;
-	public boolean	flyerAttack1		= false;
-	public boolean	flyerAttack2		= false;
-	public boolean	flyerAttack3		= false;
-	public boolean	flyerArmor1			= false;
-	public boolean	flyerArmor2			= false;
-	public boolean	flyerArmor3			= false;
-	public boolean	chitinousPlating	= false;
+	public boolean					metabolicBoost		= false;
+	public boolean					adrenalGlands		= false;
+	public boolean					glialReconstitution	= false;
+	public boolean					tunnelingClaws		= false;
+	public boolean					burrow				= false;
+	public boolean					pneumatizedCarapace	= false;
+	public boolean					ventralSacs			= false;
+	public boolean					centrifugalHooks	= false;
+	public boolean					melee1				= false;
+	public boolean					melee2				= false;
+	public boolean					melee3				= false;
+	public boolean					missile1			= false;
+	public boolean					missile2			= false;
+	public boolean					missile3			= false;
+	public boolean					armor1				= false;
+	public boolean					armor2				= false;
+	public boolean					armor3				= false;
+	public boolean					groovedSpines		= false;
+	public boolean					neuralParasite		= false;
+	public boolean					pathogenGlands		= false;
+	public boolean					flyerAttack1		= false;
+	public boolean					flyerAttack2		= false;
+	public boolean					flyerAttack3		= false;
+	public boolean					flyerArmor1			= false;
+	public boolean					flyerArmor2			= false;
+	public boolean					flyerArmor3			= false;
+	public boolean					chitinousPlating	= false;
 
-	public int		seconds				= 0;
-	public int		targetSeconds		= 0;
-	public int		invalidActions		= 0;
-	public double	actionLength		= 0;
-	public int		waits;
-	
+	public int						seconds				= 0;
+	public int						targetSeconds		= 0;
+	public int						invalidActions		= 0;
+	public double					actionLength		= 0;
+	public int						waits;
+
 	public transient List<EcState>	waypoints			= new ArrayList<EcState>();
 
 	@Override
@@ -98,7 +100,7 @@ public class EcState
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		
+
 		s.minerals = minerals;
 		s.gas = gas;
 		s.supplyUsed = supplyUsed;
@@ -119,6 +121,8 @@ public class EcState
 		s.greaterSpire = greaterSpire;
 		s.spineCrawlers = spineCrawlers;
 		s.sporeCrawlers = sporeCrawlers;
+		s.nydusCanal = nydusCanal;
+		s.nydusWorm = nydusWorm;
 
 		s.zerglings = zerglings;
 		s.banelings = banelings;
@@ -189,7 +193,7 @@ public class EcState
 	{
 		EcState c = candidate;
 		double score = 0;
-		
+
 		boolean keepgoing = true;
 		EcState state = defaultDestination();
 		for (EcState s : waypoints)
@@ -202,12 +206,11 @@ public class EcState
 		if (keepgoing)
 		{
 			state.union(this);
-			score = state.augmentScore(c, score,false);
+			score = state.augmentScore(c, score, false);
 		}
 		else
-			score = state.augmentScore(c, score,false);
-		
-		
+			score = state.augmentScore(c, score, false);
+
 		if (state.isSatisfied(c))
 		{
 			score *= ((double) c.targetSeconds / (double) c.seconds) * ((double) c.targetSeconds / (double) c.seconds);
@@ -221,71 +224,74 @@ public class EcState
 			score = augmentScore(score, (int) c.minerals, (int) minerals, .0010, .0010, false);
 			score = augmentScore(score, (int) c.gas, (int) gas, .0015, .0015, false);
 		}
-//		score = Math.max(score - candidate.invalidActions - candidate.actionLength - candidate.waits, 0);
+		// score = Math.max(score - candidate.invalidActions -
+		// candidate.actionLength - candidate.waits, 0);
 		score = Math.max(score, 0);
 		return score;
 	}
 
 	private void union(EcState s)
 	{
-			hatcheries = Math.max(s.hatcheries , hatcheries);
-			lairs = Math.max(s.lairs , lairs);
-			hives = Math.max(s.hives , hives);
-			spawningPools = Math.max(s.spawningPools , spawningPools);
-			banelingNest = Math.max(s.banelingNest , banelingNest);
-			evolutionChambers = Math.max(s.evolutionChambers , evolutionChambers);
-			roachWarrens = Math.max(s.roachWarrens , roachWarrens);
-			hydraliskDen = Math.max(s.hydraliskDen , hydraliskDen);
-			infestationPit = Math.max(s.infestationPit , infestationPit);
-			greaterSpire = Math.max(s.greaterSpire , greaterSpire);
-			ultraliskCavern = Math.max(s.ultraliskCavern , ultraliskCavern);
-			gasExtractors = Math.max(s.gasExtractors , gasExtractors);
-			spire = Math.max(s.spire , spire);
-			greaterSpire = Math.max(s.greaterSpire , greaterSpire);
-			spineCrawlers = Math.max(s.spineCrawlers , spineCrawlers);
-			sporeCrawlers = Math.max(s.sporeCrawlers , sporeCrawlers);
+		hatcheries = Math.max(s.hatcheries, hatcheries);
+		lairs = Math.max(s.lairs, lairs);
+		hives = Math.max(s.hives, hives);
+		spawningPools = Math.max(s.spawningPools, spawningPools);
+		banelingNest = Math.max(s.banelingNest, banelingNest);
+		evolutionChambers = Math.max(s.evolutionChambers, evolutionChambers);
+		roachWarrens = Math.max(s.roachWarrens, roachWarrens);
+		hydraliskDen = Math.max(s.hydraliskDen, hydraliskDen);
+		infestationPit = Math.max(s.infestationPit, infestationPit);
+		greaterSpire = Math.max(s.greaterSpire, greaterSpire);
+		ultraliskCavern = Math.max(s.ultraliskCavern, ultraliskCavern);
+		gasExtractors = Math.max(s.gasExtractors, gasExtractors);
+		spire = Math.max(s.spire, spire);
+		greaterSpire = Math.max(s.greaterSpire, greaterSpire);
+		spineCrawlers = Math.max(s.spineCrawlers, spineCrawlers);
+		sporeCrawlers = Math.max(s.sporeCrawlers, sporeCrawlers);
+		nydusCanal = Math.max(s.nydusCanal,nydusCanal);
+		nydusWorm = Math.max(s.nydusWorm,nydusWorm);
 
-			zerglings = Math.max(s.zerglings , zerglings);
-			banelings = Math.max(s.banelings , banelings);
-			roaches = Math.max(s.roaches , roaches);
-			mutalisks = Math.max(s.mutalisks , mutalisks);
-			drones = Math.max(s.drones , drones);
-			queens = Math.max(s.queens , queens);
-			hydralisks = Math.max(s.hydralisks , hydralisks);
-			infestors = Math.max(s.infestors , infestors);
-			corruptors = Math.max(s.corruptors , corruptors);
-			ultralisks = Math.max(s.ultralisks , ultralisks);
-			broodlords = Math.max(s.broodlords , broodlords);
-			overlords = Math.max(s.overlords , overlords);
-			overseers = Math.max(s.overseers , overseers);
+		zerglings = Math.max(s.zerglings, zerglings);
+		banelings = Math.max(s.banelings, banelings);
+		roaches = Math.max(s.roaches, roaches);
+		mutalisks = Math.max(s.mutalisks, mutalisks);
+		drones = Math.max(s.drones, drones);
+		queens = Math.max(s.queens, queens);
+		hydralisks = Math.max(s.hydralisks, hydralisks);
+		infestors = Math.max(s.infestors, infestors);
+		corruptors = Math.max(s.corruptors, corruptors);
+		ultralisks = Math.max(s.ultralisks, ultralisks);
+		broodlords = Math.max(s.broodlords, broodlords);
+		overlords = Math.max(s.overlords, overlords);
+		overseers = Math.max(s.overseers, overseers);
 
-			metabolicBoost = s.metabolicBoost | metabolicBoost;
-			adrenalGlands = s.adrenalGlands | adrenalGlands;
-			glialReconstitution = s.glialReconstitution | glialReconstitution;
-			tunnelingClaws = s.tunnelingClaws | tunnelingClaws;
-			burrow = s.burrow | burrow;
-			pneumatizedCarapace = s.pneumatizedCarapace | pneumatizedCarapace;
-			ventralSacs = s.ventralSacs | ventralSacs;
-			centrifugalHooks = s.centrifugalHooks | centrifugalHooks;
-			melee1 = s.melee1 | melee1;
-			melee2 = s.melee2 | melee2;
-			melee3 = s.melee3 | melee3;
-			missile1 = s.missile1 | missile1;
-			missile2 = s.missile2 | missile2;
-			missile3 = s.missile3 | missile3;
-			armor1 = s.armor1 | armor1;
-			armor2 = s.armor2 | armor2;
-			armor3 = s.armor3 | armor3;
-			groovedSpines = s.groovedSpines | groovedSpines;
-			neuralParasite = s.neuralParasite | neuralParasite;
-			pathogenGlands = s.pathogenGlands | pathogenGlands;
-			flyerAttack1 = s.flyerAttack1 | flyerAttack1;
-			flyerAttack2 = s.flyerAttack2 | flyerAttack2;
-			flyerAttack3 = s.flyerAttack3 | flyerAttack3;
-			flyerArmor1 = s.flyerArmor1 | flyerArmor1;
-			flyerArmor2 = s.flyerArmor2 | flyerArmor2;
-			flyerArmor3 = s.flyerArmor3 | flyerArmor3;
-			chitinousPlating = s.chitinousPlating | chitinousPlating;
+		metabolicBoost = s.metabolicBoost | metabolicBoost;
+		adrenalGlands = s.adrenalGlands | adrenalGlands;
+		glialReconstitution = s.glialReconstitution | glialReconstitution;
+		tunnelingClaws = s.tunnelingClaws | tunnelingClaws;
+		burrow = s.burrow | burrow;
+		pneumatizedCarapace = s.pneumatizedCarapace | pneumatizedCarapace;
+		ventralSacs = s.ventralSacs | ventralSacs;
+		centrifugalHooks = s.centrifugalHooks | centrifugalHooks;
+		melee1 = s.melee1 | melee1;
+		melee2 = s.melee2 | melee2;
+		melee3 = s.melee3 | melee3;
+		missile1 = s.missile1 | missile1;
+		missile2 = s.missile2 | missile2;
+		missile3 = s.missile3 | missile3;
+		armor1 = s.armor1 | armor1;
+		armor2 = s.armor2 | armor2;
+		armor3 = s.armor3 | armor3;
+		groovedSpines = s.groovedSpines | groovedSpines;
+		neuralParasite = s.neuralParasite | neuralParasite;
+		pathogenGlands = s.pathogenGlands | pathogenGlands;
+		flyerAttack1 = s.flyerAttack1 | flyerAttack1;
+		flyerAttack2 = s.flyerAttack2 | flyerAttack2;
+		flyerAttack3 = s.flyerAttack3 | flyerAttack3;
+		flyerArmor1 = s.flyerArmor1 | flyerArmor1;
+		flyerArmor2 = s.flyerArmor2 | flyerArmor2;
+		flyerArmor3 = s.flyerArmor3 | flyerArmor3;
+		chitinousPlating = s.chitinousPlating | chitinousPlating;
 
 	}
 
@@ -294,15 +300,15 @@ public class EcState
 		score = augmentScore(score, c.drones, drones, 50, .5, waypoint);
 		score = augmentScore(score, c.zerglings, zerglings, 25, .25, waypoint);
 		score = augmentScore(score, c.banelings, banelings, 75, .75, waypoint);
-		score = augmentScore(score, c.roaches, roaches, 100, 1, waypoint);
-		score = augmentScore(score, c.mutalisks, mutalisks, 200, 2, waypoint);
+		score = augmentScore(score, c.roaches, roaches, 100, 1.0, waypoint);
+		score = augmentScore(score, c.mutalisks, mutalisks, 200, 2.0, waypoint);
 		score = augmentScore(score, c.queens, queens, 150, 1.5, waypoint);
 		score = augmentScore(score, c.hydralisks, hydralisks, 150, 1.5, waypoint);
 		score = augmentScore(score, c.infestors, infestors, 250, 2.5, waypoint);
 		score = augmentScore(score, c.corruptors, corruptors, 250, 2.5, waypoint);
-		score = augmentScore(score, c.ultralisks, ultralisks, 500, 5, waypoint);
-		score = augmentScore(score, c.broodlords, broodlords, 400, 4, waypoint);
-		score = augmentScore(score, c.overlords, overlords, 100, 1, waypoint);
+		score = augmentScore(score, c.ultralisks, ultralisks, 500, 5.0, waypoint);
+		score = augmentScore(score, c.broodlords, broodlords, 400, 4.0, waypoint);
+		score = augmentScore(score, c.overlords, overlords, 100, 1.0, waypoint);
 		score = augmentScore(score, c.overseers, overseers, 250, 2.5, waypoint);
 
 		score = augmentScore(score, c.hatcheries, hatcheries, 300, 3, waypoint);
@@ -319,6 +325,8 @@ public class EcState
 		score = augmentDropoffScore(score, c.evolutionChambers, evolutionChambers, 75, 0.75, waypoint);
 		score = augmentScore(score, c.spineCrawlers, spineCrawlers, 100, 1.00, waypoint);
 		score = augmentScore(score, c.sporeCrawlers, sporeCrawlers, 75, .75, waypoint);
+		score = augmentDropoffScore(score, c.nydusCanal, nydusCanal, 350, 3.00, waypoint);
+		score = augmentScore(score, c.nydusWorm, nydusWorm, 200, 2.00, waypoint);
 
 		score = augmentScore(score, c.metabolicBoost, metabolicBoost, 200, 2.0, waypoint);
 		score = augmentScore(score, c.adrenalGlands, adrenalGlands, 400, 4.0, waypoint);
@@ -362,16 +370,17 @@ public class EcState
 			score += Math.max(a - b, 0) * mulb;
 		return score;
 	}
+
 	private double augmentDropoffScore(double score, int a, int b, double mula, double mulb, boolean waypoint)
 	{
 		score += Math.max(Math.min(a, b), 0) * mula;
 		if (!waypoint)
-			for (int i = 0;i < Math.max(a - b, 0);i++)
+			for (int i = 0; i < Math.max(a - b, 0); i++)
 			{
 				score += mulb;
 				mulb /= 2;
 			}
-//			score += Math.max(a - b, 0) * mulb;
+		// score += Math.max(a - b, 0) * mulb;
 		return score;
 	}
 
@@ -434,6 +443,10 @@ public class EcState
 		if (c.spineCrawlers < spineCrawlers)
 			return false;
 		if (c.sporeCrawlers < sporeCrawlers)
+			return false;
+		if (c.nydusCanal < nydusCanal)
+			return false;
+		if (c.nydusWorm < nydusWorm)
 			return false;
 
 		if ((!c.metabolicBoost) & metabolicBoost)
@@ -501,12 +514,23 @@ public class EcState
 
 	public int getSumStuff()
 	{
+		if (waypoints.size() > 0)
+		{
+			EcState state = defaultDestination();
+			for (EcState s : waypoints)
+			{
+				state.union(s);
+			}
+			state.union(this);
+			return state.getSumStuff();
+		}
+		
 		int i = hatcheries + lairs + hives + spawningPools + evolutionChambers + roachWarrens + hydraliskDen
 				+ banelingNest + infestationPit + greaterSpire + ultraliskCavern + gasExtractors + spire
-				+ spineCrawlers + sporeCrawlers
+				+ spineCrawlers + sporeCrawlers + nydusCanal + nydusWorm
 
-				+ drones + overlords + overseers + zerglings + banelings*2 + roaches + mutalisks + infestors + queens
-				+ hydralisks + corruptors + ultralisks + broodlords*2;
+				+ drones + overlords + overseers + zerglings + banelings * 2 + roaches + mutalisks + infestors + queens
+				+ hydralisks + corruptors + ultralisks + broodlords * 2;
 
 		if (metabolicBoost)
 			i++;

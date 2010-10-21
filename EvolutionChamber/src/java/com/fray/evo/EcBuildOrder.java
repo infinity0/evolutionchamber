@@ -81,6 +81,8 @@ public class EcBuildOrder extends EcState implements Serializable
 		append(sb, "Evolution Chambers", evolutionChambers);
 		append(sb, "Spine Crawlers", spineCrawlers);
 		append(sb, "Spore Crawlers", sporeCrawlers);
+		append(sb, "Nydus Canal", nydusCanal);
+		append(sb, "Nydus Worm", nydusWorm);
 
 		append(sb, "Melee +1", melee1);
 		append(sb, "Melee +2", melee2);
@@ -200,6 +202,7 @@ public class EcBuildOrder extends EcState implements Serializable
 	public int	spawningPoolsInUse	= 0;
 	public int	roachWarrensInUse	= 0;
 	public int	infestationPitInUse	= 0;
+	public int	hatcheriesSpawningLarva = 0;
 
 	// Mines minerals on all bases perfectly per one second.
 	public double mineMinerals()
