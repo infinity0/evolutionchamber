@@ -76,7 +76,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 					e.printStackTrace();
 				}
 				JFrame frame = new JFrame();
-				frame.setTitle("Evolution Chamber");
+				frame.setTitle("Evolution Chamber v0010");
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				frame.getContentPane().add(new EcSwingX());
 				frame.setPreferredSize(new Dimension(900, 800));

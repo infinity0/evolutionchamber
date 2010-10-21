@@ -59,6 +59,8 @@ public class EcActionBuildBanelingNest extends EcAction implements Serializable
 		ArrayList<EcAction> l = new ArrayList<EcAction>();
 		l.add(new EcActionBuildSpawningPool());
 		l.add(new EcActionBuildExtractor());
+		destination.spawningPools = Math.max(destination.spawningPools,1);
+		destination.gasExtractors = Math.max(destination.gasExtractors,1);
 		return l;
 	}
 }

@@ -57,6 +57,8 @@ public class EcActionBuildBroodLord extends EcAction implements Serializable
 		ArrayList<EcAction> l = new ArrayList<EcAction>();
 		l.add(new EcActionBuildGreaterSpire());
 		l.add(new EcActionBuildCorruptor());
+		destination.hives = Math.max(destination.hives,1);
+		destination.greaterSpire = Math.max(destination.greaterSpire,1);
 		return l;
 	}
 }

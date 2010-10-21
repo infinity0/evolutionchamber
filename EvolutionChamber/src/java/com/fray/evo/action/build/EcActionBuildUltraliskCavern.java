@@ -62,6 +62,7 @@ public class EcActionBuildUltraliskCavern extends EcAction implements Serializab
 	{
 		ArrayList<EcAction> l = new ArrayList<EcAction>();
 		l.add(new EcActionBuildHive());
+		destination.hives = Math.max(destination.hives,1);
 		return l;
 	}
 }

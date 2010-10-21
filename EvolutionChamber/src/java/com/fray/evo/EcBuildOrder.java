@@ -261,7 +261,7 @@ public class EcBuildOrder extends EcState implements Serializable
 		if (gasExtractors == 0)
 			return 0;
 		int drones = dronesOnGas;
-		int[] extractors = new int[gasExtractors]; // Assign drones/patch
+		int[] extractors = new int[Math.min(gasExtractors,bases()*2)]; // Assign drones/patch
 		for (int i = 0; i < extractors.length; i++)
 			extractors[i] = 0;
 		for (int i = 0; i < extractors.length; i++)

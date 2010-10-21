@@ -58,6 +58,7 @@ public class EcActionBuildHydralisk extends EcAction implements Serializable
 	{
 		ArrayList<EcAction> l = new ArrayList<EcAction>();
 		l.add(new EcActionBuildHydraliskDen());
+		destination.hydraliskDen = Math.max(destination.hydraliskDen,1);
 		return l;
 	}
 }

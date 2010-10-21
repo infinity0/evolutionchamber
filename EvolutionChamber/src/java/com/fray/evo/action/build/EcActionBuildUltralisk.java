@@ -62,6 +62,7 @@ public class EcActionBuildUltralisk extends EcAction implements Serializable
 	{
 		ArrayList<EcAction> l = new ArrayList<EcAction>();
 		l.add(new EcActionBuildUltraliskCavern());
+		destination.ultraliskCavern = Math.max(destination.ultraliskCavern,1);
 		return l;
 	}
 }
