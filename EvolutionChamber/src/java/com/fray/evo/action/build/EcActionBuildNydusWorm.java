@@ -47,7 +47,7 @@ public class EcActionBuildNydusWorm extends EcAction implements Serializable
 	{
 		if (s.lairs == 0 && s.evolvingLairs == 0 && s.hives == 0 && s.evolvingHives == 0)
 			return true;
-		if (s.nydusCanal == 0)
+		if (s.nydusNetwork == 0)
 			return true;
 		return super.isInvalid(s);
 	}
@@ -56,7 +56,7 @@ public class EcActionBuildNydusWorm extends EcAction implements Serializable
 	public List<EcAction> requirements(EcState destination)
 	{
 		ArrayList<EcAction> l = new ArrayList<EcAction>();
-		l.add(new EcActionBuildNydusCanal());
+		l.add(new EcActionBuildNydusNetwork());
 		return l;
 	}
 }

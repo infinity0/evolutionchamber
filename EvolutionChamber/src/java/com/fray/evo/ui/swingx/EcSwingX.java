@@ -671,14 +671,14 @@ public class EcSwingX extends JXPanel implements EcReportable
 			}
 		});
 		gridy++;
-		addInput(component, "Nydus Canal", new ActionListener()
+		addInput(component, "Nydus Networks", new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				destination[i].nydusCanal = getDigit(e);
+				destination[i].nydusNetwork = getDigit(e);
 			}
 		});
-		addInput(component, "Nydus Worm", new ActionListener()
+		addInput(component, "Nydus Worms", new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{

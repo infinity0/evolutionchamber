@@ -27,7 +27,7 @@ public class EcState
 	public int						spire				= 0;
 	public int						spineCrawlers		= 0;
 	public int						sporeCrawlers		= 0;
-	public int						nydusCanal			= 0;
+	public int						nydusNetwork		= 0;
 	public int						nydusWorm			= 0;
 
 	public int						drones				= 6;
@@ -121,7 +121,7 @@ public class EcState
 		s.greaterSpire = greaterSpire;
 		s.spineCrawlers = spineCrawlers;
 		s.sporeCrawlers = sporeCrawlers;
-		s.nydusCanal = nydusCanal;
+		s.nydusNetwork = nydusNetwork;
 		s.nydusWorm = nydusWorm;
 
 		s.zerglings = zerglings;
@@ -248,7 +248,7 @@ public class EcState
 		greaterSpire = Math.max(s.greaterSpire, greaterSpire);
 		spineCrawlers = Math.max(s.spineCrawlers, spineCrawlers);
 		sporeCrawlers = Math.max(s.sporeCrawlers, sporeCrawlers);
-		nydusCanal = Math.max(s.nydusCanal,nydusCanal);
+		nydusNetwork = Math.max(s.nydusNetwork,nydusNetwork);
 		nydusWorm = Math.max(s.nydusWorm,nydusWorm);
 
 		zerglings = Math.max(s.zerglings, zerglings);
@@ -325,7 +325,7 @@ public class EcState
 		score = augmentDropoffScore(score, c.evolutionChambers, evolutionChambers, 75, 0.75, waypoint);
 		score = augmentScore(score, c.spineCrawlers, spineCrawlers, 100, 1.00, waypoint);
 		score = augmentScore(score, c.sporeCrawlers, sporeCrawlers, 75, .75, waypoint);
-		score = augmentDropoffScore(score, c.nydusCanal, nydusCanal, 350, 3.00, waypoint);
+		score = augmentDropoffScore(score, c.nydusNetwork, nydusNetwork, 350, 3.00, waypoint);
 		score = augmentScore(score, c.nydusWorm, nydusWorm, 200, 2.00, waypoint);
 
 		score = augmentScore(score, c.metabolicBoost, metabolicBoost, 200, 2.0, waypoint);
@@ -444,7 +444,7 @@ public class EcState
 			return false;
 		if (c.sporeCrawlers < sporeCrawlers)
 			return false;
-		if (c.nydusCanal < nydusCanal)
+		if (c.nydusNetwork < nydusNetwork)
 			return false;
 		if (c.nydusWorm < nydusWorm)
 			return false;
@@ -527,7 +527,7 @@ public class EcState
 		
 		int i = hatcheries + lairs + hives + spawningPools + evolutionChambers + roachWarrens + hydraliskDen
 				+ banelingNest + infestationPit + greaterSpire + ultraliskCavern + gasExtractors + spire
-				+ spineCrawlers + sporeCrawlers + nydusCanal + nydusWorm
+				+ spineCrawlers + sporeCrawlers + nydusNetwork + nydusWorm
 
 				+ drones + overlords + overseers + zerglings + banelings * 2 + roaches + mutalisks + infestors + queens
 				+ hydralisks + corruptors + ultralisks + broodlords * 2;

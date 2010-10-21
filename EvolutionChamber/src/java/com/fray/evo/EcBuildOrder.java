@@ -81,8 +81,8 @@ public class EcBuildOrder extends EcState implements Serializable
 		append(sb, "Evolution Chambers", evolutionChambers);
 		append(sb, "Spine Crawlers", spineCrawlers);
 		append(sb, "Spore Crawlers", sporeCrawlers);
-		append(sb, "Nydus Canal", nydusCanal);
-		append(sb, "Nydus Worm", nydusWorm);
+		append(sb, "Nydus Networks", nydusNetwork);
+		append(sb, "Nydus Worms", nydusWorm);
 
 		append(sb, "Melee +1", melee1);
 		append(sb, "Melee +2", melee2);

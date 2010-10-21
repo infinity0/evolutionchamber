@@ -9,7 +9,7 @@ import com.fray.evo.EcEvolver;
 import com.fray.evo.EcState;
 import com.fray.evo.action.EcAction;
 
-public class EcActionBuildNydusCanal extends EcAction implements Serializable
+public class EcActionBuildNydusNetwork extends EcAction implements Serializable
 {
 	private static final int	time		= 50;
 	private static final int	minerals	= 150;
@@ -29,8 +29,8 @@ public class EcActionBuildNydusCanal extends EcAction implements Serializable
 			public void run()
 			{
 				if (e.debug)
-					e.obtained(s, " Nydus Canal+1");
-				s.nydusCanal += 1;
+					e.obtained(s, " Nydus Network+1");
+				s.nydusNetwork += 1;
 			}
 		});
 	}
@@ -52,7 +52,7 @@ public class EcActionBuildNydusCanal extends EcAction implements Serializable
 	{
 		if (s.lairs == 0 && s.evolvingLairs == 0 && s.hives == 0 && s.evolvingHives == 0)
 			return true;
-		if (s.nydusCanal == 2)
+		if (s.nydusNetwork == 2)
 			return true;
 		return super.isInvalid(s);
 	}
