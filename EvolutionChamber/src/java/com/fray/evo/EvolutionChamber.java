@@ -129,6 +129,7 @@ public class EvolutionChamber
 		conf.setFitnessFunction(myFunc);
 
 		conf.addGeneticOperator(EcGeneticUtil.getCleansingOperator(this));
+		conf.addGeneticOperator(EcGeneticUtil.getOverlordingOperator(this));
 		conf.addGeneticOperator(EcGeneticUtil.getInsertionOperator(this));
 		conf.addGeneticOperator(EcGeneticUtil.getDeletionOperator(this));
 		conf.addGeneticOperator(EcGeneticUtil.getTwiddleOperator(this));

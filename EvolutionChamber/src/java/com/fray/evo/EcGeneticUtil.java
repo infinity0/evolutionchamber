@@ -9,6 +9,8 @@ import org.jgap.InvalidConfigurationException;
 import org.jgap.Population;
 import org.jgap.impl.IntegerGene;
 
+import com.fray.evo.action.EcAction;
+
 public class EcGeneticUtil
 {
 
@@ -55,7 +57,41 @@ public class EcGeneticUtil
 				{
 					IChromosome chromosome = (IChromosome) best.clone();
 					Gene[] beforeArray = chromosome.getGenes();
-					beforeArray[i].setAllele(0);
+					for (int j = (int) i; j < beforeArray.length - 1; j++)
+						beforeArray[j].setAllele(beforeArray[j + 1].getAllele());
+					try
+					{
+						chromosome.setGenes(beforeArray);
+					}
+					catch (InvalidConfigurationException e)
+					{
+						e.printStackTrace();
+					}
+					arg1.add(chromosome);
+				}
+			}
+		};
+	}
+
+	static GeneticOperator getOverlordingOperator(final EvolutionChamber c)
+	{
+		return new GeneticOperator()
+		{
+			@Override
+			public void operate(Population arg0, List arg1)
+			{
+				if (Math.random() > c.BASE_CHANCE/c.CHROMOSOME_LENGTH)
+					return;
+				IChromosome best = arg0.determineFittestChromosome();
+				int overlord = 0;
+				for (Integer c : EcAction.actions.keySet())
+					if (EcAction.actions.get(c).getName().contains("BuildOverlord"))
+						overlord = c;
+				for (int i = 0; i < best.getGenes().length; i++)
+				{
+					IChromosome chromosome = (IChromosome) best.clone();
+					Gene[] beforeArray = chromosome.getGenes();
+					beforeArray[i].setAllele(overlord);
 					try
 					{
 						chromosome.setGenes(beforeArray);
@@ -71,7 +107,6 @@ public class EcGeneticUtil
 			}
 		};
 	}
-
 	static GeneticOperator getInsertionOperator(final EvolutionChamber c)
 	{
 		return new GeneticOperator()
