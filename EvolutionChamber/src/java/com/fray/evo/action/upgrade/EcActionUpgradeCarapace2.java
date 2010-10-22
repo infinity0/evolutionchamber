@@ -15,7 +15,7 @@ public class EcActionUpgradeCarapace2 extends EcActionUpgrade
 	@Override
 	public void init()
 	{
-		init(150, 150, 190, "Carapace +2");
+		init(225, 225, 190, "Carapace +2");
 	}
 
 	@Override
