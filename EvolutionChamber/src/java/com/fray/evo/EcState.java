@@ -422,6 +422,8 @@ public class EcState
 			return false;
 		if (c.hives < hives)
 			return false;
+		if (c.gasExtractors < gasExtractors)
+			return false;
 		if (c.spawningPools < spawningPools)
 			return false;
 		if (c.banelingNest < banelingNest)

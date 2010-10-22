@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintStream;
@@ -35,32 +36,32 @@ import com.fray.evo.util.EcFileSystem;
 
 public class EvolutionChamber
 {
-	//The seeds files. (one and a backup, in case execution stops while the file is half written)
-	private static File	SEEDS_EVO = null;
-	private static File	SEEDS_EVO_2 = null;
+	// The seeds files. (one and a backup, in case execution stops while the
+	// file is half written)
+	private static File			SEEDS_EVO			= null;
+	private static File			SEEDS_EVO_2			= null;
+	public int					CHROMOSOME_LENGTH	= 120;
+	int							NUM_THREADS			= Runtime.getRuntime().availableProcessors();
+	public int					POPULATION_SIZE		= 200;
 
-	public int	CHROMOSOME_LENGTH = 120;
-	int	NUM_THREADS = Runtime.getRuntime().availableProcessors();
-	public int	POPULATION_SIZE	= 200;
+	public Double				bestScore			= new Double(0);
 
-	public Double	bestScore	= new Double(0);
+	static List<EcBuildOrder>	seeds				= new ArrayList<EcBuildOrder>();
+	private EcState				destination			= EcState.defaultDestination();
+	public ActionListener		onNewBuild;
+	public List<Thread>			threads				= new ArrayList<Thread>();
+	private boolean				kill				= false;
+	public double				BASE_CHANCE			= 5;
+	public static Double[]		bestScores;
+	public static Integer[]		evolutionsSinceDiscovery;
 
-	static List<EcBuildOrder> seeds = new ArrayList<EcBuildOrder>();
-	private EcState	destination = EcState.defaultDestination();
-	public ActionListener	onNewBuild;
-	public List<Thread>	threads = new ArrayList<Thread>();
-	private boolean	kill = false;
-	public double	BASE_CHANCE	= 5;
-	public static Double[] bestScores; 
-	public static Integer[] evolutionsSinceDiscovery; 
-	
 	static
 	{
 		try
 		{
-			SEEDS_EVO	= new File(EcFileSystem.getTempPath(),"seeds.evo");
+			SEEDS_EVO = new File(EcFileSystem.getTempPath(), "seeds.evo");
 			SEEDS_EVO.getParentFile().mkdirs();
-			SEEDS_EVO_2	= new File(EcFileSystem.getTempPath(),"seeds2.evo");
+			SEEDS_EVO_2 = new File(EcFileSystem.getTempPath(), "seeds2.evo");
 		}
 		catch (IOException e)
 		{
@@ -79,27 +80,28 @@ public class EvolutionChamber
 		EcState s = importSource();
 		EcState d = getInternalDestination();
 		EcAction.setup(d);
-		CHROMOSOME_LENGTH = d.getSumStuff()+70;
+		CHROMOSOME_LENGTH = d.getSumStuff() + 70;
 		bestScore = new Double(0);
 		bestScores = new Double[NUM_THREADS];
 		evolutionsSinceDiscovery = new Integer[NUM_THREADS];
-		
-		//We are using the 'many small villages' vs 'one large city' method of evolution.
+
+		// We are using the 'many small villages' vs 'one large city' method of
+		// evolution.
 		for (int threadIndex = 0; threadIndex < NUM_THREADS; threadIndex++)
 		{
 			spawnEvolutionaryChamber(s, d, threadIndex);
 		}
-		
+
 		if (onNewBuild == null)
-		while (true)
-			try
-			{
-				Thread.sleep(10000);
-			}
-			catch (InterruptedException e)
-			{
-				e.printStackTrace();
-			}
+			while (true)
+				try
+				{
+					Thread.sleep(10000);
+				}
+				catch (InterruptedException e)
+				{
+					e.printStackTrace();
+				}
 	}
 
 	public void stop()
@@ -117,8 +119,9 @@ public class EvolutionChamber
 		threads.clear();
 
 	}
-	
-	private void spawnEvolutionaryChamber(final EcState s, final EcState d, final int threadIndex) throws InvalidConfigurationException
+
+	private void spawnEvolutionaryChamber(final EcState s, final EcState d, final int threadIndex)
+			throws InvalidConfigurationException
 	{
 		bestScores[threadIndex] = new Double(0);
 		evolutionsSinceDiscovery[threadIndex] = new Integer(0);
@@ -146,8 +149,8 @@ public class EvolutionChamber
 
 		final Genotype population = Genotype.randomInitialGenotype(conf);
 
-		if (threadIndex == 0) //On first thread only
-			loadOldBuildOrders(population, conf,myFunc);
+		if (threadIndex == 0) // On first thread only
+			loadOldBuildOrders(population, conf, myFunc);
 
 		final Thread t1 = new Thread(population);
 		conf.getEventManager().addEventListener(GeneticEvent.GENOTYPE_EVOLVED_EVENT, new GeneticEventListener()
@@ -157,7 +160,7 @@ public class EvolutionChamber
 			{
 				Collections.shuffle(conf.getGeneticOperators());
 				BASE_CHANCE += .001;
-				if (BASE_CHANCE >= CHROMOSOME_LENGTH/2)
+				if (BASE_CHANCE >= CHROMOSOME_LENGTH / 2)
 					BASE_CHANCE = 1;
 				IChromosome fittestChromosome = population.getFittestChromosome();
 				if (kill)
@@ -171,10 +174,10 @@ public class EvolutionChamber
 				}
 				else
 					evolutionsSinceDiscovery[threadIndex]++;
-				
+
 				if (evolutionsSinceDiscovery[threadIndex] > 1000 && fitnessValue < bestScore)
 				{
-					//Stagnation. Suicide village and try again.
+					// Stagnation. Suicide village and try again.
 					System.out.println("Restarting thread " + threadIndex);
 					try
 					{
@@ -186,25 +189,26 @@ public class EvolutionChamber
 					}
 					t1.interrupt();
 				}
-				
-					synchronized (bestScore)
-					{
-				if (fitnessValue > bestScore)
+
+				synchronized (bestScore)
 				{
+					if (fitnessValue > bestScore)
+					{
 						BASE_CHANCE = 1;
 						bestScore = fitnessValue;
-						
+
 						ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 						PrintStream ps = new PrintStream(byteArrayOutputStream);
 						if (onNewBuild != null)
 							myFunc.log = ps;
-							
+
 						displayBuildOrder(myFunc, fittestChromosome);
 						myFunc.log.println(new Date() + ": " + fitnessValue);
 						displayChromosome(fittestChromosome);
 						saveSeeds(fittestChromosome);
 						if (onNewBuild != null)
-						onNewBuild.actionPerformed(new ActionEvent(myFunc.evaluateGetBuildOrder(fittestChromosome),bestScore.intValue(),new String(byteArrayOutputStream.toByteArray())));
+							onNewBuild.actionPerformed(new ActionEvent(myFunc.evaluateGetBuildOrder(fittestChromosome),
+									bestScore.intValue(), new String(byteArrayOutputStream.toByteArray())));
 						System.out.println();
 					}
 				}
@@ -222,8 +226,8 @@ public class EvolutionChamber
 		{
 			if (i++ == 100)
 				break;
-			if (((Integer)g.getAllele()).intValue() >= 10)
-				System.out.print(((char)((int)'a'+(Integer)g.getAllele()-10)));
+			if (((Integer) g.getAllele()).intValue() >= 10)
+				System.out.print(((char) ((int) 'a' + (Integer) g.getAllele() - 10)));
 			else
 				System.out.print(g.getAllele().toString());
 		}
@@ -241,23 +245,26 @@ public class EvolutionChamber
 		loadSeeds();
 
 		int cindex = 0;
-		
-		Collections.sort(seeds,new Comparator<EcBuildOrder>(){
+
+		Collections.sort(seeds, new Comparator<EcBuildOrder>()
+		{
 
 			@Override
 			public int compare(EcBuildOrder arg0, EcBuildOrder arg1)
 			{
-				double score=0;
+				double score = 0;
 				try
 				{
-					score = myFunc.getFitnessValue(buildChromosome(conf, arg1))-myFunc.getFitnessValue(buildChromosome(conf, arg0));
+					score = myFunc.getFitnessValue(buildChromosome(conf, arg1))
+							- myFunc.getFitnessValue(buildChromosome(conf, arg0));
 				}
 				catch (InvalidConfigurationException e)
 				{
 					e.printStackTrace();
 				}
 				return (int) score;
-			}});
+			}
+		});
 		for (EcBuildOrder bo : seeds)
 		{
 			try
@@ -285,6 +292,10 @@ public class EvolutionChamber
 		{
 			System.out.println("Seeds file not found.");
 		}
+		catch (InvalidClassException ex)
+		{
+			System.out.println("Seeds file is in old format. Starting over. :-(");
+		}
 		catch (IOException e)
 		{
 			try
@@ -298,6 +309,10 @@ public class EvolutionChamber
 			{
 				System.out.println("Seeds file not found.");
 			}
+			catch (InvalidClassException ex)
+			{
+				System.out.println("Seeds 2 file is in old format. Starting over. :-(");
+			}
 			catch (IOException e1)
 			{
 				e1.printStackTrace();
@@ -306,14 +321,17 @@ public class EvolutionChamber
 			{
 				System.out.println("Seeds 2 file is in old format. Starting over. :-(");
 			}
+
 		}
 		catch (ClassNotFoundException e)
 		{
 			System.out.println("Seeds file is in old format. Starting over. :-(");
 		}
+
 	}
 
-	static boolean haveSavedBefore = false;
+	static boolean	haveSavedBefore	= false;
+
 	protected synchronized void saveSeeds(IChromosome fittestChromosome)
 	{
 		EcBuildOrder bo = importSource();
@@ -321,7 +339,7 @@ public class EvolutionChamber
 		{
 			bo = EcEvolver.populateBuildOrder(bo, fittestChromosome);
 			if (haveSavedBefore)
-				seeds.remove(seeds.size()-1);
+				seeds.remove(seeds.size() - 1);
 			haveSavedBefore = true;
 			seeds.add(bo);
 		}
@@ -332,10 +350,10 @@ public class EvolutionChamber
 
 		try
 		{
-			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(SEEDS_EVO,false));
+			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(SEEDS_EVO, false));
 			oos.writeObject(seeds);
 			oos.close();
-			oos = new ObjectOutputStream(new FileOutputStream(SEEDS_EVO_2,false));
+			oos = new ObjectOutputStream(new FileOutputStream(SEEDS_EVO_2, false));
 			oos.writeObject(seeds);
 			oos.close();
 		}
@@ -356,7 +374,7 @@ public class EvolutionChamber
 		for (int i = 0; i < CHROMOSOME_LENGTH; i++)
 			try
 			{
-				IntegerGene g = new IntegerGene(conf, 0, EcAction.actions.size()-1);
+				IntegerGene g = new IntegerGene(conf, 0, EcAction.actions.size() - 1);
 				g.setAllele(0);
 				genes.add(g);
 			}
@@ -373,7 +391,6 @@ public class EvolutionChamber
 		ecBuildOrder.targetSeconds = importDestination().targetSeconds;
 		return ecBuildOrder;
 	}
-
 
 	public EcState importDestination()
 	{
@@ -421,8 +438,8 @@ public class EvolutionChamber
 	{
 		int availableProcessors = NUM_THREADS;
 		NUM_THREADS = digit;
-		if(NUM_THREADS > availableProcessors || NUM_THREADS < 1)
-			NUM_THREADS = availableProcessors;		
+		if (NUM_THREADS > availableProcessors || NUM_THREADS < 1)
+			NUM_THREADS = availableProcessors;
 	}
 
 	public void setDestination(EcState destination)
@@ -435,7 +452,8 @@ public class EvolutionChamber
 		return destination;
 	}
 
-	public int getThreads() {
+	public int getThreads()
+	{
 		return NUM_THREADS;
 	}
 }

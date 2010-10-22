@@ -76,7 +76,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 					e.printStackTrace();
 				}
 				JFrame frame = new JFrame();
-				frame.setTitle("Evolution Chamber v0014");
+				frame.setTitle("Evolution Chamber v0015");
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				frame.getContentPane().add(new EcSwingX());
 				frame.setPreferredSize(new Dimension(900, 800));
@@ -817,7 +817,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 		{
 			EcState finalDestination = (EcState) destination[destination.length-1].clone();
 			for (int i = 0;i < destination.length-1;i++)
-				finalDestination.waypoints.add(destination[i]);
+				finalDestination.waypoints.add((EcState) destination[i].clone());
 			
 			ec.setDestination(finalDestination);
 			ec.go();
