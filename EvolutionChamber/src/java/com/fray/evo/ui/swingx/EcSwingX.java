@@ -10,6 +10,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -17,9 +19,12 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
@@ -39,9 +44,11 @@ import com.fray.evo.EcEvolver;
 import com.fray.evo.EcReportable;
 import com.fray.evo.EcState;
 import com.fray.evo.EvolutionChamber;
+import com.fray.evo.util.EcAutoUpdate;
 
 public class EcSwingX extends JXPanel implements EcReportable
 {
+	public  static String		EC_VERSION	= "0015";
 	private JTextArea			outputText;
 	private JLabel				status2;
 	private JLabel				status1;
@@ -75,14 +82,53 @@ public class EcSwingX extends JXPanel implements EcReportable
 				{
 					e.printStackTrace();
 				}
+				
+				EcAutoUpdate ecUpdater = new EcAutoUpdate(EC_VERSION);
+				if ( ecUpdater.isUpdateAvailable() ) {
+				    
+					JOptionPane pane = new JOptionPane(
+			        "A newer version of the Evolution Chamber is available. Do you want to update now?");
+				    Object[] options = new String[] { "Yes", "No" };
+				    pane.setOptions(options);
+				    JDialog dialog = pane.createDialog(new JFrame(), "Evolution Chamber Update Available");
+				    dialog.setVisible(true);
+				    
+				    Object obj = pane.getValue(); 
+				    
+				    if (options[0].equals(obj)) { // User selection = "Yes"
+				    	JFrame updateFrame = new JFrame();
+				    	updateFrame.setTitle("Updating");
+				    	
+				    	final JProgressBar updateProgress = new JProgressBar(0, 100);
+				    	updateProgress.setValue(0);
+				    	updateProgress.setStringPainted(true);
+				        updateFrame.add(updateProgress);
+				        updateFrame.setPreferredSize(new Dimension(200, 100));
+				        updateFrame.pack();
+				        updateFrame.setLocationRelativeTo(null);
+				        updateFrame.setVisible(true);
+				        ecUpdater.addPropertyChangeListener(
+				        			     new PropertyChangeListener() {
+				        			         public void propertyChange(PropertyChangeEvent evt) {
+				        			             if ("progress".equals(evt.getPropertyName())) {
+				        			                 updateProgress.setValue((Integer)evt.getNewValue());
+				        			             }
+				        			         }
+				        			     }
+				        );
+				        ecUpdater.execute();
+				    }
+				}
+				
 				JFrame frame = new JFrame();
-				frame.setTitle("Evolution Chamber v0016");
+				frame.setTitle("Evolution Chamber v" + EC_VERSION);
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				frame.getContentPane().add(new EcSwingX());
 				frame.setPreferredSize(new Dimension(900, 800));
 				frame.pack();
 				frame.setLocationRelativeTo(null);
-				frame.setVisible(true);
+				// Show the main window only when there are no updates running
+				frame.setVisible( !ecUpdater.isUpdating() );
 			}
 		});
 	}
