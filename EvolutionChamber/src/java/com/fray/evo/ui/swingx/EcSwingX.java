@@ -76,7 +76,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 					e.printStackTrace();
 				}
 				JFrame frame = new JFrame();
-				frame.setTitle("Evolution Chamber v0013");
+				frame.setTitle("Evolution Chamber v0014");
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				frame.getContentPane().add(new EcSwingX());
 				frame.setPreferredSize(new Dimension(900, 800));
@@ -789,10 +789,16 @@ public class EcSwingX extends JXPanel implements EcReportable
 			if (text.contains(":"))
 			{
 				String[] split = text.split(":");
+				if (Integer.parseInt(split[0]) < 0)
+					throw new NumberFormatException();
+				if (Integer.parseInt(split[1]) < 0)
+					throw new NumberFormatException();
 				return Integer.parseInt(split[0])*60+Integer.parseInt(split[1]);
 			}
 			
 			Integer i = Integer.parseInt(text);
+			if (i < 0)
+				throw new NumberFormatException();
 			return i;
 		}
 		catch (ArrayIndexOutOfBoundsException ex)
