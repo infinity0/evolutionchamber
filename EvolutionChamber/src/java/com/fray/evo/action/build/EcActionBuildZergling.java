@@ -34,6 +34,8 @@ public class EcActionBuildZergling extends EcAction implements Serializable
 	{
 		if (s.spawningPools == 0)
 			return true;
+		if (s.minerals >= 50 && !s.hasSupply(1))
+			return true;
 		return false;
 	}
 

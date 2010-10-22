@@ -2,6 +2,7 @@ package com.fray.evo.action.build;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.fray.evo.EcBuildOrder;
@@ -36,7 +37,7 @@ public class EcActionBuildRoachWarren extends EcAction implements Serializable
 	{
 		if (s.spawningPools == 0)
 			return true;
-		if (s.roachWarrens == 2)
+		if (s.roachWarrens >= (new Date().getMinutes()%2)+1)
 			return true;
 		return false;
 	}

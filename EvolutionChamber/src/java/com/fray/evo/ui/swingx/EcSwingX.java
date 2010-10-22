@@ -204,7 +204,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 						StringBuilder stats = new StringBuilder();						
 						int threadIndex = 0;
 						stats.append(EcEvolver.evaluations/1000+"K games played.");
-						stats.append("\n"+EcEvolver.cachehits/1000+"K cache hits (games already played).");
+						stats.append("\n"+ec.CHROMOSOME_LENGTH+" alleles in the chromosome.");
 						stats.append("\n"+(int)permsPerSecond+" games played/second.");
 						stats.append("\nEvolution Rate: "+ec.BASE_CHANCE/ec.CHROMOSOME_LENGTH);
 						for (Double d : ec.bestScores)
@@ -228,24 +228,19 @@ public class EcSwingX extends JXPanel implements EcReportable
 		sb.append("Hello! Welcome to the Evolution Chamber.");
 		sb.append("\nTo start, enter in some units you would like to have.");
 		sb.append("\nWhen you have decided what you would like, hit Start.");
-		sb.append("\n\nPlease report any issues at \nhttp://code.google.com/p/evolutionchamber/issues/list");
-		sb.append("\n\nNew in this release (0007): Waypoints");
+		sb.append("\n\nPlease report any issues or new features you would like at: \nhttp://code.google.com/p/evolutionchamber/issues/list");
+		sb.append("\n\nHow to use:");
+		sb.append("\nEnter in what you would like to see as your end state. Hit Go. Be patient.");
+		sb.append("\nThe build order will compute, and it can take several minutes to potentially hours.");
+		sb.append("\nAll build orders are automatically saved when you exit or hit stop, so, if you put in");
+		sb.append("\nthe same build order, you will get the same result.");
+		sb.append("\n\nRemember that this is evolutionary science, so don't be surprised if things seem wonky!");
+		sb.append("\n\nHow to use waypoints:");
 		sb.append("\nTo use waypoints, enter first what you would like at the end of the build.");
 		sb.append("\nThen go to a waypoint slot, enter a deadline time, and units.");
 		sb.append("\nAll the waypoints are cumulative, so if you enter 6 zergling@3:00 on WP1,");
 		sb.append("\n7 roach@6:00 on WP2, and 6 muta on final, you will end up with 6 lings,");
 		sb.append("\n7 roaches, and 6 mutas by the time it finds a valid build.");
-		sb.append("\n\nFixed in this release (0005):");
-		sb.append("\nFields in editable state after starting the calculation");
-		sb.append("\nExtremely slow mouse scroll on the results text area.");
-		sb.append("\nApplication window has no title");
-		sb.append("\nLast updated field keeps running after pressing stop");
-		sb.append("\nMultiple upgrades can be researched at the same time from one building");
-		sb.append("\nFileNotFoundException etc\\seeds.evo raised from EvolutionChamber.java:222");
-		sb.append("\nBuildExtractor executed twice in a b/o targeting mineral only units.");
-		sb.append("\n\nAdded in this release (0005):");
-		sb.append("\nPerformance improvement (may cause memory issues)");
-		sb.append("\nSpore Crawlers");
 		outputText.setText(sb.toString());
 	}
 

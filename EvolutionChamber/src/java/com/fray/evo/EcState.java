@@ -377,8 +377,8 @@ public class EcState
 		if (!waypoint)
 			for (int i = 0; i < Math.max(a - b, 0); i++)
 			{
-				score += mulb;
 				mulb /= 2;
+				score += mulb;
 			}
 		// score += Math.max(a - b, 0) * mulb;
 		return score;

@@ -61,6 +61,7 @@ public class EcEvolver extends FitnessFunction
 			evaluations++;
 			s = populateBuildOrder((EcBuildOrder) source, arg0);
 			score = destination.score(doEvaluate(s));
+			
 			// System.out.println(chrome);
 //			scoreMap.put(chrome.hashCode(), score);
 			return score;

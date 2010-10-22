@@ -33,9 +33,39 @@ public class EcGeneticUtil
 					}
 					catch (InvalidConfigurationException e)
 					{
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					arg1.add(chromosome);
+				}
+			}
+		};
+	}
+
+	static GeneticOperator getCleansingOperator(final EvolutionChamber c)
+	{
+		return new GeneticOperator()
+		{
+			@Override
+			public void operate(Population arg0, List arg1)
+			{
+				if (Math.random() > c.BASE_CHANCE/c.CHROMOSOME_LENGTH)
+					return;
+				IChromosome best = arg0.determineFittestChromosome();
+				for (int i = 0; i < best.getGenes().length; i++)
+				{
+					IChromosome chromosome = (IChromosome) best.clone();
+					Gene[] beforeArray = chromosome.getGenes();
+					beforeArray[i].setAllele(0);
+					try
+					{
+						chromosome.setGenes(beforeArray);
+					}
+					catch (InvalidConfigurationException e)
+					{
+						e.printStackTrace();
+					}
+//					EvolutionChamber.displayChromosome(chromosome);
+//					System.out.println();
 					arg1.add(chromosome);
 				}
 			}

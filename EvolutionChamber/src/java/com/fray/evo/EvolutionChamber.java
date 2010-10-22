@@ -123,17 +123,18 @@ public class EvolutionChamber
 		bestScores[threadIndex] = new Double(0);
 		evolutionsSinceDiscovery[threadIndex] = new Integer(0);
 		DefaultConfiguration.reset(threadIndex + " thread.");
-		Configuration conf = new DefaultConfiguration(threadIndex + " thread.", threadIndex + " thread.");
+		final Configuration conf = new DefaultConfiguration(threadIndex + " thread.", threadIndex + " thread.");
 
 		final EcEvolver myFunc = new EcEvolver(s, d);
 		conf.setFitnessFunction(myFunc);
 
+		conf.addGeneticOperator(EcGeneticUtil.getCleansingOperator(this));
 		conf.addGeneticOperator(EcGeneticUtil.getInsertionOperator(this));
 		conf.addGeneticOperator(EcGeneticUtil.getDeletionOperator(this));
 		conf.addGeneticOperator(EcGeneticUtil.getTwiddleOperator(this));
 		conf.addGeneticOperator(EcGeneticUtil.getSwapOperator(this));
 		conf.setPopulationSize(POPULATION_SIZE);
-		conf.setSelectFromPrevGen(.9);
+		conf.setSelectFromPrevGen(1);
 		conf.setPreservFittestIndividual(false);
 		conf.setAlwaysCaculateFitness(false);
 		conf.setKeepPopulationSizeConstant(false);
@@ -153,7 +154,8 @@ public class EvolutionChamber
 			@Override
 			public void geneticEventFired(GeneticEvent a_firedEvent)
 			{
-				BASE_CHANCE += .1;
+				Collections.shuffle(conf.getGeneticOperators());
+				BASE_CHANCE += .001;
 				if (BASE_CHANCE >= CHROMOSOME_LENGTH/2)
 					BASE_CHANCE = 1;
 				IChromosome fittestChromosome = population.getFittestChromosome();
@@ -200,6 +202,7 @@ public class EvolutionChamber
 						myFunc.log.println(new Date() + ": " + fitnessValue);
 						displayChromosome(fittestChromosome);
 						saveSeeds(fittestChromosome);
+						if (onNewBuild != null)
 						onNewBuild.actionPerformed(new ActionEvent(myFunc.evaluateGetBuildOrder(fittestChromosome),bestScore.intValue(),new String(byteArrayOutputStream.toByteArray())));
 						System.out.println();
 					}
@@ -211,7 +214,7 @@ public class EvolutionChamber
 		threads.add(t1);
 	}
 
-	private static void displayChromosome(IChromosome fittestChromosome)
+	public static void displayChromosome(IChromosome fittestChromosome)
 	{
 		int i = 0;
 		for (Gene g : fittestChromosome.getGenes())

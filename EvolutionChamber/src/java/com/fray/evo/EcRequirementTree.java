@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.fray.evo.action.EcAction;
+import com.fray.evo.action.EcActionDoNothing;
 import com.fray.evo.action.EcActionExtractorTrick;
 import com.fray.evo.action.EcActionWait;
 import com.fray.evo.action.build.EcActionBuildBaneling;
@@ -71,13 +72,14 @@ public class EcRequirementTree
 		Map<Integer, Class> actions = EcAction.actions;
 		actions.clear();
 
+//		add(actions,new EcActionDoNothing(),destination);
+		add(actions,new EcActionWait(), destination);
 		add(actions,new EcActionBuildQueen(), destination);
 		add(actions,new EcActionBuildDrone(), destination);
 		add(actions,new EcActionExtractorTrick(), destination);
 		add(actions,new EcActionBuildHatchery(), destination);
 		add(actions,new EcActionBuildOverlord(), destination);
 		add(actions,new EcActionBuildSpawningPool(), destination);
-		add(actions,new EcActionWait(), destination);
 
 		actions(destination, actions);
 

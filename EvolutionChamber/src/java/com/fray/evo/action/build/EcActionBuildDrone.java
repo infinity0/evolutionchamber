@@ -31,6 +31,14 @@ public class EcActionBuildDrone extends EcAction implements Serializable
 	}
 
 	@Override
+	public boolean isInvalid(EcBuildOrder s)
+	{
+		if (s.minerals >= 50 && !s.hasSupply(1))
+			return true;
+		return super.isInvalid(s);
+	}
+	
+	@Override
 	public boolean isPossible(EcBuildOrder s)
 	{
 		if (s.minerals < 50)

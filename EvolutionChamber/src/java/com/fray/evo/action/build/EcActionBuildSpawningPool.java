@@ -2,6 +2,7 @@ package com.fray.evo.action.build;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.fray.evo.EcBuildOrder;
@@ -34,7 +35,7 @@ public class EcActionBuildSpawningPool extends EcAction implements Serializable
 	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{
-		if (s.spawningPools == 2)
+		if (s.spawningPools >= (new Date().getMinutes()%2)+1)
 			return true;
 		return super.isInvalid(s);
 	}
