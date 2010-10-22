@@ -704,8 +704,9 @@ public class EcSwingX extends JXPanel implements EcReportable
 			public void actionPerformed(ActionEvent e)
 			{
 				ec.setThreads(getDigit(e));
+				( (JTextField) e.getSource() ).setText( Integer.toString( ec.getThreads() ) );
 			}
-		}).setText("4");
+		}).setText( Integer.toString( ec.getThreads() ) );
 		stopButton = addButton(component, "Stop", new ActionListener()
 		{
 			@Override

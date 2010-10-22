@@ -40,7 +40,7 @@ public class EvolutionChamber
 	private static File	SEEDS_EVO_2 = null;
 
 	public int	CHROMOSOME_LENGTH = 120;
-	int	NUM_THREADS = 4;
+	int	NUM_THREADS = Runtime.getRuntime().availableProcessors();
 	public int	POPULATION_SIZE	= 200;
 
 	public Double	bestScore	= new Double(0);
@@ -419,7 +419,10 @@ public class EvolutionChamber
 
 	public void setThreads(int digit)
 	{
+		int availableProcessors = NUM_THREADS;
 		NUM_THREADS = digit;
+		if(NUM_THREADS > availableProcessors || NUM_THREADS < 1)
+			NUM_THREADS = availableProcessors;		
 	}
 
 	public void setDestination(EcState destination)
@@ -430,5 +433,9 @@ public class EvolutionChamber
 	public EcState getInternalDestination()
 	{
 		return destination;
+	}
+
+	public int getThreads() {
+		return NUM_THREADS;
 	}
 }
