@@ -190,4 +190,9 @@ public class EcEvolver extends FitnessFunction
 		log.println("@" + s.timestamp() + "\tEvolved:\t" + string.trim());
 	}
 
+	public void mining(EcBuildOrder s, String string)
+	{
+		log.println("@" + s.timestamp() + "\tMining: \t" + string.trim());
+	}
+
 }

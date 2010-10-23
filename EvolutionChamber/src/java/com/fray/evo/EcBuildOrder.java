@@ -13,6 +13,8 @@ public class EcBuildOrder extends EcState implements Serializable
 {
 	static final long		serialVersionUID	= 1L;
 	public int				larva				= 3;
+	public int				dronesGoingOnMinerals	= 0;
+	public int				dronesGoingOnGas	= 0;
 	public int				dronesOnMinerals	= 6;
 	public int				dronesOnGas			= 0;
 	boolean					buildingLarva		= false;
@@ -29,6 +31,8 @@ public class EcBuildOrder extends EcState implements Serializable
 	{
 		EcBuildOrder s = new EcBuildOrder();
 		s.larva = larva;
+		s.dronesGoingOnMinerals = dronesGoingOnMinerals;
+		s.dronesGoingOnGas = dronesGoingOnGas;
 		s.dronesOnMinerals = dronesOnMinerals;
 		s.dronesOnGas = dronesOnGas;
 		s.buildingLarva = buildingLarva;
