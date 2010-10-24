@@ -42,30 +42,30 @@ import org.jgap.InvalidConfigurationException;
 
 import com.fray.evo.EcEvolver;
 import com.fray.evo.EcReportable;
+import com.fray.evo.EcSettings;
 import com.fray.evo.EcState;
 import com.fray.evo.EvolutionChamber;
 import com.fray.evo.util.EcAutoUpdate;
 
 public class EcSwingX extends JXPanel implements EcReportable
 {
-	public  static String		EC_VERSION	= "0015";
+	public static String		EC_VERSION		= "0016";
 	private JTextArea			outputText;
-	private JLabel				status2;
 	private JLabel				status1;
+	private JLabel				status2;
+	private JLabel				status3;
 	protected long				timeStarted;
 	protected long				lastUpdate;
-	int							gridy		= 0;
+	int							gridy			= 0;
 	private JXStatusBar			statusbar;
-	private List<JComponent>	textBoxes	= new ArrayList<JComponent>();
+	private List<JComponent>	inputControls	= new ArrayList<JComponent>();
 
-	EvolutionChamber	ec	= new EvolutionChamber();
-	EcState[]			destination;
-	private JButton		goButton;
-	private JButton		stopButton;
-	private JLabel	status3;
-	private JTextArea	statsText;
-	private JTabbedPane	tabPane;
-	
+	EvolutionChamber			ec				= new EvolutionChamber();
+	EcState[]					destination;
+	private JButton				goButton;
+	private JButton				stopButton;
+	private JTextArea			statsText;
+	private JTabbedPane			tabPane;
 
 	public static void main(String[] args)
 	{
@@ -82,116 +82,122 @@ public class EcSwingX extends JXPanel implements EcReportable
 				{
 					e.printStackTrace();
 				}
-				
-				EcAutoUpdate ecUpdater = new EcAutoUpdate(EC_VERSION);
-				if ( ecUpdater.isUpdateAvailable() ) {
-				    
-					JOptionPane pane = new JOptionPane(
-			        "A newer version of the Evolution Chamber is available. Do you want to update now?");
-				    Object[] options = new String[] { "Yes", "No" };
-				    pane.setOptions(options);
-				    JDialog dialog = pane.createDialog(new JFrame(), "Evolution Chamber Update Available");
-				    dialog.setVisible(true);
-				    
-				    Object obj = pane.getValue(); 
-				    
-				    if (options[0].equals(obj)) { // User selection = "Yes"
-				    	JFrame updateFrame = new JFrame();
-				    	updateFrame.setTitle("Updating");
-				    	
-				    	final JProgressBar updateProgress = new JProgressBar(0, 100);
-				    	updateProgress.setValue(0);
-				    	updateProgress.setStringPainted(true);
-				        updateFrame.add(updateProgress);
-				        updateFrame.setPreferredSize(new Dimension(200, 100));
-				        updateFrame.pack();
-				        updateFrame.setLocationRelativeTo(null);
-				        updateFrame.setVisible(true);
-				        ecUpdater.addPropertyChangeListener(
-				        			     new PropertyChangeListener() {
-				        			         public void propertyChange(PropertyChangeEvent evt) {
-				        			             if ("progress".equals(evt.getPropertyName())) {
-				        			                 updateProgress.setValue((Integer)evt.getNewValue());
-				        			             }
-				        			         }
-				        			     }
-				        );
-				        ecUpdater.execute();
-				    }
-				}
-				
-				JFrame frame = new JFrame();
+
+				final JFrame frame = new JFrame();
 				frame.setTitle("Evolution Chamber v" + EC_VERSION);
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				frame.getContentPane().add(new EcSwingX());
 				frame.setPreferredSize(new Dimension(900, 800));
 				frame.pack();
 				frame.setLocationRelativeTo(null);
-				// Show the main window only when there are no updates running
-				frame.setVisible( !ecUpdater.isUpdating() );
+				frame.setVisible(true);
+
+				SwingUtilities.invokeLater(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						EcAutoUpdate ecUpdater = checkForUpdates();
+						// Show the main window only when there are no updates
+						// running
+						frame.setVisible(!ecUpdater.isUpdating());
+					}
+				});
 			}
 		});
 	}
 
 	public EcSwingX()
 	{
+		initializeWaypoints();
+
+		setLayout(new BorderLayout());
+
+		JSplitPane outside = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+		{ // Left
+			JPanel leftbottom = new JPanel(new GridBagLayout());
+			JScrollPane stuffPanel = new JScrollPane(leftbottom);
+			{
+				{
+					addControlParts(leftbottom);
+					tabPane = new JTabbedPane(JTabbedPane.LEFT);
+					{
+						for (int i = 0; i < 5; i++)
+						{
+							JPanel lb = new JPanel(new GridBagLayout());
+							if (i == 4)
+								tabPane.addTab("Final", lb);
+							else
+								tabPane.addTab("WP" + Integer.toString(i), lb);
+							addInputContainer(i, lb);
+						}
+						JPanel stats = new JPanel(new GridBagLayout());
+						addStats(stats);
+						JPanel settings = new JPanel(new GridBagLayout());
+						addSettings(settings);
+						tabPane.addTab("Stats", stats);
+						tabPane.setSelectedIndex(4);
+					}
+					GridBagConstraints gridBagConstraints = new GridBagConstraints();
+					gridBagConstraints.anchor = GridBagConstraints.WEST;
+					gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+					gridBagConstraints.weightx = .25;
+					gridBagConstraints.gridy = gridy;
+					gridBagConstraints.gridwidth = 4;
+					gridBagConstraints.insets = new Insets(1, 1, 1, 1);
+					leftbottom.add(tabPane, gridBagConstraints);
+					addStatusBar(leftbottom);
+				}
+			}
+			outside.setLeftComponent(stuffPanel);
+		}
+		{ //Right
+			JPanel right = new JPanel(new FlowLayout());
+			addOutputContainer(right);
+			outside.setRightComponent(new JScrollPane(right));
+		}
+
+		add(outside);
+		outside.setDividerLocation(395);
+	}
+
+	private void addSettings(JPanel settings)
+	{
+		addCheck(settings, "Use Extractor Trick", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				EcSettings.useExtractorTrick = getTrue(e);
+			}
+		}).setSelected(EcSettings.useExtractorTrick);
+		addCheck(settings, "Pull/Push workers to/from gas", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				EcSettings.useExtractorTrick = getTrue(e);
+			}
+		}).setSelected(EcSettings.useExtractorTrick);
+	}
+
+	private void initializeWaypoints()
+	{
 		try
 		{
 			destination = new EcState[5];
 			destination[0] = (EcState) ec.getInternalDestination().clone();
-			destination[0].targetSeconds = 3*60;
+			destination[0].targetSeconds = 3 * 60;
 			destination[1] = (EcState) ec.getInternalDestination().clone();
-			destination[1].targetSeconds = 6*60;
+			destination[1].targetSeconds = 6 * 60;
 			destination[2] = (EcState) ec.getInternalDestination().clone();
-			destination[2].targetSeconds = 9*60;
+			destination[2].targetSeconds = 9 * 60;
 			destination[3] = (EcState) ec.getInternalDestination().clone();
-			destination[3].targetSeconds = 12*60;
+			destination[3].targetSeconds = 12 * 60;
 			destination[4] = (EcState) ec.getInternalDestination().clone();
 		}
 		catch (CloneNotSupportedException e)
 		{
 			e.printStackTrace();
 		}
-
-		setLayout(new BorderLayout());
-
-		JSplitPane outside = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-		JPanel leftbottom = new JPanel(new GridBagLayout());
-		JScrollPane stuffPanel = new JScrollPane(leftbottom);
-		outside.setLeftComponent(stuffPanel);
-		JPanel right = new JPanel(new FlowLayout());
-		outside.setRightComponent(new JScrollPane(right));
-
-		addControlParts(leftbottom);
-		tabPane = new JTabbedPane(JTabbedPane.LEFT);
-		for (int i = 0;i < 5;i++)
-		{
-			JPanel lb = new JPanel(new GridBagLayout());
-			if (i == 4)
-				tabPane.addTab("Final",lb);
-			else
-				tabPane.addTab("WP" + Integer.toString(i),lb);
-			addInputContainer(i,lb);
-		}
-		JPanel stats = new JPanel(new GridBagLayout());
-		addStats(stats);
-		tabPane.addTab("Stats",stats);
-		tabPane.setSelectedIndex(4);
-		
-		GridBagConstraints gridBagConstraints = new GridBagConstraints();
-		gridBagConstraints.anchor = GridBagConstraints.WEST;
-		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
-		gridBagConstraints.weightx = .25;
-		gridBagConstraints.gridy = gridy;
-		gridBagConstraints.gridwidth = 4;
-		gridBagConstraints.insets = new Insets(1, 1, 1, 1);
-		leftbottom.add(tabPane,gridBagConstraints);
-		
-		addStatusBar(leftbottom);
-		addOutputContainer(right);
-
-		add(outside);
-		outside.setDividerLocation(395);
 	}
 
 	private void addStats(JPanel stats)
@@ -243,18 +249,19 @@ public class EcSwingX extends JXPanel implements EcReportable
 					long hours = minutes / 60;
 					status2.setText("Last update: " + hours % 60 + ":" + minutes % 60 + ":" + seconds % 60 + " ago");
 					{
-						double evalseconds = (System.currentTimeMillis()-timeStarted);
+						double evalseconds = (System.currentTimeMillis() - timeStarted);
 						evalseconds = evalseconds / 1000.0;
 						double permsPerSecond = EcEvolver.evaluations;
-						permsPerSecond /= evalseconds;						
-						StringBuilder stats = new StringBuilder();						
+						permsPerSecond /= evalseconds;
+						StringBuilder stats = new StringBuilder();
 						int threadIndex = 0;
-						stats.append(EcEvolver.evaluations/1000+"K games played.");
-						stats.append("\n"+ec.CHROMOSOME_LENGTH+" alleles in the chromosome.");
-						stats.append("\n"+(int)permsPerSecond+" games played/second.");
-						stats.append("\nEvolution Rate: "+ec.BASE_CHANCE/ec.CHROMOSOME_LENGTH);
+						stats.append(EcEvolver.evaluations / 1000 + "K games played.");
+						stats.append("\n" + ec.CHROMOSOME_LENGTH + " maximum length of build order.");
+						stats.append("\n" + (int) permsPerSecond + " games played/second.");
+						stats.append("\nMutation Rate: " + ec.BASE_MUTATION_RATE / ec.CHROMOSOME_LENGTH);
 						for (Double d : ec.bestScores)
-							stats.append("\nProcessor " + threadIndex + " age: (" + ec.evolutionsSinceDiscovery[threadIndex++]+") score: " + d );
+							stats.append("\nProcessor " + threadIndex + " age: ("
+									+ ec.evolutionsSinceDiscovery[threadIndex++] + ") score: " + d);
 						statsText.setText(stats.toString());
 					}
 				}
@@ -274,7 +281,8 @@ public class EcSwingX extends JXPanel implements EcReportable
 		sb.append("Hello! Welcome to the Evolution Chamber.");
 		sb.append("\nTo start, enter in some units you would like to have.");
 		sb.append("\nWhen you have decided what you would like, hit Start.");
-		sb.append("\n\nPlease report any issues or new features you would like at: \nhttp://code.google.com/p/evolutionchamber/issues/list");
+		sb
+				.append("\n\nPlease report any issues or new features you would like at: \nhttp://code.google.com/p/evolutionchamber/issues/list");
 		sb.append("\n\nHow to use:");
 		sb.append("\nEnter in what you would like to see as your end state. Hit Go. Be patient.");
 		sb.append("\nThe build order will compute, and it can take several minutes to potentially hours.");
@@ -319,7 +327,9 @@ public class EcSwingX extends JXPanel implements EcReportable
 			{
 				destination[i].targetSeconds = getDigit(e);
 			}
-		}).setText(Integer.toString(destination[i].targetSeconds/60)+":"+Integer.toString(destination[i].targetSeconds%60));
+		}).setText(
+				Integer.toString(destination[i].targetSeconds / 60) + ":"
+						+ Integer.toString(destination[i].targetSeconds % 60));
 		gridy++;
 		addInput(component, "Overlords", new ActionListener()
 		{
@@ -750,9 +760,9 @@ public class EcSwingX extends JXPanel implements EcReportable
 			public void actionPerformed(ActionEvent e)
 			{
 				ec.setThreads(getDigit(e));
-				( (JTextField) e.getSource() ).setText( Integer.toString( ec.getThreads() ) );
+				((JTextField) e.getSource()).setText(Integer.toString(ec.getThreads()));
 			}
-		}).setText( Integer.toString( ec.getThreads() ) );
+		}).setText(Integer.toString(ec.getThreads()));
 		stopButton = addButton(component, "Stop", new ActionListener()
 		{
 			@Override
@@ -762,35 +772,21 @@ public class EcSwingX extends JXPanel implements EcReportable
 				goButton.setEnabled(true);
 				stopButton.setEnabled(false);
 				timeStarted = 0;
-				for (JComponent j : textBoxes)
+				for (JComponent j : inputControls)
 					j.setEnabled(true);
 				lastUpdate = 0;
 			}
 		});
 		stopButton.setEnabled(false);
+		final EcReportable ri = this;
 		goButton = addButton(component, "Start", new ActionListener()
 		{
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				ec.onNewBuild = new ActionListener()
-				{
-					@Override
-					public void actionPerformed(final ActionEvent e)
-					{
-						SwingUtilities.invokeLater(new Runnable()
-						{
-							@Override
-							public void run()
-							{
-								EcState destination = (EcState) e.getSource();
-								outputText.setText(e.getActionCommand());
-								lastUpdate = new Date().getTime();
-							}
-						});
-					}
-				};
-				for (JComponent j : textBoxes)
+				ec.reportInterface = ri;
+
+				for (JComponent j : inputControls)
 					j.setEnabled(false);
 				restartChamber();
 				tabPane.setSelectedIndex(5);
@@ -835,9 +831,9 @@ public class EcSwingX extends JXPanel implements EcReportable
 					throw new NumberFormatException();
 				if (Integer.parseInt(split[1]) < 0)
 					throw new NumberFormatException();
-				return Integer.parseInt(split[0])*60+Integer.parseInt(split[1]);
+				return Integer.parseInt(split[0]) * 60 + Integer.parseInt(split[1]);
 			}
-			
+
 			Integer i = Integer.parseInt(text);
 			if (i < 0)
 				throw new NumberFormatException();
@@ -861,10 +857,10 @@ public class EcSwingX extends JXPanel implements EcReportable
 			ec.stop();
 		try
 		{
-			EcState finalDestination = (EcState) destination[destination.length-1].clone();
-			for (int i = 0;i < destination.length-1;i++)
+			EcState finalDestination = (EcState) destination[destination.length - 1].clone();
+			for (int i = 0; i < destination.length - 1; i++)
 				finalDestination.waypoints.add((EcState) destination[i].clone());
-			
+
 			ec.setDestination(finalDestination);
 			ec.go();
 		}
@@ -919,14 +915,16 @@ public class EcSwingX extends JXPanel implements EcReportable
 			}
 
 			@Override
-			public void focusGained(FocusEvent e){}
+			public void focusGained(FocusEvent e)
+			{
+			}
 		});
-		textBoxes.add(label);
-		textBoxes.add(textField);
+		inputControls.add(label);
+		inputControls.add(textField);
 		return textField;
 	}
 
-	private void addCheck(JPanel container, String name, final ActionListener a)
+	private JCheckBox addCheck(JPanel container, String name, final ActionListener a)
 	{
 		GridBagConstraints gridBagConstraints;
 
@@ -951,7 +949,72 @@ public class EcSwingX extends JXPanel implements EcReportable
 				a.actionPerformed(new ActionEvent(checkBox, 0, "changed"));
 			}
 		});
-		textBoxes.add(checkBox);
+		inputControls.add(checkBox);
+		return checkBox;
+	}
+
+	private static EcAutoUpdate checkForUpdates()
+	{
+		EcAutoUpdate ecUpdater = new EcAutoUpdate(EC_VERSION);
+		if (ecUpdater.isUpdateAvailable())
+		{
+			JOptionPane pane = new JOptionPane(
+					"A newer version of the Evolution Chamber is available. Do you want to update now?");
+			Object[] options = new String[] { "Yes", "No" };
+			pane.setOptions(options);
+			JDialog dialog = pane.createDialog(new JFrame(), "Evolution Chamber Update Available");
+			dialog.setVisible(true);
+
+			Object obj = pane.getValue();
+
+			if (options[0].equals(obj))
+			{ // User selection = "Yes"
+				JFrame updateFrame = new JFrame();
+				updateFrame.setTitle("Updating");
+
+				final JProgressBar updateProgress = new JProgressBar(0, 100);
+				updateProgress.setValue(0);
+				updateProgress.setStringPainted(true);
+				updateFrame.add(updateProgress);
+				updateFrame.setPreferredSize(new Dimension(200, 100));
+				updateFrame.pack();
+				updateFrame.setLocationRelativeTo(null);
+				updateFrame.setVisible(true);
+				ecUpdater.addPropertyChangeListener(new PropertyChangeListener()
+				{
+					public void propertyChange(PropertyChangeEvent evt)
+					{
+						if ("progress".equals(evt.getPropertyName()))
+						{
+							updateProgress.setValue((Integer) evt.getNewValue());
+						}
+					}
+				});
+				ecUpdater.execute();
+			}
+		}
+		return ecUpdater;
+	}
+
+	@Override
+	public void bestScore(final EcState finalState, int intValue, final String text)
+	{
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				outputText.setText(text);
+				lastUpdate = new Date().getTime();
+			}
+		});
+	}
+
+	@Override
+	public void threadScore(int threadIndex, String output)
+	{
+		// TODO Auto-generated method stub
+
 	}
 
 }

@@ -34,6 +34,7 @@ import com.fray.evo.action.build.EcActionBuildRoachWarren;
 import com.fray.evo.action.build.EcActionBuildSpawningPool;
 import com.fray.evo.action.build.EcActionBuildSpineCrawler;
 import com.fray.evo.action.build.EcActionBuildSpire;
+import com.fray.evo.action.build.EcActionBuildSporeCrawler;
 import com.fray.evo.action.build.EcActionBuildUltralisk;
 import com.fray.evo.action.build.EcActionBuildUltraliskCavern;
 import com.fray.evo.action.build.EcActionBuildZergling;
@@ -78,9 +79,8 @@ public class EcRequirementTree
 		add(actions,new EcActionWait(), destination);
 		add(actions,new EcActionBuildQueen(), destination);
 		add(actions,new EcActionBuildDrone(), destination);
-		add(actions,new EcActionExtractorTrick(), destination);
-		add(actions,new EcActionMineGas(), destination);
-		add(actions,new EcActionMineMineral(), destination);
+		if (EcSettings.useExtractorTrick)
+			add(actions,new EcActionExtractorTrick(), destination);
 		add(actions,new EcActionBuildHatchery(), destination);
 		add(actions,new EcActionBuildOverlord(), destination);
 		add(actions,new EcActionBuildSpawningPool(), destination);
@@ -188,6 +188,8 @@ public class EcRequirementTree
 			add(actions,new EcActionBuildZergling(), destination);
 		if (destination.spineCrawlers > 0)
 			add(actions,new EcActionBuildSpineCrawler(), destination);
+		if (destination.sporeCrawlers > 0)
+			add(actions,new EcActionBuildSporeCrawler(), destination);
 		if (destination.overseers > 0)
 			add(actions,new EcActionBuildOverseer(), destination);
 		if (destination.nydusNetwork > 0)

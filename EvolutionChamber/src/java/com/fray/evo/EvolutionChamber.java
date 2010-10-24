@@ -1,7 +1,5 @@
 package com.fray.evo;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,8 +10,6 @@ import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -40,18 +36,19 @@ public class EvolutionChamber
 	// file is half written)
 	private static File			SEEDS_EVO			= null;
 	private static File			SEEDS_EVO_2			= null;
+	
 	public int					CHROMOSOME_LENGTH	= 120;
 	int							NUM_THREADS			= Runtime.getRuntime().availableProcessors();
 	public int					POPULATION_SIZE		= 200;
+	public double				BASE_MUTATION_RATE	= 5;
 
 	public Double				bestScore			= new Double(0);
 
 	static List<EcBuildOrder>	seeds				= new ArrayList<EcBuildOrder>();
 	private EcState				destination			= EcState.defaultDestination();
-	public ActionListener		onNewBuild;
+	public EcReportable			reportInterface;
 	public List<Thread>			threads				= new ArrayList<Thread>();
-	private boolean				kill				= false;
-	public double				BASE_CHANCE			= 5;
+	private boolean				killThreads			= false;
 	public static Double[]		bestScores;
 	public static Integer[]		evolutionsSinceDiscovery;
 
@@ -76,11 +73,11 @@ public class EvolutionChamber
 
 	public void go() throws InvalidConfigurationException
 	{
-		kill = false;
+		killThreads = false;
 		EcState s = importSource();
 		EcState d = getInternalDestination();
 		EcAction.setup(d);
-		CHROMOSOME_LENGTH = d.getSumStuff() + 70;
+		CHROMOSOME_LENGTH = d.getSumStuff() + 50;
 		bestScore = new Double(0);
 		bestScores = new Double[NUM_THREADS];
 		evolutionsSinceDiscovery = new Integer[NUM_THREADS];
@@ -92,7 +89,7 @@ public class EvolutionChamber
 			spawnEvolutionaryChamber(s, d, threadIndex);
 		}
 
-		if (onNewBuild == null)
+		if (reportInterface == null)
 			while (true)
 				try
 				{
@@ -106,7 +103,7 @@ public class EvolutionChamber
 
 	public void stop()
 	{
-		kill = true;
+		killThreads = true;
 		for (Thread t : threads)
 			try
 			{
@@ -120,17 +117,108 @@ public class EvolutionChamber
 
 	}
 
-	private void spawnEvolutionaryChamber(final EcState s, final EcState d, final int threadIndex)
+	private void spawnEvolutionaryChamber(final EcState source, final EcState destination, final int threadIndex)
 			throws InvalidConfigurationException
 	{
 		bestScores[threadIndex] = new Double(0);
 		evolutionsSinceDiscovery[threadIndex] = new Integer(0);
 		DefaultConfiguration.reset(threadIndex + " thread.");
+		
+		final EcEvolver myFunc = new EcEvolver(source, destination);
+		
+		final Configuration conf = constructConfiguration(threadIndex, myFunc);
+
+		final Genotype population = Genotype.randomInitialGenotype(conf);
+
+		if (threadIndex == 0) // On first thread only
+			loadOldBuildOrders(population, conf, myFunc);
+
+		final Thread thread = new Thread(population);
+		conf.getEventManager().addEventListener(GeneticEvent.GENOTYPE_EVOLVED_EVENT, new GeneticEventListener()
+		{
+			@Override
+			public void geneticEventFired(GeneticEvent a_firedEvent)
+			{
+				Collections.shuffle(conf.getGeneticOperators());
+				BASE_MUTATION_RATE += .001;
+				if (BASE_MUTATION_RATE >= CHROMOSOME_LENGTH / 2)
+					BASE_MUTATION_RATE = 1;
+				IChromosome fittestChromosome = population.getFittestChromosome();
+				if (killThreads)
+					thread.interrupt();
+				double fitnessValue = fittestChromosome.getFitnessValue();
+				if (fitnessValue > bestScores[threadIndex])
+				{
+					bestScores[threadIndex] = fitnessValue;
+					evolutionsSinceDiscovery[threadIndex] = 0;
+					BASE_MUTATION_RATE = 1;
+					if (reportInterface != null)
+						reportInterface.threadScore(threadIndex,getOutput(myFunc,fittestChromosome,fitnessValue));
+				}
+				else
+					evolutionsSinceDiscovery[threadIndex]++;
+
+				if (evolutionsSinceDiscovery[threadIndex] > 1000 && fitnessValue < bestScore)
+					restart(source, destination, threadIndex, thread);
+
+				synchronized (bestScore)
+				{
+					if (fitnessValue > bestScore)
+					{
+						BASE_MUTATION_RATE = 1;
+						bestScore = fitnessValue;
+
+						String results = getOutput(myFunc, fittestChromosome, fitnessValue);
+						
+						if (reportInterface != null)
+							reportInterface.bestScore(myFunc.evaluateGetBuildOrder(fittestChromosome),
+									bestScore.intValue(), results);
+
+						displayChromosome(fittestChromosome);
+						saveSeeds(fittestChromosome);
+					}
+				}
+			}
+
+		});
+		thread.setPriority(Thread.MIN_PRIORITY);
+		thread.start();
+		threads.add(thread);
+	}
+
+	private String getOutput(final EcEvolver myFunc, IChromosome fittestChromosome, double fitnessValue)
+	{
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		PrintStream ps = new PrintStream(byteArrayOutputStream);
+		if (reportInterface != null)
+			myFunc.log = ps;
+
+		displayBuildOrder(myFunc, fittestChromosome);
+		myFunc.log.println(new Date() + ": " + fitnessValue);
+		String results = new String(byteArrayOutputStream.toByteArray());
+		return results;
+	}
+	
+	private void restart(final EcState source, final EcState destination, final int threadIndex, final Thread t1)
+	{
+		// Stagnation. Suicide village and try again.
+		System.out.println("Restarting thread " + threadIndex);
+		try
+		{
+			spawnEvolutionaryChamber(source, destination, threadIndex);
+		}
+		catch (InvalidConfigurationException e)
+		{
+			e.printStackTrace();
+		}
+		t1.interrupt();
+	}
+	
+	private Configuration constructConfiguration(final int threadIndex, final EcEvolver myFunc)
+			throws InvalidConfigurationException
+	{
 		final Configuration conf = new DefaultConfiguration(threadIndex + " thread.", threadIndex + " thread.");
-
-		final EcEvolver myFunc = new EcEvolver(s, d);
 		conf.setFitnessFunction(myFunc);
-
 		conf.addGeneticOperator(EcGeneticUtil.getCleansingOperator(this));
 		conf.addGeneticOperator(EcGeneticUtil.getOverlordingOperator(this));
 		conf.addGeneticOperator(EcGeneticUtil.getInsertionOperator(this));
@@ -142,81 +230,10 @@ public class EvolutionChamber
 		conf.setPreservFittestIndividual(false);
 		conf.setAlwaysCaculateFitness(false);
 		conf.setKeepPopulationSizeConstant(false);
-
 		Gene[] initialGenes = importInitialGenes(conf);
 		Chromosome c = new Chromosome(conf, initialGenes);
 		conf.setSampleChromosome(c);
-
-		final Genotype population = Genotype.randomInitialGenotype(conf);
-
-		if (threadIndex == 0) // On first thread only
-			loadOldBuildOrders(population, conf, myFunc);
-
-		final Thread t1 = new Thread(population);
-		conf.getEventManager().addEventListener(GeneticEvent.GENOTYPE_EVOLVED_EVENT, new GeneticEventListener()
-		{
-			@Override
-			public void geneticEventFired(GeneticEvent a_firedEvent)
-			{
-				Collections.shuffle(conf.getGeneticOperators());
-				BASE_CHANCE += .001;
-				if (BASE_CHANCE >= CHROMOSOME_LENGTH / 2)
-					BASE_CHANCE = 1;
-				IChromosome fittestChromosome = population.getFittestChromosome();
-				if (kill)
-					t1.interrupt();
-				double fitnessValue = fittestChromosome.getFitnessValue();
-				if (fitnessValue > bestScores[threadIndex])
-				{
-					bestScores[threadIndex] = fitnessValue;
-					evolutionsSinceDiscovery[threadIndex] = 0;
-					BASE_CHANCE = 1;
-				}
-				else
-					evolutionsSinceDiscovery[threadIndex]++;
-
-				if (evolutionsSinceDiscovery[threadIndex] > 1000 && fitnessValue < bestScore)
-				{
-					// Stagnation. Suicide village and try again.
-					System.out.println("Restarting thread " + threadIndex);
-					try
-					{
-						spawnEvolutionaryChamber(s, d, threadIndex);
-					}
-					catch (InvalidConfigurationException e)
-					{
-						e.printStackTrace();
-					}
-					t1.interrupt();
-				}
-
-				synchronized (bestScore)
-				{
-					if (fitnessValue > bestScore)
-					{
-						BASE_CHANCE = 1;
-						bestScore = fitnessValue;
-
-						ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-						PrintStream ps = new PrintStream(byteArrayOutputStream);
-						if (onNewBuild != null)
-							myFunc.log = ps;
-
-						displayBuildOrder(myFunc, fittestChromosome);
-						myFunc.log.println(new Date() + ": " + fitnessValue);
-						displayChromosome(fittestChromosome);
-						saveSeeds(fittestChromosome);
-						if (onNewBuild != null)
-							onNewBuild.actionPerformed(new ActionEvent(myFunc.evaluateGetBuildOrder(fittestChromosome),
-									bestScore.intValue(), new String(byteArrayOutputStream.toByteArray())));
-						System.out.println();
-					}
-				}
-			}
-		});
-		t1.start();
-		t1.setPriority(1);
-		threads.add(t1);
+		return conf;
 	}
 
 	public static void displayChromosome(IChromosome fittestChromosome)
@@ -231,6 +248,7 @@ public class EvolutionChamber
 			else
 				System.out.print(g.getAllele().toString());
 		}
+		System.out.println();
 	}
 
 	private void displayBuildOrder(final EcEvolver myFunc, IChromosome fittestChromosome)
@@ -436,7 +454,7 @@ public class EvolutionChamber
 
 	public void setThreads(int digit)
 	{
-		int availableProcessors = NUM_THREADS;
+		int availableProcessors = Runtime.getRuntime().availableProcessors();
 		NUM_THREADS = digit;
 		if (NUM_THREADS > availableProcessors || NUM_THREADS < 1)
 			NUM_THREADS = availableProcessors;

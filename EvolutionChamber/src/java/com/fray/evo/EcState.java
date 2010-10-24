@@ -174,7 +174,7 @@ public class EcState
 
 	public int supply()
 	{
-		return (overlords + overseers) * 8 + 2 * bases();
+		return Math.min((overlords + overseers) * 8 + 2 * bases(),200);
 	}
 
 	public static EcState defaultDestination()
@@ -387,6 +387,18 @@ public class EcState
 	public boolean isSatisfied(EcState candidate)
 	{
 		EcState c = candidate;
+		
+		if (waypoints.size() > 0)
+		{
+			EcState state = defaultDestination();
+			for (EcState s : waypoints)
+			{
+				state.union(s);
+			}
+			state.union(this);
+			return state.isSatisfied(candidate);
+		}
+		
 		if (c.drones < drones)
 			return false;
 		if (c.zerglings < zerglings)

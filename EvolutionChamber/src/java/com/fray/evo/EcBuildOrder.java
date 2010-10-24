@@ -13,9 +13,9 @@ public class EcBuildOrder extends EcState implements Serializable
 {
 	static final long		serialVersionUID	= 1L;
 	public int				larva				= 3;
-	public int				dronesGoingOnMinerals	= 0;
+	public int				dronesGoingOnMinerals	= 6;
 	public int				dronesGoingOnGas	= 0;
-	public int				dronesOnMinerals	= 6;
+	public int				dronesOnMinerals	= 0;
 	public int				dronesOnGas			= 0;
 	boolean					buildingLarva		= false;
 	public int				evolvingSpires		= 0;
@@ -26,10 +26,21 @@ public class EcBuildOrder extends EcState implements Serializable
 	transient MultiValueMap	futureAction		= new MultiValueMap();
 	ArrayList<EcAction>		actions				= new ArrayList<EcAction>();
 
+	public EcBuildOrder()
+	{
+		addFutureAction(2, new Runnable(){
+			@Override
+			public void run()
+			{
+				dronesOnMinerals +=6;
+				dronesGoingOnMinerals -=6;
+			}});
+	}
+	
 	@Override
 	public EcBuildOrder clone() throws CloneNotSupportedException
 	{
-		EcBuildOrder s = new EcBuildOrder();
+		final EcBuildOrder s = new EcBuildOrder();
 		s.larva = larva;
 		s.dronesGoingOnMinerals = dronesGoingOnMinerals;
 		s.dronesGoingOnGas = dronesGoingOnGas;

@@ -36,7 +36,7 @@ public class EcActionBuildQueen extends EcAction implements Serializable
 						{
 							if (e.debug)
 								e.obtained(s, " Larva+4");
-							s.larva += 4;
+							s.larva += Math.min(s.bases()*19,4);
 							s.addFutureAction(45, this);
 						}
 					});
@@ -57,7 +57,7 @@ public class EcActionBuildQueen extends EcAction implements Serializable
 									{
 										if (e.debug)
 											e.obtained(s, " Larva+4");
-										s.larva += 4;
+										s.larva += Math.min(s.bases()*19,4);
 										s.addFutureAction(45, this);
 									}
 								});
