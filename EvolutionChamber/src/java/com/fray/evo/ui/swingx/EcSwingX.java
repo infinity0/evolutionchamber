@@ -2,10 +2,12 @@ package com.fray.evo.ui.swingx;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -64,6 +66,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 	EcState[]					destination;
 	private JButton				goButton;
 	private JButton				stopButton;
+	private JButton				clipboardButton;
 	private JTextArea			statsText;
 	private JTabbedPane			tabPane;
 
@@ -131,7 +134,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 								tabPane.addTab("WP" + Integer.toString(i), lb);
 							addInputContainer(i, lb);
 						}
-						JPanel stats = new JPanel(new GridBagLayout());
+						JPanel stats = new JPanel(new BorderLayout());
 						addStats(stats);
 						JPanel settings = new JPanel(new GridBagLayout());
 						addSettings(settings);
@@ -153,9 +156,10 @@ public class EcSwingX extends JXPanel implements EcReportable
 			outside.setLeftComponent(stuffPanel);
 		}
 		{ //Right
-			JPanel right = new JPanel(new FlowLayout());
+			JPanel right = new JPanel(new BorderLayout());
 			addOutputContainer(right);
-			outside.setRightComponent(new JScrollPane(right));
+			addClipboardButton(right);
+			outside.setRightComponent(right);
 		}
 
 		add(outside);
@@ -205,6 +209,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 	private void addStats(JPanel stats)
 	{
 		stats.add(statsText = new JTextArea());
+		statsText.setEditable(false);
 		statsText.setAlignmentX(0);
 		statsText.setAlignmentY(0);
 		statsText.setTabSize(4);
@@ -228,7 +233,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 		gridBagConstraints.gridy = gridy + 1;
 		gridBagConstraints.insets = new Insets(1, 1, 1, 1);
 		leftbottom.add(statusbar, gridBagConstraints);
-		Timer t = new Timer(200, new ActionListener()
+		Timer t = new Timer(1000, new ActionListener()
 		{
 			@Override
 			public void actionPerformed(ActionEvent e)
@@ -267,7 +272,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 						statsText.setText(stats.toString());
 					}
 				}
-				statusbar.invalidate();
+				statusbar.repaint();
 			}
 		});
 		t.start();
@@ -275,16 +280,16 @@ public class EcSwingX extends JXPanel implements EcReportable
 
 	private void addOutputContainer(JPanel component)
 	{
-		component.add(outputText = new JTextArea());
+		component.add(new JScrollPane(outputText = new JTextArea()));
 		outputText.setAlignmentX(0);
 		outputText.setAlignmentY(0);
 		outputText.setTabSize(4);
+		outputText.setEditable(false);
 		StringBuilder sb = new StringBuilder();
 		sb.append("Hello! Welcome to the Evolution Chamber.");
 		sb.append("\nTo start, enter in some units you would like to have.");
 		sb.append("\nWhen you have decided what you would like, hit Start.");
-		sb
-				.append("\n\nPlease report any issues or new features you would like at: \nhttp://code.google.com/p/evolutionchamber/issues/list");
+		sb.append("\n\nPlease report any issues or new features you would like at: \nhttp://code.google.com/p/evolutionchamber/issues/list");
 		sb.append("\n\nHow to use:");
 		sb.append("\nEnter in what you would like to see as your end state. Hit Go. Be patient.");
 		sb.append("\nThe build order will compute, and it can take several minutes to potentially hours.");
@@ -754,7 +759,21 @@ public class EcSwingX extends JXPanel implements EcReportable
 			}
 		});
 	}
-
+	
+	private void addClipboardButton(final JPanel component)
+	{
+		component.add(clipboardButton = new JButton(), BorderLayout.PAGE_END);
+		clipboardButton.setText("Copy to clipboard");
+		clipboardButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+				clipboard.setContents(new StringSelection(outputText.getText()), null);
+			}
+		});
+	}
+	
 	private void addControlParts(JPanel component)
 	{
 		addInput(component, "Processors", new ActionListener()

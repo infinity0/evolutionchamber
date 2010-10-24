@@ -121,7 +121,13 @@ public class EcStandardFitness implements EcFitness {
 
 		if (state.isSatisfied(c))
 		{
+			c.preTimeScore = score;
 			score *= ((double) c.targetSeconds / (double) c.seconds) * ((double) c.targetSeconds / (double) c.seconds);
+			c.timeBonus = score - c.preTimeScore;
+			
+			System.out.println(String.format("PreTimeScore: %.2f",c.preTimeScore));
+			System.out.println(String.format("Time Bonus: %.2f",c.timeBonus));
+			
 
 			score = augmentScore(score, (int) c.minerals, (int) metric.minerals, .011, .011, false);
 			score = augmentScore(score, (int) c.gas, (int) metric.gas, .015, .015, false);

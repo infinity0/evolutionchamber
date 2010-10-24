@@ -15,6 +15,9 @@ public class EcState
 	
 	private EcFitness				fitness = null;
 	
+	public double preTimeScore = 0.0;
+	public double timeBonus = 0.0;
+	
 	public double					minerals			= 50;
 	public double					gas					= 0;
 	public double					supplyUsed			= 6;
