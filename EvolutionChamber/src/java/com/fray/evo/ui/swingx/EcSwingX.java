@@ -136,6 +136,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 						JPanel settings = new JPanel(new GridBagLayout());
 						addSettings(settings);
 						tabPane.addTab("Stats", stats);
+						tabPane.addTab("Settings", settings);
 						tabPane.setSelectedIndex(4);
 					}
 					GridBagConstraints gridBagConstraints = new GridBagConstraints();
@@ -170,11 +171,12 @@ public class EcSwingX extends JXPanel implements EcReportable
 				EcSettings.useExtractorTrick = getTrue(e);
 			}
 		}).setSelected(EcSettings.useExtractorTrick);
+		gridy++;
 		addCheck(settings, "Pull/Push workers to/from gas", new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				EcSettings.useExtractorTrick = getTrue(e);
+				EcSettings.pullWorkersFromGas = getTrue(e);
 			}
 		}).setSelected(EcSettings.useExtractorTrick);
 	}
