@@ -22,6 +22,9 @@ public class EcEconFitness implements EcFitness {
 		score = augmentScore(score, c.overlords, destination.overlords, 100, 1.0, waypoint);
 		score = augmentScore(score, c.overseers, destination.overseers, 250, 2.5, waypoint);
 
+		score = augmentScore(score, c.gasExtractors, destination.gasExtractors, 25, .25, waypoint);
+
+		
 		score = augmentScore(score, c.hatcheries, destination.hatcheries, 300, 3, waypoint);
 		score = augmentDropoffScore(score, c.lairs, destination.lairs, 550, 5.5, waypoint);
 		score = augmentDropoffScore(score, c.hives, destination.hives, 900, 9, waypoint);
