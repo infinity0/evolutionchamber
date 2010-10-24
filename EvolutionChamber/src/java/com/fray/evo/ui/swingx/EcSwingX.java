@@ -2,6 +2,7 @@ package com.fray.evo.ui.swingx;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -93,8 +94,16 @@ public class EcSwingX extends JXPanel implements EcReportable
 				frame.setPreferredSize(new Dimension(900, 800));
 				frame.pack();
 				frame.setLocationRelativeTo(null);
-				frame.setVisible(true);
 
+				final JFrame updateFrame = new JFrame();
+				updateFrame.setTitle("Automatic Update");
+				JLabel waiting = new JLabel("Checking for updates...");
+				updateFrame.getContentPane().setLayout(new FlowLayout());
+				updateFrame.getContentPane().add(waiting);
+				updateFrame.setSize(new Dimension(250, 70));
+				updateFrame.setLocationRelativeTo(null);
+				updateFrame.setVisible(true);
+				
 				SwingUtilities.invokeLater(new Runnable()
 				{
 					@Override
@@ -104,6 +113,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 						// Show the main window only when there are no updates
 						// running
 						frame.setVisible(!ecUpdater.isUpdating());
+						updateFrame.setVisible(ecUpdater.isUpdating());
 					}
 				});
 			}
@@ -183,6 +193,33 @@ public class EcSwingX extends JXPanel implements EcReportable
 				EcSettings.pullWorkersFromGas = getTrue(e);
 			}
 		}).setSelected(EcSettings.useExtractorTrick);
+		gridy++;
+		addInput(settings, "Minimum Pool Supply", new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				EcSettings.minimumPoolSupply = getDigit(e);
+				
+			}
+		}).setText("2");
+		gridy++;
+		addInput(settings, "Minimum Extractor Supply", new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				EcSettings.minimumExtractorSupply = getDigit(e);
+				
+			}
+		}).setText("2");
+		gridy++;
+		addInput(settings, "Minimum Hatchery Supply", new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				EcSettings.minimumHatcherySupply = getDigit(e);
+				
+			}
+		}).setText("2");
 	}
 
 	private void initializeWaypoints()
@@ -233,7 +270,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 		gridBagConstraints.gridy = gridy + 1;
 		gridBagConstraints.insets = new Insets(1, 1, 1, 1);
 		leftbottom.add(statusbar, gridBagConstraints);
-		Timer t = new Timer(1000, new ActionListener()
+		Timer t = new Timer(200, new ActionListener()
 		{
 			@Override
 			public void actionPerformed(ActionEvent e)
@@ -264,6 +301,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 						int threadIndex = 0;
 						stats.append(EcEvolver.evaluations / 1000 + "K games played.");
 						stats.append("\n" + ec.CHROMOSOME_LENGTH + " maximum length of build order.");
+						stats.append("\nStagnation Limit: "+ec.stagnationLimit);
 						stats.append("\n" + (int) permsPerSecond + " games played/second.");
 						stats.append("\nMutation Rate: " + ec.BASE_MUTATION_RATE / ec.CHROMOSOME_LENGTH);
 						for (Double d : ec.bestScores)

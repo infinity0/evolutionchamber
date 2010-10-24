@@ -27,6 +27,11 @@ public class EcActionMineGas extends EcAction implements Serializable
 			}
 		});
 	}
+	
+	@Override
+	public boolean isInvalid(EcBuildOrder s) {
+		return !isPossible(s);
+	}
 
 	@Override
 	public boolean isPossible(EcBuildOrder s)

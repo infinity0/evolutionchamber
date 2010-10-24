@@ -8,12 +8,12 @@ public class EcEconFitness implements EcFitness {
 	{
 		EcState c = current;
 		
-		score = augmentCappedScore(score, c.drones, destination.drones, c.bases()*30, 50, 10, waypoint);
+		score = augmentCappedScore(score, c.drones, destination.drones, c.bases()*30, 50, 4, waypoint);
 		score = augmentScore(score, c.zerglings, destination.zerglings, 25, .25, waypoint);
 		score = augmentScore(score, c.banelings, destination.banelings, 75, .75, waypoint);
 		score = augmentScore(score, c.roaches, destination.roaches, 100, 1.0, waypoint);
 		score = augmentScore(score, c.mutalisks, destination.mutalisks, 200, 2.0, waypoint);
-		score = augmentCappedScore(score, c.queens, destination.queens, c.bases()*2, 150, 3.5, waypoint);
+		score = augmentCappedScore(score, c.queens, destination.queens, c.bases()*2, 150, 2.5, waypoint);
 		score = augmentScore(score, c.hydralisks, destination.hydralisks, 150, 1.5, waypoint);
 		score = augmentScore(score, c.infestors, destination.infestors, 250, 2.5, waypoint);
 		score = augmentScore(score, c.corruptors, destination.corruptors, 250, 2.5, waypoint);
@@ -22,10 +22,10 @@ public class EcEconFitness implements EcFitness {
 		score = augmentCappedScore(score, c.overlords, destination.overlords, 25, 100, 1.8, waypoint);
 		score = augmentScore(score, c.overseers, destination.overseers, 250, 2.5, waypoint);
 
-		score = augmentScore(score, c.gasExtractors, destination.gasExtractors, 25, .25, waypoint);
-
+		score = augmentScore(score, c.gasExtractors, destination.gasExtractors, 25, 1.5, waypoint);
 		
-		score = augmentDropoffScore(score, c.hatcheries, destination.hatcheries, 300, 5, waypoint);
+		
+		score = augmentDropoffScore(score, c.hatcheries, destination.hatcheries, 300, 4.5, waypoint);
 		score = augmentDropoffScore(score, c.lairs, destination.lairs, 550, 5.5, waypoint);
 		score = augmentDropoffScore(score, c.hives, destination.hives, 900, 9, waypoint);
 		score = augmentDropoffScore(score, c.spawningPools, destination.spawningPools, 200, 2, waypoint);
@@ -135,32 +135,24 @@ public class EcEconFitness implements EcFitness {
 
 		if (state.isSatisfied(c))
 		{
-			//score -= (c.supply() - c.supplyUsed)*2;
+			
 			
 			score *= 5.0;
+			score += Math.min(c.supply() - c.supplyUsed,8);
 			
-			//double scoreBasis = (score / 35.0);
+			score += ((double) (120*60) - (double) c.seconds) / 1.7;
 			
-			c.preTimeScore = score;
-			
-			score += ((double) (120*60) - (double) c.seconds) / 3.0;
-			
-			c.timeBonus = score - c.preTimeScore;
-			
-			System.out.println(String.format("PreTimeScore: %.2f",c.preTimeScore));
-			System.out.println(String.format("Time Bonus: %.2f",c.timeBonus));
-			
-			score = augmentScore(score, (int) c.minerals, (int) metric.minerals, .011, .011, false);
+			score = augmentScore(score, (int) c.minerals, (int) metric.minerals, 0.0011, 0.0011, false);
 			score = augmentScore(score, (int) c.gas, (int) metric.gas, .015, .015, false);
+			
+			
 			
 			
 		}
 		else
 		{
-			//score -= metric.supply() - metric.supplyUsed;
-			
-			score = augmentScore(score, (int) c.minerals, (int) metric.minerals, .0010, .0010, false);
-			score = augmentScore(score, (int) c.gas, (int) metric.gas, .0015, .0015, false);
+			score = augmentScore(score, (int) c.minerals, (int) metric.minerals, .00010, .00010, false);
+			score = augmentScore(score, (int) c.gas, (int) metric.gas, .005, .005, false);
 		}
 		// score = Math.max(score - candidate.invalidActions -
 		// candidate.actionLength - candidate.waits, 0);

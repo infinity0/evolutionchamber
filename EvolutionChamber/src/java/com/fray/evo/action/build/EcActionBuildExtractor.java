@@ -47,6 +47,8 @@ public class EcActionBuildExtractor extends EcAction implements Serializable
 	{
 		if (s.gasExtractors + s.extractorsBuilding >= s.extractors())
 			return true;
+		if(s.supplyUsed < EcSettings.minimumExtractorSupply)
+			return true;
 		return false;
 	}
 

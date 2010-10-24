@@ -7,6 +7,9 @@ public class EcSettings
 	public static boolean useExtractorTrick = true;
 	public static boolean pullWorkersFromGas = true;
 	public static EcFitnessType fitnessType = EcFitnessType.STANDARD;
+	public static int minimumPoolSupply = 2;
+	public static int minimumExtractorSupply = 2;
+	public static int minimumHatcherySupply = 2;
 
 	
 	private static EcFitness ff;

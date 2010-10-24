@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.fray.evo.EcBuildOrder;
 import com.fray.evo.EcEvolver;
+import com.fray.evo.EcSettings;
 import com.fray.evo.EcState;
 import com.fray.evo.action.EcAction;
 
@@ -37,6 +38,13 @@ public class EcActionBuildHatchery extends EcAction implements Serializable
 				s.hatcheriesBuilding -= 1;
 			}
 		});
+	}
+	
+	@Override
+	public boolean isInvalid(EcBuildOrder s) {
+		if(s.supplyUsed < EcSettings.minimumHatcherySupply)
+			return true;
+		return false;
 	}
 
 	@Override

@@ -27,6 +27,13 @@ public class EcActionMineMineral extends EcAction implements Serializable
 			}
 		});
 	}
+	
+	@Override
+	public boolean isInvalid(EcBuildOrder s) {
+		if (s.dronesOnGas != 0)
+			return false;
+		return true;
+	}
 
 	@Override
 	public boolean isPossible(EcBuildOrder s)

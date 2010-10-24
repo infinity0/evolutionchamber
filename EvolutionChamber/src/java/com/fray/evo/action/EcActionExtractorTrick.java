@@ -51,8 +51,6 @@ public class EcActionExtractorTrick extends EcAction implements Serializable
 			return false;
 		if (s.drones < 1)
 			return false;
-		if ((s.extractors() + s.extractorsBuilding) >= s.bases()*2)
-			return false;
 		return true;
 	}
 

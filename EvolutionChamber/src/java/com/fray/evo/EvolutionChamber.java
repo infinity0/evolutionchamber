@@ -37,22 +37,28 @@ public class EvolutionChamber
 	private static File			SEEDS_EVO			= null;
 	private static File			SEEDS_EVO_2			= null;
 	
-	public int					CHROMOSOME_LENGTH	= 120;
-	int							NUM_THREADS			= Runtime.getRuntime().availableProcessors();
-	public int					POPULATION_SIZE		= 200;
-	public double				BASE_MUTATION_RATE	= 5;
+	public int					CHROMOSOME_LENGTH		= 120;
+	int							NUM_THREADS				= Runtime.getRuntime().availableProcessors()*4;
+	int							MAX_NUM_THREADS			= Runtime.getRuntime().availableProcessors()*4;
+	public int					POPULATION_SIZE	 		= 200;
+	public double				BASE_MUTATION_RATE 		= 5;
+	int							STAGNATION_LIMIT_MIN	= 50;
 
-	public Double				bestScore			= new Double(0);
+	public Double				bestScore				= new Double(0);
+	public Integer				stagnationLimit 		= new Integer(0);
+	public Double				waterMark				= new Double(0);
 
-	static List<EcBuildOrder>	seeds				= new ArrayList<EcBuildOrder>();
-	private EcState				destination			= EcState.defaultDestination();
+	static List<EcBuildOrder>	seeds					= new ArrayList<EcBuildOrder>();
+	private EcState			destination				= EcState.defaultDestination();
 	public EcReportable			reportInterface;
-	public List<Thread>			threads				= new ArrayList<Thread>();
-	private boolean				killThreads			= false;
+	public List<Thread>			threads					= new ArrayList<Thread>();
+	private boolean			killThreads				= false;
 	public static Double[]		bestScores;
-	public static Integer[]		evolutionsSinceDiscovery;
+	public static Integer[]	evolutionsSinceDiscovery;
+	private boolean 			firstrun 				= true;
+	private boolean 			newbestscore 			= false;
 
-	static
+	static 
 	{
 		try
 		{
@@ -74,6 +80,7 @@ public class EvolutionChamber
 	public void go() throws InvalidConfigurationException
 	{
 		killThreads = false;
+		firstrun = true;
 		EcState s = importSource();
 		EcState d = getInternalDestination();
 		EcAction.setup(d);
@@ -130,9 +137,30 @@ public class EvolutionChamber
 
 		final Genotype population = Genotype.randomInitialGenotype(conf);
 
-		if (threadIndex == 0) // On first thread only
-			loadOldBuildOrders(population, conf, myFunc);
-
+		if(!firstrun)
+		{
+			int totalevoSinceDiscoveryOnBest = 0;
+			int numBestThreads = 0;
+			synchronized(bestScores)	{
+				for(int i = 0; i < bestScores.length; i++ ) {
+					if(bestScores[i] >= bestScore) {
+						numBestThreads++;
+						totalevoSinceDiscoveryOnBest += evolutionsSinceDiscovery[i];
+					}
+				}
+			}
+			
+			if(!(totalevoSinceDiscoveryOnBest > Math.max(stagnationLimit, STAGNATION_LIMIT_MIN) * numBestThreads) && numBestThreads < Math.max(Math.ceil(NUM_THREADS / 3), 1)) {
+				loadOldBuildOrders(population, conf,myFunc);
+			}
+		}
+		else if (firstrun && threadIndex == 0) {
+			loadOldBuildOrders(population, conf,myFunc);
+		}
+		else if (firstrun && threadIndex == NUM_THREADS - 1) {
+			firstrun = false;
+		}
+		
 		final Thread thread = new Thread(population);
 		conf.getEventManager().addEventListener(GeneticEvent.GENOTYPE_EVOLVED_EVENT, new GeneticEventListener()
 		{
@@ -158,8 +186,83 @@ public class EvolutionChamber
 				else
 					evolutionsSinceDiscovery[threadIndex]++;
 
-				if (evolutionsSinceDiscovery[threadIndex] > 1000 && fitnessValue < bestScore)
-					restart(source, destination, threadIndex, thread);
+				int highestevosSinceDiscovery = 0;
+				for(int i = 0; i < bestScores.length; i++ )
+				{
+					if(bestScores[i] >= bestScore)
+					{
+						if(evolutionsSinceDiscovery[i] > highestevosSinceDiscovery)
+							highestevosSinceDiscovery = evolutionsSinceDiscovery[i];
+					}
+				}
+				
+				stagnationLimit = (int)Math.ceil(highestevosSinceDiscovery * (.5));
+				
+				if(fitnessValue < bestScore)
+				{
+					if (evolutionsSinceDiscovery[threadIndex] > Math.max(stagnationLimit, STAGNATION_LIMIT_MIN) && fitnessValue < waterMark)
+					{
+						//Stagnation. Suicide village and try again.
+						System.out.println("Restarting thread " + threadIndex);
+						try
+						{
+							spawnEvolutionaryChamber(source, destination, threadIndex);
+						}
+						catch (InvalidConfigurationException e)
+						{
+							e.printStackTrace();
+						}
+						thread.interrupt();
+					}
+					else if(evolutionsSinceDiscovery[threadIndex] > Math.max(stagnationLimit, STAGNATION_LIMIT_MIN) * 3)
+					{
+						//Stagnation. Suicide village and try again.
+						System.out.println("Restarting thread " + threadIndex);
+						try
+						{
+							spawnEvolutionaryChamber(source, destination, threadIndex);
+						}
+						catch (InvalidConfigurationException e)
+						{
+							e.printStackTrace();
+						}
+						thread.interrupt();
+					}
+				}
+				else if (evolutionsSinceDiscovery[threadIndex] > Math.max(stagnationLimit, STAGNATION_LIMIT_MIN))
+				{
+					if(newbestscore)
+					{
+						waterMark = fitnessValue;
+					}
+					
+					int totalevoSinceDiscoveryOnBest = 0;
+					int numBestThreads = 0;
+					
+					for(int i = 0; i < bestScores.length; i++ )
+					{
+						if(bestScores[i] >= bestScore)
+						{
+							numBestThreads++;
+							totalevoSinceDiscoveryOnBest += evolutionsSinceDiscovery[i];
+						}
+					}
+					
+					if(totalevoSinceDiscoveryOnBest > Math.max(stagnationLimit, STAGNATION_LIMIT_MIN) * 3 * numBestThreads)
+					{
+						// Deadlock, open this thread.
+						System.out.println("Restarting thread " + threadIndex);
+						try
+						{
+							spawnEvolutionaryChamber(source, destination, threadIndex);
+						}
+						catch (InvalidConfigurationException e)
+						{
+							e.printStackTrace();
+						}
+						thread.interrupt();
+					}
+				}
 
 				synchronized (bestScore)
 				{
@@ -167,6 +270,7 @@ public class EvolutionChamber
 					{
 						BASE_MUTATION_RATE = 1;
 						bestScore = fitnessValue;
+						newbestscore = true;
 
 						String results = getOutput(myFunc, fittestChromosome, fitnessValue);
 						
@@ -454,7 +558,7 @@ public class EvolutionChamber
 
 	public void setThreads(int digit)
 	{
-		int availableProcessors = Runtime.getRuntime().availableProcessors();
+		int availableProcessors = MAX_NUM_THREADS;
 		NUM_THREADS = digit;
 		if (NUM_THREADS > availableProcessors || NUM_THREADS < 1)
 			NUM_THREADS = availableProcessors;

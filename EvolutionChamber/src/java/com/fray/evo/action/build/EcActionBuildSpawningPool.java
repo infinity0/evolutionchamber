@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.fray.evo.EcBuildOrder;
 import com.fray.evo.EcEvolver;
+import com.fray.evo.EcSettings;
 import com.fray.evo.EcState;
 import com.fray.evo.action.EcAction;
 
@@ -36,6 +37,8 @@ public class EcActionBuildSpawningPool extends EcAction implements Serializable
 	public boolean isInvalid(EcBuildOrder s)
 	{
 		if (s.spawningPools >= (new Date().getMinutes()%2)+1)
+			return true;
+		if(s.supplyUsed < EcSettings.minimumPoolSupply)
 			return true;
 		return super.isInvalid(s);
 	}
