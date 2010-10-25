@@ -274,8 +274,125 @@ public class EcState
 
 	public boolean isSatisfied(EcState candidate)
 	{
-		EcState c = candidate;
-		
+		if (candidate.drones < drones)
+			return false;
+		if (candidate.zerglings < zerglings)
+			return false;
+		if (candidate.banelings < banelings)
+			return false;
+		if (candidate.roaches < roaches)
+			return false;
+		if (candidate.hatcheries < hatcheries)
+			return false;
+		if (candidate.mutalisks < mutalisks)
+			return false;
+		if (candidate.queens < queens)
+			return false;
+		if (candidate.hydralisks < hydralisks)
+			return false;
+		if (candidate.infestors < infestors)
+			return false;
+		if (candidate.corruptors < corruptors)
+			return false;
+		if (candidate.ultralisks < ultralisks)
+			return false;
+		if (candidate.broodlords < broodlords)
+			return false;
+		if (candidate.overlords < overlords)
+			return false;
+		if (candidate.overseers < overseers)
+			return false;
+
+		if (candidate.hatcheries < hatcheries)
+			return false;
+		if (candidate.lairs < lairs)
+			return false;
+		if (candidate.hives < hives)
+			return false;
+		if (candidate.gasExtractors < gasExtractors)
+			return false;
+		if (candidate.spawningPools < spawningPools)
+			return false;
+		if (candidate.banelingNest < banelingNest)
+			return false;
+		if (candidate.roachWarrens < roachWarrens)
+			return false;
+		if (candidate.hydraliskDen < hydraliskDen)
+			return false;
+		if (candidate.infestationPit < infestationPit)
+			return false;
+		if (candidate.spire < spire)
+			return false;
+		if (candidate.greaterSpire < greaterSpire)
+			return false;
+		if (candidate.ultraliskCavern < ultraliskCavern)
+			return false;
+		if (candidate.evolutionChambers < evolutionChambers)
+			return false;
+		if (candidate.spineCrawlers < spineCrawlers)
+			return false;
+		if (candidate.sporeCrawlers < sporeCrawlers)
+			return false;
+		if (candidate.nydusNetwork < nydusNetwork)
+			return false;
+		if (candidate.nydusWorm < nydusWorm)
+			return false;
+
+		if ((!candidate.metabolicBoost) && metabolicBoost)
+			return false;
+		if ((!candidate.adrenalGlands) && adrenalGlands)
+			return false;
+		if ((!candidate.glialReconstitution) && glialReconstitution)
+			return false;
+		if ((!candidate.tunnelingClaws) && tunnelingClaws)
+			return false;
+		if ((!candidate.burrow) && burrow)
+			return false;
+		if ((!candidate.pneumatizedCarapace) && pneumatizedCarapace)
+			return false;
+		if ((!candidate.ventralSacs) && ventralSacs)
+			return false;
+		if ((!candidate.centrifugalHooks) && centrifugalHooks)
+			return false;
+		if ((!candidate.melee1) && melee1)
+			return false;
+		if ((!candidate.melee2) && melee2)
+			return false;
+		if ((!candidate.melee3) && melee3)
+			return false;
+		if ((!candidate.missile1) && missile1)
+			return false;
+		if ((!candidate.missile2) && missile2)
+			return false;
+		if ((!candidate.missile3) && missile3)
+			return false;
+		if ((!candidate.armor1) && armor1)
+			return false;
+		if ((!candidate.armor2) && armor2)
+			return false;
+		if ((!candidate.armor3) && armor3)
+			return false;
+		if ((!candidate.groovedSpines) && groovedSpines)
+			return false;
+		if ((!candidate.neuralParasite) && neuralParasite)
+			return false;
+		if ((!candidate.pathogenGlands) && pathogenGlands)
+			return false;
+		if ((!candidate.flyerAttack1) && flyerAttack1)
+			return false;
+		if ((!candidate.flyerAttack2) && flyerAttack2)
+			return false;
+		if ((!candidate.flyerAttack3) && flyerAttack3)
+			return false;
+		if ((!candidate.flyerArmor1) && flyerArmor1)
+			return false;
+		if ((!candidate.flyerArmor2) && flyerArmor2)
+			return false;
+		if ((!candidate.flyerArmor3) && flyerArmor3)
+			return false;
+		if ((!candidate.chitinousPlating) && chitinousPlating)
+			return false;
+
 		if (waypoints.size() > 0)
 		{
 			EcState state = defaultDestination();
@@ -287,125 +404,6 @@ public class EcState
 			return state.isSatisfied(candidate);
 		}
 		
-		if (c.drones < drones)
-			return false;
-		if (c.zerglings < zerglings)
-			return false;
-		if (c.banelings < banelings)
-			return false;
-		if (c.roaches < roaches)
-			return false;
-		if (c.hatcheries < hatcheries)
-			return false;
-		if (c.mutalisks < mutalisks)
-			return false;
-		if (c.queens < queens)
-			return false;
-		if (c.hydralisks < hydralisks)
-			return false;
-		if (c.infestors < infestors)
-			return false;
-		if (c.corruptors < corruptors)
-			return false;
-		if (c.ultralisks < ultralisks)
-			return false;
-		if (c.broodlords < broodlords)
-			return false;
-		if (c.overlords < overlords)
-			return false;
-		if (c.overseers < overseers)
-			return false;
-
-		if (c.hatcheries < hatcheries)
-			return false;
-		if (c.lairs < lairs)
-			return false;
-		if (c.hives < hives)
-			return false;
-		if (c.gasExtractors < gasExtractors)
-			return false;
-		if (c.spawningPools < spawningPools)
-			return false;
-		if (c.banelingNest < banelingNest)
-			return false;
-		if (c.roachWarrens < roachWarrens)
-			return false;
-		if (c.hydraliskDen < hydraliskDen)
-			return false;
-		if (c.infestationPit < infestationPit)
-			return false;
-		if (c.spire < spire)
-			return false;
-		if (c.greaterSpire < greaterSpire)
-			return false;
-		if (c.ultraliskCavern < ultraliskCavern)
-			return false;
-		if (c.evolutionChambers < evolutionChambers)
-			return false;
-		if (c.spineCrawlers < spineCrawlers)
-			return false;
-		if (c.sporeCrawlers < sporeCrawlers)
-			return false;
-		if (c.nydusNetwork < nydusNetwork)
-			return false;
-		if (c.nydusWorm < nydusWorm)
-			return false;
-
-		if ((!c.metabolicBoost) & metabolicBoost)
-			return false;
-		if ((!c.adrenalGlands) & adrenalGlands)
-			return false;
-		if ((!c.glialReconstitution) & glialReconstitution)
-			return false;
-		if ((!c.tunnelingClaws) & tunnelingClaws)
-			return false;
-		if ((!c.burrow) & burrow)
-			return false;
-		if ((!c.pneumatizedCarapace) & pneumatizedCarapace)
-			return false;
-		if ((!c.ventralSacs) & ventralSacs)
-			return false;
-		if ((!c.centrifugalHooks) & centrifugalHooks)
-			return false;
-		if ((!c.melee1) & melee1)
-			return false;
-		if ((!c.melee2) & melee2)
-			return false;
-		if ((!c.melee3) & melee3)
-			return false;
-		if ((!c.missile1) & missile1)
-			return false;
-		if ((!c.missile2) & missile2)
-			return false;
-		if ((!c.missile3) & missile3)
-			return false;
-		if ((!c.armor1) & armor1)
-			return false;
-		if ((!c.armor2) & armor2)
-			return false;
-		if ((!c.armor3) & armor3)
-			return false;
-		if ((!c.groovedSpines) & groovedSpines)
-			return false;
-		if ((!c.neuralParasite) & neuralParasite)
-			return false;
-		if ((!c.pathogenGlands) & pathogenGlands)
-			return false;
-		if ((!c.flyerAttack1) & flyerAttack1)
-			return false;
-		if ((!c.flyerAttack2) & flyerAttack2)
-			return false;
-		if ((!c.flyerAttack3) & flyerAttack3)
-			return false;
-		if ((!c.flyerArmor1) & flyerArmor1)
-			return false;
-		if ((!c.flyerArmor2) & flyerArmor2)
-			return false;
-		if ((!c.flyerArmor3) & flyerArmor3)
-			return false;
-		if ((!c.chitinousPlating) & chitinousPlating)
-			return false;
-
 		return true;
 	}
 
