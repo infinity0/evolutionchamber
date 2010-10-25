@@ -18,7 +18,8 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
+import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
@@ -28,6 +29,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
@@ -95,7 +97,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 				frame.setTitle("Evolution Chamber v" + EC_VERSION);
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				frame.getContentPane().add(new EcSwingX());
-				frame.setPreferredSize(new Dimension(900, 800));
+				frame.setPreferredSize(new Dimension(900, 825));
 				frame.pack();
 				frame.setLocationRelativeTo(null);
 
@@ -182,22 +184,43 @@ public class EcSwingX extends JXPanel implements EcReportable
 
 	private void addSettings(JPanel settings)
 	{
-		addCheck(settings, "Worker parity till saturation", new ActionListener()
 		{
-			public void actionPerformed(ActionEvent e)
+			//somebody enlighten me please how this could be done easier... but it works  :)
+			final String[] radioButtonCaptions = {"None", "Until saturation", "Allow overdrones"};
+			final int defaultSelected;
+			if (EcSettings.overDrone) {
+				defaultSelected = 1;
+			} 
+			else if (EcSettings.workerParity) 
 			{
-				EcSettings.workerParity = getTrue(e);
-			}
-		}).setSelected(EcSettings.workerParity);
-		gridy++;
-		addCheck(settings, "Worker parity and over drone", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
+				defaultSelected = 2;
+			} 
+			else 
 			{
-				EcSettings.overDrone = getTrue(e);
+				defaultSelected = 0;
 			}
-		}).setSelected(EcSettings.overDrone);
-		gridy++;
+			addRadioButtonBox(settings, "Worker parity", radioButtonCaptions, defaultSelected, new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					if (getSelected(e).equals(radioButtonCaptions[1]))
+					{
+						EcSettings.workerParity = true;
+						EcSettings.overDrone = false;
+					} else if (getSelected(e).equals(radioButtonCaptions[2]))
+					{
+						EcSettings.workerParity = false;
+						EcSettings.overDrone = true;
+					} else 
+					{
+						EcSettings.workerParity = false;
+						EcSettings.overDrone = false;
+					}
+					System.out.println("saturation: " + EcSettings.workerParity + "\noverdrone: " + EcSettings.overDrone);
+				}
+			});
+			gridy++;
+		}
 		addCheck(settings, "Use Extractor Trick", new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -378,7 +401,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 		outputText.setText(sb.toString());
 	}
 
-	private void addInputContainer(final int i, JPanel component)
+	private void addInputContainer(final int i, final JPanel component)
 	{
 		// addInput(component, "", new ActionListener()
 		// {
@@ -831,6 +854,24 @@ public class EcSwingX extends JXPanel implements EcReportable
 				destination[i].greaterSpire = getDigit(e);
 			}
 		});
+		gridy++;
+		inputControls.add(addButton(component, "Reset all fields", 4, new ActionListener()
+		{
+			public void actionPerformed (ActionEvent e)
+			{
+				for (int i = 0; i < component.getComponentCount(); i++) {
+					if (component.getComponent(i) instanceof JTextField)
+					{
+						if (((JTextField) component.getComponent(i)).getText().indexOf(":") == -1) // is not a "Deadline" field
+							((JTextField) component.getComponent(i)).setText("0");
+					} 
+					else if (component.getComponent(i) instanceof JCheckBox) 
+					{
+						((JCheckBox) component.getComponent(i)).setSelected(false);
+					}
+				}
+			}
+		}));
 	}
 	
 	private void addOutputButtons(JPanel component)
@@ -939,6 +980,23 @@ public class EcSwingX extends JXPanel implements EcReportable
 		button.addActionListener(actionListener);
 		return button;
 	}
+	
+	private JButton addButton(JPanel container, String string, int gridwidth, ActionListener actionListener)
+	{
+		final JButton button = new JButton();
+
+		button.setText(string);
+		GridBagConstraints gridBagConstraints = new GridBagConstraints();
+		gridBagConstraints.anchor = GridBagConstraints.WEST;
+		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+		gridBagConstraints.weightx = .25;
+		gridBagConstraints.gridy = gridy;
+		gridBagConstraints.gridwidth = gridwidth;
+		gridBagConstraints.insets = new Insets(1, 1, 1, 1);
+		container.add(button, gridBagConstraints);
+		button.addActionListener(actionListener);
+		return button;
+	}
 
 	protected int getDigit(ActionEvent e)
 	{
@@ -994,6 +1052,38 @@ public class EcSwingX extends JXPanel implements EcReportable
 		{
 			e.printStackTrace();
 		}
+	}
+	
+	private JPanel addRadioButtonBox (JPanel container, String title, String[] captions, int defaultSelected, final ActionListener a) 
+	{
+		GridBagConstraints gridBagConstraints = new GridBagConstraints();
+		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+		gridBagConstraints.gridy = gridy;
+		gridBagConstraints.gridwidth = 2;
+		gridBagConstraints.insets = new Insets(1, 1, 1, 1);
+		
+		JRadioButton[] buttons = new JRadioButton[captions.length];
+		ButtonGroup group = new ButtonGroup();
+		JPanel radioButtonBox = new JPanel();
+		radioButtonBox.setBorder(BorderFactory.createTitledBorder(title));
+		
+		for (int i = 0; i < buttons.length; i++) 
+		{
+			buttons[i] = new JRadioButton(captions[i]);
+			buttons[i].addActionListener(a);
+			inputControls.add(buttons[i]);
+			group.add(buttons[i]);
+			if (i == defaultSelected)
+				buttons[i].setSelected(true);
+			radioButtonBox.add(buttons[i]);
+		}
+		container.add(radioButtonBox, gridBagConstraints);
+		return radioButtonBox;
+	}
+	
+	protected String getSelected(ActionEvent e) {
+		JRadioButton radioButton = (JRadioButton) e.getSource();
+		return radioButton.getText();
 	}
 
 	protected boolean getTrue(ActionEvent e)
