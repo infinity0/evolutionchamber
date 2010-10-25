@@ -839,10 +839,12 @@ public class EcSwingX extends JXPanel implements EcReportable
 			{
 				if (isSimpleBuildOrder) {
 					outputText.setText(detailedBuildOrder);
+					outputText.setTabSize(4);
 					switchOutputButton.setText("Switch to simple format");
 					isSimpleBuildOrder = false;
 				} else {
 					outputText.setText(simpleBuildOrder);
+					outputText.setTabSize(14);
 					switchOutputButton.setText("Switch to detailed format");
 					isSimpleBuildOrder = true;
 				}

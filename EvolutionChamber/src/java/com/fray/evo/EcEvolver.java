@@ -124,7 +124,7 @@ public class EcEvolver extends FitnessFunction
 				
 				if (!(a instanceof EcActionWait) && !(a instanceof EcActionBuildDrone))
 				{
-					sb.append((int)s.supplyUsed + "\t" + a.toBuildOrderString() + "\tM:" + (int)s.minerals + "\tG:" + (int)s.gas + "\n");	
+					sb.append((int)s.supplyUsed + "  " + a.toBuildOrderString() + "\tM:" + (int)s.minerals + "\tG:" + (int)s.gas + "\n");	
 				}
 				
 				a.execute(s, this);

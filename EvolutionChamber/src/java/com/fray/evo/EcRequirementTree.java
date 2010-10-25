@@ -14,6 +14,7 @@ import com.fray.evo.action.build.EcActionBuildBanelingNest;
 import com.fray.evo.action.build.EcActionBuildBroodLord;
 import com.fray.evo.action.build.EcActionBuildCorruptor;
 import com.fray.evo.action.build.EcActionBuildDrone;
+import com.fray.evo.action.build.EcActionBuildEvolutionChamber;
 import com.fray.evo.action.build.EcActionBuildExtractor;
 import com.fray.evo.action.build.EcActionBuildGreaterSpire;
 import com.fray.evo.action.build.EcActionBuildHatchery;
@@ -178,6 +179,8 @@ public class EcRequirementTree
 			add(actions,new EcActionBuildRoach(), destination);
 		if (destination.roachWarrens > 0)
 			add(actions,new EcActionBuildRoachWarren(), destination);
+		if (destination.evolutionChambers > 0)
+			add(actions,new EcActionBuildEvolutionChamber(), destination);
 		if (destination.spire > 0)
 			add(actions,new EcActionBuildSpire(), destination);
 		if (destination.ultraliskCavern > 0)
