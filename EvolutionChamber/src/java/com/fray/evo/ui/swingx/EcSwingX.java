@@ -182,6 +182,22 @@ public class EcSwingX extends JXPanel implements EcReportable
 
 	private void addSettings(JPanel settings)
 	{
+		addCheck(settings, "Worker parity till saturation", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				EcSettings.workerParity = getTrue(e);
+			}
+		}).setSelected(EcSettings.workerParity);
+		gridy++;
+		addCheck(settings, "Worker parity and over drone", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				EcSettings.overDrone = getTrue(e);
+			}
+		}).setSelected(EcSettings.overDrone);
+		gridy++;
 		addCheck(settings, "Use Extractor Trick", new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)

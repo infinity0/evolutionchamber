@@ -17,6 +17,7 @@ public class EcActionBuildBroodLord extends EcAction implements Serializable
 		s.minerals -= 150;
 		s.gas -= 150;
 		s.corruptors -= 1;
+		s.supplyUsed += 4;
 		s.addFutureAction(34, new Runnable()
 		{
 			@Override

@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.fray.evo.fitness.EcFitness;
 import com.fray.evo.fitness.EcStandardFitness;
+import static java.lang.Math.*;
 
 public class EcState
 {
@@ -274,6 +275,11 @@ public class EcState
 
 	public boolean isSatisfied(EcState candidate)
 	{
+		
+		int overDrones = ((candidate.seconds / 17) + 6) * 4 / 5;
+		int optimalDrones = (bases() * 16) + (gasExtractors * 3);
+		int parityDrones = min(overDrones, optimalDrones);
+		
 		if (waypoints.size() > 0)
 		{
 			EcState state = defaultDestination();
@@ -285,6 +291,13 @@ public class EcState
 			return state.isSatisfied(candidate);
 		}
 		
+		
+		if (EcSettings.workerParity && candidate.drones < parityDrones) {
+			return false;
+		}
+		if (EcSettings.overDrone && candidate.drones < overDrones) {
+			return false;
+		}
 		if (candidate.drones < drones)
 			return false;
 		if (candidate.zerglings < zerglings)

@@ -4,6 +4,8 @@ import com.fray.evo.fitness.*;
 
 public class EcSettings
 {
+	public static boolean workerParity = false;
+	public static boolean overDrone = false;
 	public static boolean useExtractorTrick = true;
 	public static boolean pullWorkersFromGas = true;
 	public static EcFitnessType fitnessType = EcFitnessType.STANDARD;
