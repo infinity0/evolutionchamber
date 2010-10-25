@@ -8,7 +8,6 @@ public class EcStandardFitness implements EcFitness {
 	{
 		EcState c = current;
 		
-		score = augmentScore(score, c.drones, destination.drones, 50, .5, waypoint);
 		score = augmentScore(score, c.zerglings, destination.zerglings, 25, .25, waypoint);
 		score = augmentScore(score, c.banelings, destination.banelings, 75, .75, waypoint);
 		score = augmentScore(score, c.roaches, destination.roaches, 100, 1.0, waypoint);
@@ -128,13 +127,14 @@ public class EcStandardFitness implements EcFitness {
 			//System.out.println(String.format("PreTimeScore: %.2f",c.preTimeScore));
 			//System.out.println(String.format("Time Bonus: %.2f",c.timeBonus));
 			
-
+			score = augmentScore(score, c.drones, metric.drones, 50, .58, false);
 			score = augmentScore(score, (int) c.minerals, (int) metric.minerals, .011, .011, false);
 			score = augmentScore(score, (int) c.gas, (int) metric.gas, .015, .015, false);
 		}
 		else
 		{
 
+			score = augmentScore(score, c.drones, metric.drones, 50, .50, false);
 			score = augmentScore(score, (int) c.minerals, (int) metric.minerals, .0010, .0010, false);
 			score = augmentScore(score, (int) c.gas, (int) metric.gas, .0015, .0015, false);
 		}
