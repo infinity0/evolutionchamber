@@ -350,6 +350,13 @@ public class EcSwingX extends JXPanel implements EcReportable
 		sb.append("\nAll the waypoints are cumulative, so if you enter 6 zergling@3:00 on WP1,");
 		sb.append("\n7 roach@6:00 on WP2, and 6 muta on final, you will end up with 6 lings,");
 		sb.append("\n7 roaches, and 6 mutas by the time it finds a valid build.");
+		sb.append("\n\nCurrent staff:");
+		sb.append("\nAzzurite (UI)");
+		sb.append("\nDocMaboul (Timing)");
+		sb.append("\nLomilar (Lead)");
+		sb.append("\nNetprobe (Auto-updater)");
+		sb.append("\nUtena (Genetics)");
+		sb.append("\nAbout 27 other people, who's names I need to compile (Testing)");
 		simpleBuildOrder = sb.toString();
 		detailedBuildOrder = sb.toString();
 		outputText.setText(sb.toString());
