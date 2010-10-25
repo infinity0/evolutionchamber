@@ -13,6 +13,7 @@ import org.jgap.impl.IntegerGene;
 
 import com.fray.evo.action.EcAction;
 import com.fray.evo.action.EcActionWait;
+import com.fray.evo.action.build.EcActionBuildDrone;
 import com.fray.evo.util.EcCacheMap;
 
 public class EcEvolver extends FitnessFunction
@@ -88,6 +89,55 @@ public class EcEvolver extends FitnessFunction
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public String getBuildOrder(IChromosome arg0)
+	{
+		//this is basically just a copy from the doEvaluate() function adjusted to return a build order string
+		EcBuildOrder s;
+		try
+		{
+			s = populateBuildOrder((EcBuildOrder) source, arg0);
+			
+			StringBuilder sb = new StringBuilder();
+			
+			int i = 0;
+			for (EcAction a : s.getActions())
+			{
+				i++;
+				if (a.isInvalid(s))
+				{
+					continue;
+				}
+				while (!a.canExecute(s))
+				{
+					if (s.seconds >= s.targetSeconds || destination.waypointMissed(s))
+					{
+						return "No finished build yet. A waypoint was not reached.";
+					}
+					
+					if (destination.isSatisfied(s))
+					{
+						return sb.toString();
+					}
+				}
+				
+				if (!(a instanceof EcActionWait) && !(a instanceof EcActionBuildDrone))
+				{
+					sb.append((int)s.supplyUsed + "\t" + a.toBuildOrderString() + "\tM:" + (int)s.minerals + "\tG:" + (int)s.gas + "\n");	
+				}
+				
+				a.execute(s, this);
+			}
+
+			return "No finished build yet. Ran out of things to do.";
+			
+		}
+		catch (CloneNotSupportedException e)
+		{
+			e.printStackTrace();
+			return "";
+		}
 	}
 
 	public static EcBuildOrder populateBuildOrder(EcBuildOrder source, IChromosome arg0)

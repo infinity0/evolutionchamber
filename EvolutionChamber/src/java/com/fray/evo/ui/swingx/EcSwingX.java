@@ -59,6 +59,9 @@ public class EcSwingX extends JXPanel implements EcReportable
 	private JLabel				status3;
 	protected long				timeStarted;
 	protected long				lastUpdate;
+	private String				simpleBuildOrder;
+	private String				detailedBuildOrder;
+	private boolean				isSimpleBuildOrder;
 	int							gridy			= 0;
 	private JXStatusBar			statusbar;
 	private List<JComponent>	inputControls	= new ArrayList<JComponent>();
@@ -68,6 +71,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 	private JButton				goButton;
 	private JButton				stopButton;
 	private JButton				clipboardButton;
+	private JButton				switchOutputButton;
 	private JTextArea			statsText;
 	private JTabbedPane			tabPane;
 
@@ -166,9 +170,9 @@ public class EcSwingX extends JXPanel implements EcReportable
 			outside.setLeftComponent(stuffPanel);
 		}
 		{ //Right
-			JPanel right = new JPanel(new BorderLayout());
+			JPanel right = new JPanel(new GridBagLayout());
 			addOutputContainer(right);
-			addClipboardButton(right);
+			addOutputButtons(right);
 			outside.setRightComponent(right);
 		}
 
@@ -318,7 +322,13 @@ public class EcSwingX extends JXPanel implements EcReportable
 
 	private void addOutputContainer(JPanel component)
 	{
-		component.add(new JScrollPane(outputText = new JTextArea()));
+		GridBagConstraints gridBagConstraints = new GridBagConstraints();
+		gridBagConstraints.fill = GridBagConstraints.BOTH;
+		gridBagConstraints.weighty = 1;
+		gridBagConstraints.gridy = 0;
+		gridBagConstraints.gridwidth = 2;
+		gridBagConstraints.insets = new Insets(1, 1, 1, 1);
+		component.add(new JScrollPane(outputText = new JTextArea()), gridBagConstraints);
 		outputText.setAlignmentX(0);
 		outputText.setAlignmentY(0);
 		outputText.setTabSize(4);
@@ -340,6 +350,8 @@ public class EcSwingX extends JXPanel implements EcReportable
 		sb.append("\nAll the waypoints are cumulative, so if you enter 6 zergling@3:00 on WP1,");
 		sb.append("\n7 roach@6:00 on WP2, and 6 muta on final, you will end up with 6 lings,");
 		sb.append("\n7 roaches, and 6 mutas by the time it finds a valid build.");
+		simpleBuildOrder = sb.toString();
+		detailedBuildOrder = sb.toString();
 		outputText.setText(sb.toString());
 	}
 
@@ -798,16 +810,42 @@ public class EcSwingX extends JXPanel implements EcReportable
 		});
 	}
 	
-	private void addClipboardButton(final JPanel component)
+	private void addOutputButtons(JPanel component)
 	{
-		component.add(clipboardButton = new JButton(), BorderLayout.PAGE_END);
-		clipboardButton.setText("Copy to clipboard");
+		GridBagConstraints gridBagConstraints = new GridBagConstraints();
+		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+		gridBagConstraints.gridy = 1;
+		gridBagConstraints.gridwidth = 1;
+		gridBagConstraints.insets = new Insets(1, 1, 1, 1);
+		gridBagConstraints.weightx = 0.25;
+		clipboardButton = new JButton("Copy to clipboard");
+		component.add(clipboardButton, gridBagConstraints);
 		clipboardButton.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 				clipboard.setContents(new StringSelection(outputText.getText()), null);
+			}
+		});
+		
+		switchOutputButton = new JButton("Switch to simple format");
+		isSimpleBuildOrder = false;
+		gridBagConstraints.weightx = 0.75;
+		component.add(switchOutputButton, gridBagConstraints);
+		switchOutputButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				if (isSimpleBuildOrder) {
+					outputText.setText(detailedBuildOrder);
+					switchOutputButton.setText("Switch to simple format");
+					isSimpleBuildOrder = false;
+				} else {
+					outputText.setText(simpleBuildOrder);
+					switchOutputButton.setText("Switch to detailed format");
+					isSimpleBuildOrder = true;
+				}
 			}
 		});
 	}
@@ -1056,14 +1094,21 @@ public class EcSwingX extends JXPanel implements EcReportable
 	}
 
 	@Override
-	public void bestScore(final EcState finalState, int intValue, final String text)
+	public void bestScore(final EcState finalState, int intValue, final String detailedText, final String simpleText)
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			@Override
 			public void run()
 			{
-				outputText.setText(text);
+				simpleBuildOrder = simpleText;
+				detailedBuildOrder = detailedText;
+				if (isSimpleBuildOrder) 
+				{
+					outputText.setText(simpleText);
+				} else {
+					outputText.setText(detailedText);
+				}
 				lastUpdate = new Date().getTime();
 			}
 		});

@@ -25,6 +25,17 @@ public abstract class EcAction implements Serializable
 	{
 		return getClass().getSimpleName().replace("EcAction", "");
 	}
+	
+	public String toBuildOrderString()
+	{
+		//remove all the prefixes
+		return getClass().getSimpleName()
+		.replace("EcAction", "")
+		.replace("Build", "")
+		.replace("Upgrade", "")
+		.replace("MineGas", "+1 Drone on gas")
+		.replace("MineMineral", "+1 Drone on minerals");
+	}
 
 	public boolean canExecute(EcBuildOrder s)
 	{

@@ -272,11 +272,12 @@ public class EvolutionChamber
 						bestScore = fitnessValue;
 						newbestscore = true;
 
-						String results = getOutput(myFunc, fittestChromosome, fitnessValue);
+						String exactBuildOrder = getOutput(myFunc, fittestChromosome, fitnessValue);
+						String buildOrder = getBuildOrder(myFunc, fittestChromosome);
 						
 						if (reportInterface != null)
 							reportInterface.bestScore(myFunc.evaluateGetBuildOrder(fittestChromosome),
-									bestScore.intValue(), results);
+									bestScore.intValue(), exactBuildOrder, buildOrder);
 
 						displayChromosome(fittestChromosome);
 						saveSeeds(fittestChromosome);
@@ -300,6 +301,12 @@ public class EvolutionChamber
 		displayBuildOrder(myFunc, fittestChromosome);
 		myFunc.log.println(new Date() + ": " + fitnessValue);
 		String results = new String(byteArrayOutputStream.toByteArray());
+		return results;
+	}
+	
+	public String getBuildOrder(final EcEvolver myFunc, IChromosome fittestChromosome)
+	{
+		String results = myFunc.getBuildOrder(fittestChromosome);
 		return results;
 	}
 	
