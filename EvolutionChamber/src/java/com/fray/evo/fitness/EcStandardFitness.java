@@ -113,10 +113,10 @@ public class EcStandardFitness implements EcFitness {
 		if (keepgoing)
 		{
 			state.union(metric);
-			score = augmentScore(c, metric, score, false);
+			score = augmentScore(c, state, score, false);
 		}
 		else
-			score = augmentScore(c, metric, score, false);
+			score = augmentScore(c, state, score, false);
 
 		if (state.isSatisfied(c))
 		{
@@ -127,16 +127,16 @@ public class EcStandardFitness implements EcFitness {
 			//System.out.println(String.format("PreTimeScore: %.2f",c.preTimeScore));
 			//System.out.println(String.format("Time Bonus: %.2f",c.timeBonus));
 			
-			score = augmentScore(score, c.drones, metric.drones, 50, .58, false);
-			score = augmentScore(score, (int) c.minerals, (int) metric.minerals, .011, .011, false);
-			score = augmentScore(score, (int) c.gas, (int) metric.gas, .015, .015, false);
+			score = augmentScore(score, c.drones, state.drones, 50, .58, false);
+			score = augmentScore(score, (int) c.minerals, (int) state.minerals, .011, .011, false);
+			score = augmentScore(score, (int) c.gas, (int) state.gas, .015, .015, false);
 		}
 		else
 		{
 
-			score = augmentScore(score, c.drones, metric.drones, 50, .50, false);
-			score = augmentScore(score, (int) c.minerals, (int) metric.minerals, .0010, .0010, false);
-			score = augmentScore(score, (int) c.gas, (int) metric.gas, .0015, .0015, false);
+			score = augmentScore(score, c.drones, state.drones, 50, .50, false);
+			score = augmentScore(score, (int) c.minerals, (int) state.minerals, .0010, .0010, false);
+			score = augmentScore(score, (int) c.gas, (int) state.gas, .0015, .0015, false);
 		}
 		// score = Math.max(score - candidate.invalidActions -
 		// candidate.actionLength - candidate.waits, 0);

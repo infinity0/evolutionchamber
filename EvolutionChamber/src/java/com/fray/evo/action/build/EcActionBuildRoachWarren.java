@@ -57,6 +57,7 @@ public class EcActionBuildRoachWarren extends EcAction implements Serializable
 	{
 		ArrayList<EcAction> l = new ArrayList<EcAction>();
 		l.add(new EcActionBuildSpawningPool());
+		destination.spawningPools = Math.min(destination.spawningPools, 1);
 		return l;
 	}
 

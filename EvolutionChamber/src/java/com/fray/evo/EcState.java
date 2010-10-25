@@ -274,6 +274,17 @@ public class EcState
 
 	public boolean isSatisfied(EcState candidate)
 	{
+		if (waypoints.size() > 0)
+		{
+			EcState state = defaultDestination();
+			for (EcState s : waypoints)
+			{
+				state.union(s);
+			}
+			state.union(this);
+			return state.isSatisfied(candidate);
+		}
+		
 		if (candidate.drones < drones)
 			return false;
 		if (candidate.zerglings < zerglings)
@@ -338,72 +349,61 @@ public class EcState
 		if (candidate.nydusWorm < nydusWorm)
 			return false;
 
-		if ((!candidate.metabolicBoost) && metabolicBoost)
+		if ((!candidate.metabolicBoost) & metabolicBoost)
 			return false;
-		if ((!candidate.adrenalGlands) && adrenalGlands)
+		if ((!candidate.adrenalGlands) & adrenalGlands)
 			return false;
-		if ((!candidate.glialReconstitution) && glialReconstitution)
+		if ((!candidate.glialReconstitution) & glialReconstitution)
 			return false;
-		if ((!candidate.tunnelingClaws) && tunnelingClaws)
+		if ((!candidate.tunnelingClaws) & tunnelingClaws)
 			return false;
-		if ((!candidate.burrow) && burrow)
+		if ((!candidate.burrow) & burrow)
 			return false;
-		if ((!candidate.pneumatizedCarapace) && pneumatizedCarapace)
+		if ((!candidate.pneumatizedCarapace) & pneumatizedCarapace)
 			return false;
-		if ((!candidate.ventralSacs) && ventralSacs)
+		if ((!candidate.ventralSacs) & ventralSacs)
 			return false;
-		if ((!candidate.centrifugalHooks) && centrifugalHooks)
+		if ((!candidate.centrifugalHooks) & centrifugalHooks)
 			return false;
-		if ((!candidate.melee1) && melee1)
+		if ((!candidate.melee1) & melee1)
 			return false;
-		if ((!candidate.melee2) && melee2)
+		if ((!candidate.melee2) & melee2)
 			return false;
-		if ((!candidate.melee3) && melee3)
+		if ((!candidate.melee3) & melee3)
 			return false;
-		if ((!candidate.missile1) && missile1)
+		if ((!candidate.missile1) & missile1)
 			return false;
-		if ((!candidate.missile2) && missile2)
+		if ((!candidate.missile2) & missile2)
 			return false;
-		if ((!candidate.missile3) && missile3)
+		if ((!candidate.missile3) & missile3)
 			return false;
-		if ((!candidate.armor1) && armor1)
+		if ((!candidate.armor1) & armor1)
 			return false;
-		if ((!candidate.armor2) && armor2)
+		if ((!candidate.armor2) & armor2)
 			return false;
-		if ((!candidate.armor3) && armor3)
+		if ((!candidate.armor3) & armor3)
 			return false;
-		if ((!candidate.groovedSpines) && groovedSpines)
+		if ((!candidate.groovedSpines) & groovedSpines)
 			return false;
-		if ((!candidate.neuralParasite) && neuralParasite)
+		if ((!candidate.neuralParasite) & neuralParasite)
 			return false;
-		if ((!candidate.pathogenGlands) && pathogenGlands)
+		if ((!candidate.pathogenGlands) & pathogenGlands)
 			return false;
-		if ((!candidate.flyerAttack1) && flyerAttack1)
+		if ((!candidate.flyerAttack1) & flyerAttack1)
 			return false;
-		if ((!candidate.flyerAttack2) && flyerAttack2)
+		if ((!candidate.flyerAttack2) & flyerAttack2)
 			return false;
-		if ((!candidate.flyerAttack3) && flyerAttack3)
+		if ((!candidate.flyerAttack3) & flyerAttack3)
 			return false;
-		if ((!candidate.flyerArmor1) && flyerArmor1)
+		if ((!candidate.flyerArmor1) & flyerArmor1)
 			return false;
-		if ((!candidate.flyerArmor2) && flyerArmor2)
+		if ((!candidate.flyerArmor2) & flyerArmor2)
 			return false;
-		if ((!candidate.flyerArmor3) && flyerArmor3)
+		if ((!candidate.flyerArmor3) & flyerArmor3)
 			return false;
-		if ((!candidate.chitinousPlating) && chitinousPlating)
+		if ((!candidate.chitinousPlating) & chitinousPlating)
 			return false;
 
-		if (waypoints.size() > 0)
-		{
-			EcState state = defaultDestination();
-			for (EcState s : waypoints)
-			{
-				state.union(s);
-			}
-			state.union(this);
-			return state.isSatisfied(candidate);
-		}
-		
 		return true;
 	}
 

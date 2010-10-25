@@ -52,7 +52,7 @@ import com.fray.evo.util.EcAutoUpdate;
 
 public class EcSwingX extends JXPanel implements EcReportable
 {
-	public static String		EC_VERSION		= "0016";
+	public static String		EC_VERSION		= "0017";
 	private JTextArea			outputText;
 	private JLabel				status1;
 	private JLabel				status2;

@@ -84,7 +84,7 @@ public class EvolutionChamber
 		EcState s = importSource();
 		EcState d = getInternalDestination();
 		EcAction.setup(d);
-		CHROMOSOME_LENGTH = d.getSumStuff() + 50;
+		CHROMOSOME_LENGTH = d.getSumStuff() + 70;
 		bestScore = new Double(0);
 		bestScores = new Double[NUM_THREADS];
 		evolutionsSinceDiscovery = new Integer[NUM_THREADS];
