@@ -354,7 +354,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 		sb.append("\nAzzurite (UI)");
 		sb.append("\nDocMaboul (Timing)");
 		sb.append("\nLomilar (Lead)");
-		sb.append("\nNetprobe (Auto-updater)");
+		sb.append("\nmulander (Auto-updater)");
 		sb.append("\nUtena (Genetics)");
 		sb.append("\nAbout 27 other people, who's names I need to compile (Testing)");
 		simpleBuildOrder = sb.toString();
