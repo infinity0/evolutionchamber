@@ -38,7 +38,7 @@ public class EvolutionChamber
 	private static File			SEEDS_EVO_2			= null;
 	
 	public int					CHROMOSOME_LENGTH		= 120;
-	int							NUM_THREADS				= Runtime.getRuntime().availableProcessors()*4;
+	int							NUM_THREADS				= Runtime.getRuntime().availableProcessors();
 	int							MAX_NUM_THREADS			= Runtime.getRuntime().availableProcessors()*4;
 	public int					POPULATION_SIZE	 		= 200;
 	public double				BASE_MUTATION_RATE 		= 5;
