@@ -8,6 +8,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.UnknownHostException;
+
 import javax.swing.SwingWorker;
 
 
@@ -51,6 +53,11 @@ public class EcAutoUpdate extends SwingWorker<Void, Void> {
 			}
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
+		} catch (UnknownHostException e) {
+			// If this happens then our network connection is probably down.
+			// We return the current version as there is no way to download any updates.
+			System.out.println("Update check failed - check your internet connection");
+			latestVersion = ecVersion;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
