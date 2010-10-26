@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.fray.evo.EcBuildOrder;
 import com.fray.evo.EcEvolver;
+import com.fray.evo.EcSettings;
 import com.fray.evo.EcState;
 
 public class EcActionMineGas extends EcAction implements Serializable
@@ -13,17 +14,36 @@ public class EcActionMineGas extends EcAction implements Serializable
 	@Override
 	public void execute(final EcBuildOrder s, final EcEvolver e)
 	{
-		s.dronesGoingOnGas += 1;
-		s.dronesOnMinerals -= 1;
+		if (EcSettings.pullThreeWorkersOnly) 
+		{
+			s.dronesGoingOnGas += 3;
+			s.dronesOnMinerals -= 3;
+		}
+		else
+		{
+			s.dronesGoingOnGas += 1;
+			s.dronesOnMinerals -= 1;
+		}
 		s.addFutureAction(2, new Runnable()
 		{
 			@Override
 			public void run()
 			{
-				if (e.debug)
-					e.mining(s," +1 on gas");
-				s.dronesGoingOnGas--;
-				s.dronesOnGas++;
+				if (EcSettings.pullThreeWorkersOnly) 
+				{
+					if (e.debug)
+						e.mining(s," +3 on gas");
+					s.dronesGoingOnGas -= 3;
+					s.dronesOnGas += 3;
+				}
+				else
+				{
+					if (e.debug)
+						e.mining(s," +1 on gas");
+					s.dronesGoingOnGas--;
+					s.dronesOnGas++;
+				}
+
 			}
 		});
 	}

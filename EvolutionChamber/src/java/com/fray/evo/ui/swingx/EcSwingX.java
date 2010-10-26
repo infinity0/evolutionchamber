@@ -229,13 +229,21 @@ public class EcSwingX extends JXPanel implements EcReportable
 			}
 		}).setSelected(EcSettings.useExtractorTrick);
 		gridy++;
-		addCheck(settings, "Pull/Push workers to/from gas", new ActionListener()
+		addCheck(settings, "Pull/Push workers from/to gas", new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				EcSettings.pullWorkersFromGas = getTrue(e);
 			}
 		}).setSelected(EcSettings.useExtractorTrick);
+		gridy++;
+		addCheck(settings, "Always pull/push 3 workers together", new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				EcSettings.pullThreeWorkersOnly = getTrue(e);
+			}
+		}).setSelected(EcSettings.pullThreeWorkersOnly);
 		gridy++;
 		addInput(settings, "Minimum Pool Supply", new ActionListener() {
 			

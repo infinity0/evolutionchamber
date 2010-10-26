@@ -12,6 +12,7 @@ import org.apache.commons.collections.SynchronizedPriorityQueue;
 import com.fray.evo.EcBuildOrder;
 import com.fray.evo.EcEvolver;
 import com.fray.evo.EcRequirementTree;
+import com.fray.evo.EcSettings;
 import com.fray.evo.EcState;
 
 public abstract class EcAction implements Serializable
@@ -29,12 +30,20 @@ public abstract class EcAction implements Serializable
 	public String toBuildOrderString()
 	{
 		//remove all the prefixes
-		return getClass().getSimpleName()
+		String result = 
+		getClass().getSimpleName()
 		.replace("EcAction", "")
 		.replace("Build", "")
-		.replace("Upgrade", "")
-		.replace("MineGas", "+1 Drone on gas")
-		.replace("MineMineral", "+1 Drone on minerals");
+		.replace("Upgrade", "");
+		if (EcSettings.pullThreeWorkersOnly)
+		{
+			result = result.replace("MineGas", "+3 Drones on gas").replace("MineMineral", "+3 Drones on minerals");
+		}
+		else
+		{
+			result = result.replace("MineGas", "+1 Drone on gas").replace("MineMineral", "+1 Drone on minerals");
+		}
+		return result;
 	}
 
 	public boolean canExecute(EcBuildOrder s)
