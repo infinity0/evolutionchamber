@@ -17,7 +17,7 @@ public class EcActionBuildBroodLord extends EcAction implements Serializable
 		s.minerals -= 150;
 		s.gas -= 150;
 		s.corruptors -= 1;
-		s.supplyUsed += 4;
+		s.supplyUsed += 2;
 		s.addFutureAction(34, new Runnable()
 		{
 			@Override
@@ -39,6 +39,8 @@ public class EcActionBuildBroodLord extends EcAction implements Serializable
 			return false;
 		if (s.corruptors < 1)
 			return false;
+		if (!s.hasSupply(2))
+			return false;
 		return true;
 	}
 
@@ -48,6 +50,8 @@ public class EcActionBuildBroodLord extends EcAction implements Serializable
 		if (s.hives == 0 && s.evolvingHives == 0)
 			return true;
 		if (s.greaterSpire == 0)
+			return true;
+		if (!s.hasSupply(2))
 			return true;
 		return super.isInvalid(s);
 	}
