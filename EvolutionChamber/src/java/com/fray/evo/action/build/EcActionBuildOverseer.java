@@ -16,7 +16,6 @@ public class EcActionBuildOverseer extends EcAction implements Serializable
 	{
 		s.minerals -= 50;
 		s.gas -= 100;
-		s.overlords -= 1;
 		s.addFutureAction(17, new Runnable()
 		{
 			@Override
@@ -24,6 +23,7 @@ public class EcActionBuildOverseer extends EcAction implements Serializable
 			{
 				if (e.debug)
 					e.obtained(s," Overseer+1");
+				s.overlords -= 1;
 				s.overseers += 1;
 			}
 		});
