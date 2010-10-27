@@ -46,7 +46,7 @@ public class EcEvolver extends FitnessFunction
 		EcBuildOrder s;
 		try
 		{
-			String chrome = getAlleleAsString(arg0);
+//			String chrome = getAlleleAsString(arg0);
 			Double score;
 //			score = scoreMap.get(chrome.hashCode());
 //			if (score != null)
