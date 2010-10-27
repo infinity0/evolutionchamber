@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fray.evo.fitness.EcFitness;
-import com.fray.evo.fitness.EcStandardFitness;
 import static java.lang.Math.*;
 
 public class EcState

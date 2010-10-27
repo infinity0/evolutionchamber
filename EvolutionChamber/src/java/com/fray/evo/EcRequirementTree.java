@@ -1,13 +1,9 @@
 package com.fray.evo;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import com.fray.evo.action.EcAction;
-import com.fray.evo.action.EcActionDoNothing;
 import com.fray.evo.action.EcActionExtractorTrick;
-import com.fray.evo.action.EcActionMineGas;
-import com.fray.evo.action.EcActionMineMineral;
 import com.fray.evo.action.EcActionWait;
 import com.fray.evo.action.build.EcActionBuildBaneling;
 import com.fray.evo.action.build.EcActionBuildBanelingNest;

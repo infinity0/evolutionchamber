@@ -1,10 +1,6 @@
 package com.fray.evo;
 
 import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.util.Collections;
-import java.util.Map;
-import java.util.WeakHashMap;
 
 import org.jgap.FitnessFunction;
 import org.jgap.Gene;
@@ -14,7 +10,6 @@ import org.jgap.impl.IntegerGene;
 import com.fray.evo.action.EcAction;
 import com.fray.evo.action.EcActionWait;
 import com.fray.evo.action.build.EcActionBuildDrone;
-import com.fray.evo.util.EcCacheMap;
 
 public class EcEvolver extends FitnessFunction
 {
