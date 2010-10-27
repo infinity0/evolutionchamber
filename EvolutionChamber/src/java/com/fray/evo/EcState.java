@@ -272,14 +272,9 @@ public class EcState
 		chitinousPlating = s.chitinousPlating | chitinousPlating;
 
 	}
-
+	
 	public boolean isSatisfied(EcState candidate)
-	{
-		
-		int overDrones = ((candidate.seconds / 17) + 6) * 4 / 5;
-		int optimalDrones = (bases() * 16) + (gasExtractors * 3);
-		int parityDrones = min(overDrones, optimalDrones);
-		
+	{		
 		if (waypoints.size() > 0)
 		{
 			EcState state = defaultDestination();
@@ -291,13 +286,6 @@ public class EcState
 			return state.isSatisfied(candidate);
 		}
 		
-		
-		if (EcSettings.workerParity && candidate.drones < parityDrones) {
-			return false;
-		}
-		if (EcSettings.overDrone && candidate.drones < overDrones) {
-			return false;
-		}
 		if (candidate.drones < drones)
 			return false;
 		if (candidate.zerglings < zerglings)
@@ -416,7 +404,39 @@ public class EcState
 			return false;
 		if ((!candidate.chitinousPlating) & chitinousPlating)
 			return false;
+		
+		if (EcSettings.overDrone || EcSettings.workerParity)
+		{		
+			
+			int destBases = candidate.bases();
+			double productionTime;
+			double overDrones;
+			int maxDrones = 50;
+			double productionEfficiency = 0.9;
+			
+			if (destBases == 0)
+				destBases = 1;
+			
+			productionTime = (((candidate.seconds * (1 + (1.0 / destBases))) * (destBases / 2.0) )- ((destBases - 1) * 180) ) ; // possible production time given linear hatchery time-placement distribution
+			
+			overDrones = min((((productionTime / 17) - destBases) * productionEfficiency), maxDrones);
 
+			if (EcSettings.overDrone && candidate.drones < overDrones) 
+			{
+				return false;
+			}
+			if (EcSettings.workerParity) 
+			{
+				int optimalDrones = min((destBases * 16) + (candidate.gasExtractors * 3), maxDrones);
+				
+				int parityDrones = min((int)overDrones, optimalDrones);
+				
+				
+				if (candidate.drones < parityDrones)
+					return false;
+			}
+		}
+		
 		return true;
 	}
 
