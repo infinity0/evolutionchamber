@@ -34,9 +34,9 @@ public class EcActionBuildQueen extends EcAction implements Serializable
 						@Override
 						public void run()
 						{
-							if (e.debug)
-								e.obtained(s, " Larva+4");
-							s.larva += Math.min(s.bases()*19,4);
+							if (e.debug && s.larva < s.bases() * 19)
+								e.obtained(s, " Larva+" + (Math.min(s.bases()*19,s.larva+4) - s.larva));
+							s.larva = Math.min(s.bases()*19,s.larva+4);
 							s.addFutureAction(45, this);
 						}
 					});
@@ -55,9 +55,9 @@ public class EcActionBuildQueen extends EcAction implements Serializable
 									@Override
 									public void run()
 									{
-										if (e.debug)
-											e.obtained(s, " Larva+4");
-										s.larva += Math.min(s.bases()*19,4);
+										if (e.debug && s.larva < s.bases() * 19)
+											e.obtained(s, " Larva+" + (Math.min(s.bases()*19,s.larva+4) - s.larva));
+										s.larva = Math.min(s.bases()*19,s.larva+4);
 										s.addFutureAction(45, this);
 									}
 								});
