@@ -81,7 +81,7 @@ public class EcRequirementTree
 		add(actions,new EcActionBuildHatchery(), destination);
 		add(actions,new EcActionBuildOverlord(), destination);
 		add(actions,new EcActionBuildSpawningPool(), destination);
-
+		
 		actions(destination, actions);
 
 		for (Class a : actions.values())

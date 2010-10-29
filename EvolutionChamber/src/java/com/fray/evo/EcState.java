@@ -11,6 +11,7 @@ public class EcState
 	
 	public EcState() {
 		fitness = EcSettings.getFitnessFunction();
+		hatcheryTimes.add(new Integer(0));
 	}
 	
 	private EcFitness				fitness = null;
@@ -21,10 +22,10 @@ public class EcState
 	public double					minerals			= 50;
 	public double					gas					= 0;
 	public double					supplyUsed			= 6;
-
-	public int						evolvingHatcheries	= 0;
+	public int						evolvingHatcheries  = 0;
 	public int						evolvingLairs		= 0;
 	public int						evolvingHives		= 0;
+	public int 						requiredBases	    = 1;
 	public int						hatcheries			= 1;
 	public int						lairs				= 0;
 	public int						hives				= 0;
@@ -90,6 +91,8 @@ public class EcState
 	public int						invalidActions		= 0;
 	public double					actionLength		= 0;
 	public int						waits;
+	
+	public List<Integer>			hatcheryTimes		= new ArrayList<Integer>();
 
 	public transient List<EcState>	waypoints			= new ArrayList<EcState>();
 
@@ -118,6 +121,7 @@ public class EcState
 		s.gas = gas;
 		s.supplyUsed = supplyUsed;
 
+		s.requiredBases = requiredBases;
 		s.hatcheries = hatcheries;
 		s.lairs = lairs;
 		s.hives = hives;
@@ -209,7 +213,7 @@ public class EcState
 
 	public void union(EcState s)
 	{
-		hatcheries = Math.max(s.hatcheries, hatcheries);
+		requiredBases = Math.max(s.requiredBases, requiredBases);
 		lairs = Math.max(s.lairs, lairs);
 		hives = Math.max(s.hives, hives);
 		spawningPools = Math.max(s.spawningPools, spawningPools);
@@ -293,8 +297,6 @@ public class EcState
 			return false;
 		if (candidate.roaches < roaches)
 			return false;
-		if (candidate.hatcheries < hatcheries)
-			return false;
 		if (candidate.mutalisks < mutalisks)
 			return false;
 		if (candidate.queens < queens)
@@ -314,7 +316,7 @@ public class EcState
 		if (candidate.overseers < overseers)
 			return false;
 
-		if (candidate.hatcheries < hatcheries)
+		if (candidate.bases() < requiredBases)
 			return false;
 		if (candidate.lairs < lairs)
 			return false;
@@ -404,35 +406,27 @@ public class EcState
 		if ((!candidate.chitinousPlating) & chitinousPlating)
 			return false;
 		
+		
 		if (EcSettings.overDrone || EcSettings.workerParity)
-		{		
+		{
+			int maxDrones  = 50;
+			int efficiency = 90;
+			int overDrones = ((candidate.productionTime() / 17) + candidate.usedDrones()) * efficiency / 100;
 			
-			int destBases = candidate.bases();
-			double productionTime;
-			double overDrones;
-			int maxDrones = 50;
-			double productionEfficiency = 0.9;
 			
-			if (destBases == 0)
-				destBases = 1;
-			
-			productionTime = (((candidate.seconds * (1 + (1.0 / destBases))) * (destBases / 2.0) )- ((destBases - 1) * 180) ) ; // possible production time given linear hatchery time-placement distribution
-			
-			overDrones = min((((productionTime / 17) - destBases) * productionEfficiency), maxDrones);
-
 			if (EcSettings.overDrone && candidate.drones < overDrones) 
 			{
 				return false;
 			}
 			if (EcSettings.workerParity) 
 			{
-				int optimalDrones = min((destBases * 16) + (candidate.gasExtractors * 3), maxDrones);
+				int optimalDrones = Math.min((candidate.bases() * 16) + (candidate.gasExtractors * 3), maxDrones);
+				int parityDrones  = Math.min(overDrones, optimalDrones);
 				
-				int parityDrones = min((int)overDrones, optimalDrones);
-				
-				
-				if (candidate.drones < parityDrones)
+				if (candidate.drones < parityDrones) 
+				{
 					return false;
+				}
 			}
 		}
 		
@@ -442,6 +436,28 @@ public class EcState
 	public int bases()
 	{
 		return hatcheries + lairs + evolvingHatcheries + evolvingLairs + hives + evolvingHives;
+	}
+	
+	public int productionTime()
+	{
+		int productionTime = 0;
+		
+		// Calculate raw hatchery production time
+		for (int i = 0; i < hatcheryTimes.size(); i++) 
+		{
+		    productionTime += seconds - hatcheryTimes.get(i); // TODO: Change to constant
+		}
+		
+		return productionTime;
+	}
+	
+	public int usedDrones()
+	{
+		return (evolvingHatcheries + evolvingLairs + evolvingHives + (hatcheries - 1)
+				+ lairs + hives + spawningPools + evolutionChambers + roachWarrens
+				+ hydraliskDen + banelingNest + infestationPit 
+				+ ultraliskCavern + gasExtractors + spire + spineCrawlers
+				+ sporeCrawlers + nydusWorm);
 	}
 
 	public int getSumStuff()

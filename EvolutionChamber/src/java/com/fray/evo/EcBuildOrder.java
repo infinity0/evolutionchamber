@@ -66,7 +66,7 @@ public class EcBuildOrder extends EcState implements Serializable
 		StringBuilder sb = new StringBuilder();
 		sb.append("At time: " + timestamp());
 		sb.append("\nMinerals: " + (int) minerals + "\tGas:      " + (int) gas + "\tSupply:   " + ((int) supplyUsed)
-				+ "/" + supply());
+				+ "/" + supply() + "\tLarva: " + larva);
 
 		append(sb, "Drones", drones);
 		append(sb, "Overlords", overlords);

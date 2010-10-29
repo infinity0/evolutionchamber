@@ -186,7 +186,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 	{
 		{
 			//somebody enlighten me please how this could be done easier... but it works  :)
-			final String[] radioButtonCaptions = {"None", "Until saturation", "Allow overdrones"};
+			final String[] radioButtonCaptions = {"None", "Until saturation", "Allow overdroning"};
 			final int defaultSelected;
 			if (EcSettings.overDrone) {
 				defaultSelected = 1;
@@ -199,7 +199,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 			{
 				defaultSelected = 0;
 			}
-			addRadioButtonBox(settings, "Worker parity", radioButtonCaptions, defaultSelected, new ActionListener()
+			addRadioButtonBox(settings, "Enforce Worker Parity", radioButtonCaptions, defaultSelected, new ActionListener()
 			{
 				public void actionPerformed(ActionEvent e)
 				{
@@ -216,7 +216,6 @@ public class EcSwingX extends JXPanel implements EcReportable
 						EcSettings.workerParity = false;
 						EcSettings.overDrone = false;
 					}
-					System.out.println("saturation: " + EcSettings.workerParity + "\noverdrone: " + EcSettings.overDrone);
 				}
 			});
 			gridy++;
@@ -735,11 +734,11 @@ public class EcSwingX extends JXPanel implements EcReportable
 			}
 		});
 		gridy++;
-		addInput(component, "Hatcheries", new ActionListener()
+		addInput(component, "Bases", new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				destination[i].hatcheries = getDigit(e);
+				destination[i].requiredBases = getDigit(e);
 			}
 		});
 		addInput(component, "Lairs", new ActionListener()

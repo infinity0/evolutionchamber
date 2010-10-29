@@ -199,7 +199,7 @@ public class EcEvolver extends FitnessFunction
 					}
 				}
 				if (destination.isSatisfied(s))
-				{
+				{ 
 					if (debug)
 					{
 						log.println("Satisfied.");

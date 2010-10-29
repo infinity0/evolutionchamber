@@ -36,6 +36,7 @@ public class EcActionBuildHatchery extends EcAction implements Serializable
 					e.obtained(s," Hatchery+1");
 				s.hatcheries += 1;
 				s.hatcheriesBuilding -= 1;
+				s.hatcheryTimes.add(new Integer(s.seconds));
 			}
 		});
 	}
