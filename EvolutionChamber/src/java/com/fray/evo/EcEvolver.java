@@ -9,6 +9,7 @@ import org.jgap.impl.IntegerGene;
 
 import com.fray.evo.action.EcAction;
 import com.fray.evo.action.EcActionWait;
+import com.fray.evo.action.EcActionExtractorTrick;
 import com.fray.evo.action.build.EcActionBuildDrone;
 
 public class EcEvolver extends FitnessFunction
@@ -85,7 +86,7 @@ public class EcEvolver extends FitnessFunction
 		}
 		return null;
 	}
-	
+
 	public String getBuildOrder(IChromosome arg0)
 	{
 		//this is basically just a copy from the doEvaluate() function adjusted to return a build order string
@@ -135,6 +136,74 @@ public class EcEvolver extends FitnessFunction
 		}
 	}
 
+	public String getYabotBuildOrder(IChromosome arg0)
+	{
+		//Yabot build order encoder
+		EcBuildOrder s;
+		try
+		{
+			s = populateBuildOrder((EcBuildOrder) source, arg0);
+			
+			StringBuilder sb = new StringBuilder();
+			
+			sb.append("1 [i] EC Optimized Build | 11 | EvolutionChamber | Add description here please. [/i] [s] ");
+			
+			int i = 0;
+			for (EcAction a : s.getActions())
+			{
+				i++;
+				if (a.isInvalid(s))
+				{
+					continue;
+				}
+				while (!a.canExecute(s))
+				{					
+					if (s.seconds >= s.targetSeconds || destination.waypointMissed(s))
+					{
+						return "No finished build yet. A waypoint was not reached.";
+					}
+					
+					if (destination.isSatisfied(s))
+					{
+						sb.deleteCharAt(sb.length() - 1); // remove trailing pipe |
+						sb.append(" [/s]"); // Add ending tag
+						
+						if (sb.length() > 770)
+						{
+							sb.append("\nBuild was too long. Please trim it by " + (sb.length() - 770) + " characters or try a new build.");
+							sb.append("\nThis YABOT string will not work until you fix this!");
+						}
+						return sb.toString();
+					}
+				}
+				
+				if (!(a instanceof EcActionWait) && !(a instanceof EcActionBuildDrone))
+				{
+					if(!(a instanceof EcActionExtractorTrick))
+					{
+						sb.append(" " + (int)s.supplyUsed + "  " + (int)s.minerals + "  " + (int)s.gas + "  " + s.timestamp() + " 1 " + a.yabotGetType() + "  " + a.yabotGetItem() + " 0" + a.yabotGetTag() + "|");
+					}
+					else
+					{
+						// Yabot doesn't support extractor trick so the author suggested telling it to build an extractor and send a cancel string shortly after for the same building
+						sb.append(" " + (int)s.supplyUsed + "  " + (int)s.minerals + "  " + (int)s.gas + "  " + s.timestamp() + " 1 " + "0" + "  " + "35" + " 0" + " Extractor_Trick " + "|");
+						sb.append(" " + (int)s.supplyUsed + "  " + (int)s.minerals + "  " + (int)s.gas + "  " + s.timestampIncremented(3) + " 1 " + "0" + "  " + "35" + " 1" + " Extractor_Trick " + "|");
+					}
+				}
+				
+				a.execute(s, this);
+			}
+
+			return "No finished build yet. Ran out of things to do.";
+			
+		}
+		catch (CloneNotSupportedException e)
+		{
+			e.printStackTrace();
+			return "";
+		}
+	}
+	
 	public static EcBuildOrder populateBuildOrder(EcBuildOrder source, IChromosome arg0)
 			throws CloneNotSupportedException
 	{

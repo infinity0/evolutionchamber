@@ -13,7 +13,7 @@ public class EcBuildOrder extends EcState implements Serializable
 {
 	static final long		serialVersionUID	= 1L;
 	public int				larva				= 3;
-	public int				dronesGoingOnMinerals	= 6;
+	public int				dronesGoingOnMinerals	= 6;	
 	public int				dronesGoingOnGas	= 0;
 	public int				dronesOnMinerals	= 0;
 	public int				dronesOnGas			= 0;
@@ -28,14 +28,14 @@ public class EcBuildOrder extends EcState implements Serializable
 
 	public EcBuildOrder()
 	{
-		super();
-		addFutureAction(2, new Runnable(){
-			@Override
-			public void run()
-			{
-				dronesOnMinerals +=6;
-				dronesGoingOnMinerals -=6;
-			}});
+        super();
+        addFutureAction(2, new Runnable(){
+            @Override
+            public void run()
+            {
+                    dronesOnMinerals +=6;
+                    dronesGoingOnMinerals -=6;
+            }});
 	}
 	
 	@Override
@@ -266,11 +266,11 @@ public class EcBuildOrder extends EcState implements Serializable
 			else if (patches[i] == 0)
 				;
 			else if (patches[i] == 1)
-				mineralsMined += 39.0 / 60.0; // Per TeamLiquid
+				mineralsMined += 35.0 / 60.0; // Per TeamLiquid
 			else if (patches[i] == 2)
-				mineralsMined += 78.0 / 60.0; // Per TeamLiquid
+				mineralsMined += 75.0 / 60.0; // Per TeamLiquid
 			else
-				mineralsMined += 102.0 / 60.0; // Per TeamLiquid
+				mineralsMined += 100.0 / 60.0; // Per TeamLiquid
 		return mineralsMined;
 	}
 
@@ -309,9 +309,9 @@ public class EcBuildOrder extends EcState implements Serializable
 			if (extractors[i] == 0)
 				;
 			else if (extractors[i] == 1)
-				gasMined += 42.0 / 60.0; // Per TeamLiquid
+				gasMined += 38.0 / 60.0; // Per TeamLiquid
 			else if (extractors[i] == 2)
-				gasMined += 84.0 / 60.0; // Per TeamLiquid
+				gasMined += 82.0 / 60.0; // Per TeamLiquid
 			else
 				gasMined += 114.0 / 60.0; // Per TeamLiquid
 		return gasMined;
@@ -326,6 +326,12 @@ public class EcBuildOrder extends EcState implements Serializable
 	public String timestamp()
 	{
 		return seconds / 60 + ":" + (seconds%60 < 10 ? "0" : "") + seconds % 60;
+	}
+	
+	public String timestampIncremented(int increment)
+	{
+		int incrementedSeconds = seconds + increment;
+		return incrementedSeconds / 60 + ":" + (incrementedSeconds%60 < 10 ? "0" : "") + incrementedSeconds % 60;
 	}
 
 	public int extractors()

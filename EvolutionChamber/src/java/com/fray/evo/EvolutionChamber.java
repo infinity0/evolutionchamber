@@ -274,10 +274,11 @@ public class EvolutionChamber
 
 						String exactBuildOrder = getOutput(myFunc, fittestChromosome, fitnessValue);
 						String buildOrder = getBuildOrder(myFunc, fittestChromosome);
+						String yabotBuildOrder = getYabotBuildOrder(myFunc, fittestChromosome);
 						
 						if (reportInterface != null)
 							reportInterface.bestScore(myFunc.evaluateGetBuildOrder(fittestChromosome),
-									bestScore.intValue(), exactBuildOrder, buildOrder);
+									bestScore.intValue(), exactBuildOrder, buildOrder, yabotBuildOrder);
 
 						displayChromosome(fittestChromosome);
 						saveSeeds(fittestChromosome);
@@ -307,6 +308,12 @@ public class EvolutionChamber
 	public String getBuildOrder(final EcEvolver myFunc, IChromosome fittestChromosome)
 	{
 		String results = myFunc.getBuildOrder(fittestChromosome);
+		return results;
+	}
+	
+	public String getYabotBuildOrder(final EcEvolver myFunc, IChromosome fittestChromosome)
+	{
+		String results = myFunc.getYabotBuildOrder(fittestChromosome);
 		return results;
 	}
 	

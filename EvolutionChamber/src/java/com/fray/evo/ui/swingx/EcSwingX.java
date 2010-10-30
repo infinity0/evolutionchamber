@@ -63,6 +63,9 @@ public class EcSwingX extends JXPanel implements EcReportable
 	protected long				lastUpdate;
 	private String				simpleBuildOrder;
 	private String				detailedBuildOrder;
+	private String				yabotBuildOrder;
+	private boolean				isDetailedBuildOrder;
+	private boolean				isYabotBuildOrder;
 	private boolean				isSimpleBuildOrder;
 	int							gridy			= 0;
 	private JXStatusBar			statusbar;
@@ -73,7 +76,9 @@ public class EcSwingX extends JXPanel implements EcReportable
 	private JButton				goButton;
 	private JButton				stopButton;
 	private JButton				clipboardButton;
-	private JButton				switchOutputButton;
+	private JButton				switchSimpleButton;
+	private JButton				switchDetailedButton;
+	private JButton				switchYabotButton;
 	private JTextArea			statsText;
 	private JTabbedPane			tabPane;
 
@@ -372,7 +377,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 		gridBagConstraints.fill = GridBagConstraints.BOTH;
 		gridBagConstraints.weighty = 1;
 		gridBagConstraints.gridy = 0;
-		gridBagConstraints.gridwidth = 2;
+		gridBagConstraints.gridwidth = 4;
 		gridBagConstraints.insets = new Insets(1, 1, 1, 1);
 		component.add(new JScrollPane(outputText = new JTextArea()), gridBagConstraints);
 		outputText.setAlignmentX(0);
@@ -402,6 +407,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 		sb.append("\nLomilar (Lead)");
 		sb.append("\nmulander (Auto-updater)");
 		sb.append("\nUtena (Genetics)");
+		sb.append("\nBumblebees (Features)");
 		sb.append("\nAbout 27 other people, who's names I need to compile (Testing)");
 		simpleBuildOrder = sb.toString();
 		detailedBuildOrder = sb.toString();
@@ -900,25 +906,52 @@ public class EcSwingX extends JXPanel implements EcReportable
 			}
 		});
 		
-		switchOutputButton = new JButton("Switch to simple format");
-		isSimpleBuildOrder = false;
-		gridBagConstraints.weightx = 0.75;
-		component.add(switchOutputButton, gridBagConstraints);
-		switchOutputButton.addActionListener(new ActionListener()
+		
+		switchDetailedButton = new JButton("Detailed format");
+		isDetailedBuildOrder = true;
+		gridBagConstraints.weightx = 0.25;
+		component.add(switchDetailedButton, gridBagConstraints);
+		switchDetailedButton.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				if (isSimpleBuildOrder) {
-					outputText.setText(detailedBuildOrder);
-					outputText.setTabSize(4);
-					switchOutputButton.setText("Switch to simple format");
-					isSimpleBuildOrder = false;
-				} else {
-					outputText.setText(simpleBuildOrder);
-					outputText.setTabSize(14);
-					switchOutputButton.setText("Switch to detailed format");
-					isSimpleBuildOrder = true;
-				}
+				outputText.setText(detailedBuildOrder);
+				outputText.setTabSize(4);
+				isDetailedBuildOrder = true;
+				isYabotBuildOrder = false;
+				isSimpleBuildOrder = false;
+			}
+		});
+		
+		switchSimpleButton = new JButton("Simple format");
+		isSimpleBuildOrder = false;
+		gridBagConstraints.weightx = 0.25;
+		component.add(switchSimpleButton, gridBagConstraints);
+		switchSimpleButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				outputText.setText(simpleBuildOrder);
+				outputText.setTabSize(14);
+				isSimpleBuildOrder = true;
+				isYabotBuildOrder = false;
+				isDetailedBuildOrder = false;
+			}
+		});
+		
+		switchYabotButton = new JButton("YABOT format");
+		isYabotBuildOrder = false;
+		gridBagConstraints.weightx = 0.25;
+		component.add(switchYabotButton, gridBagConstraints);
+		switchYabotButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				outputText.setText(yabotBuildOrder);
+				outputText.setTabSize(14);
+				isYabotBuildOrder = true;
+				isSimpleBuildOrder = false;
+				isDetailedBuildOrder = false;		
 			}
 		});
 	}
@@ -1216,7 +1249,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 	}
 
 	@Override
-	public void bestScore(final EcState finalState, int intValue, final String detailedText, final String simpleText)
+	public void bestScore(final EcState finalState, int intValue, final String detailedText, final String simpleText, final String yabotText)
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
@@ -1225,10 +1258,17 @@ public class EcSwingX extends JXPanel implements EcReportable
 			{
 				simpleBuildOrder = simpleText;
 				detailedBuildOrder = detailedText;
+				yabotBuildOrder = yabotText;
 				if (isSimpleBuildOrder) 
 				{
 					outputText.setText(simpleText);
-				} else {
+				} 
+				else if (isYabotBuildOrder)
+				{
+					outputText.setText(yabotBuildOrder);
+				}
+				else
+				{
 					outputText.setText(detailedText);
 				}
 				lastUpdate = new Date().getTime();

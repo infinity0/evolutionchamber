@@ -25,7 +25,7 @@ public class EcActionExtractorTrick extends EcAction implements Serializable
 			{
 				if (e.debug)
 					e.obtained(s," Extractor Trick Finished, Drone Restored");
-				s.minerals += 15;
+				s.minerals += 19;
 				s.drones += 1;
 				s.dronesOnMinerals += 1;
 				s.supplyUsed += 1;
