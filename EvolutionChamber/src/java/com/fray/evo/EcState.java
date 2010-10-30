@@ -338,7 +338,7 @@ public class EcState
 
 	public boolean isSatisfied(EcState candidate)
 	{		
-		/* This seems useless as the checks are done elsewhere. 
+
 		if (waypoints.size() > 0)
 		{
 			EcState state = defaultDestination();
@@ -349,7 +349,7 @@ public class EcState
 			state.union(this);
 			return state.isSatisfied(candidate);
 		}
-		*/
+	
 		
 		if (candidate.drones < drones)
 			return false;
@@ -524,7 +524,6 @@ public class EcState
 
 	public int getSumStuff()
 	{
-		/* This appears to not be needed since waypoints are evaluated sequentially
 		if (waypoints.size() > 0)
 		{
 			EcState state = defaultDestination();
@@ -535,7 +534,6 @@ public class EcState
 			state.union(this);
 			return state.getSumStuff();
 		}
-		*/
 		
 		int i = hatcheries + lairs + hives + spawningPools + evolutionChambers + roachWarrens + hydraliskDen
 				+ banelingNest + infestationPit + greaterSpire + ultraliskCavern + gasExtractors + spire

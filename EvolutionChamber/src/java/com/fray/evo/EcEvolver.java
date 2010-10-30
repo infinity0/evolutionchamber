@@ -272,6 +272,7 @@ public class EcEvolver extends FitnessFunction
 					if (debug)
 					{
 						log.println("Satisfied.");
+						log.println("Waypoints: " + destination.waypoints.size());
 						log.println("Number of actions in build order: " + (i - s.invalidActions));
 						log.println("---Final Output---");
 						log.println(s.toLongString());
