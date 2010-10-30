@@ -29,7 +29,7 @@ public class EcBuildOrder extends EcState implements Serializable
 	public EcBuildOrder()
 	{
         super();
-        addFutureAction(2, new Runnable(){
+        addFutureAction(5, new Runnable(){
             @Override
             public void run()
             {
