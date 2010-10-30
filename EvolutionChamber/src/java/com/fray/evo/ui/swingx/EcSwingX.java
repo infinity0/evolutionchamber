@@ -1079,7 +1079,11 @@ public class EcSwingX extends JXPanel implements EcReportable
 		{
 			EcState finalDestination = (EcState) destination[destination.length - 1].clone();
 			for (int i = 0; i < destination.length - 1; i++)
-				finalDestination.waypoints.add((EcState) destination[i].clone());
+			{
+				if (destination[i].getSumStuff() > 1)
+					finalDestination.waypoints.add((EcState) destination[i].clone());
+
+			}
 
 			ec.setDestination(finalDestination);
 			ec.go();

@@ -210,41 +210,101 @@ public class EcState
 	{
 		return fitness.score(candidate, this);
 	}
-
+	
 	public void union(EcState s)
 	{
-		requiredBases = Math.max(s.requiredBases, requiredBases);
-		lairs = Math.max(s.lairs, lairs);
-		hives = Math.max(s.hives, hives);
-		spawningPools = Math.max(s.spawningPools, spawningPools);
-		banelingNest = Math.max(s.banelingNest, banelingNest);
-		evolutionChambers = Math.max(s.evolutionChambers, evolutionChambers);
-		roachWarrens = Math.max(s.roachWarrens, roachWarrens);
-		hydraliskDen = Math.max(s.hydraliskDen, hydraliskDen);
-		infestationPit = Math.max(s.infestationPit, infestationPit);
-		greaterSpire = Math.max(s.greaterSpire, greaterSpire);
-		ultraliskCavern = Math.max(s.ultraliskCavern, ultraliskCavern);
-		gasExtractors = Math.max(s.gasExtractors, gasExtractors);
-		spire = Math.max(s.spire, spire);
-		greaterSpire = Math.max(s.greaterSpire, greaterSpire);
-		spineCrawlers = Math.max(s.spineCrawlers, spineCrawlers);
-		sporeCrawlers = Math.max(s.sporeCrawlers, sporeCrawlers);
-		nydusNetwork = Math.max(s.nydusNetwork,nydusNetwork);
-		nydusWorm = Math.max(s.nydusWorm,nydusWorm);
-
-		zerglings = Math.max(s.zerglings, zerglings);
-		banelings = Math.max(s.banelings, banelings);
-		roaches = Math.max(s.roaches, roaches);
-		mutalisks = Math.max(s.mutalisks, mutalisks);
-		drones = Math.max(s.drones, drones);
-		queens = Math.max(s.queens, queens);
-		hydralisks = Math.max(s.hydralisks, hydralisks);
-		infestors = Math.max(s.infestors, infestors);
-		corruptors = Math.max(s.corruptors, corruptors);
-		ultralisks = Math.max(s.ultralisks, ultralisks);
-		broodlords = Math.max(s.broodlords, broodlords);
-		overlords = Math.max(s.overlords, overlords);
-		overseers = Math.max(s.overseers, overseers);
+		if(s.requiredBases > requiredBases)
+			requiredBases = s.requiredBases;
+		
+		if(s.lairs > lairs)
+			lairs = s.lairs;
+		
+		if(s.hives > hives)
+			hives = s.hives;
+		
+		if(s.spawningPools > spawningPools)
+			spawningPools = s.spawningPools;
+		
+		if(s.banelingNest > banelingNest)
+			banelingNest = s.banelingNest;
+		
+		if(s.evolutionChambers > evolutionChambers)
+			evolutionChambers = s.evolutionChambers;
+		
+		if(s.roachWarrens > roachWarrens)
+			roachWarrens = s.roachWarrens;
+		
+		if(s.hydraliskDen > hydraliskDen)
+			hydraliskDen = s.hydraliskDen;
+		
+		if(s.infestationPit > infestationPit)
+			infestationPit = s.infestationPit;
+		
+		if(s.greaterSpire > greaterSpire)
+			greaterSpire = s.greaterSpire;
+		
+		if(s.ultraliskCavern > ultraliskCavern)
+			ultraliskCavern = s.ultraliskCavern;
+		
+		if(s.gasExtractors > gasExtractors)
+			gasExtractors = s.gasExtractors;
+		
+		if(s.spire > spire)
+			spire = s.spire;
+		
+		if(s.spineCrawlers > spineCrawlers)
+			spineCrawlers = s.spineCrawlers;
+		
+		if(s.sporeCrawlers > sporeCrawlers)
+			sporeCrawlers = s.sporeCrawlers;
+		
+		if(s.nydusNetwork > nydusNetwork)
+			nydusNetwork = s.nydusNetwork;
+		
+		if(s.nydusWorm > nydusWorm)
+			nydusWorm = s.nydusWorm;
+		
+		if(s.zerglings > zerglings)
+			zerglings = s.zerglings;
+		
+		if(s.banelings > banelings)
+			banelings = s.banelings;
+		
+		if(s.roaches > roaches)
+			roaches = s.roaches;
+		
+		if(s.mutalisks > mutalisks)
+			mutalisks = s.mutalisks;
+		
+		if(s.drones > drones)
+			drones = s.drones;
+		
+		if(s.nydusNetwork > nydusNetwork)
+			nydusNetwork = s.nydusNetwork;
+		
+		if(s.queens > queens)
+			queens = s.queens;
+		
+		if(s.hydralisks > hydralisks)
+			hydralisks = s.hydralisks;
+		
+		if(s.infestors > infestors)
+			infestors = s.infestors;
+		
+		if(s.corruptors > corruptors)
+			corruptors = s.corruptors;
+		
+		if(s.ultralisks > ultralisks)
+			ultralisks = s.ultralisks;
+		
+		if(s.broodlords > broodlords)
+			broodlords = s.broodlords;
+		
+		if(s.overlords > overlords)
+			overlords = s.overlords;
+		
+		if(s.overseers > overseers)
+			overseers = s.overseers;
 
 		metabolicBoost = s.metabolicBoost | metabolicBoost;
 		adrenalGlands = s.adrenalGlands | adrenalGlands;
@@ -275,9 +335,10 @@ public class EcState
 		chitinousPlating = s.chitinousPlating | chitinousPlating;
 
 	}
-	
+
 	public boolean isSatisfied(EcState candidate)
 	{		
+		/* This seems useless as the checks are done elsewhere. 
 		if (waypoints.size() > 0)
 		{
 			EcState state = defaultDestination();
@@ -288,6 +349,7 @@ public class EcState
 			state.union(this);
 			return state.isSatisfied(candidate);
 		}
+		*/
 		
 		if (candidate.drones < drones)
 			return false;
@@ -462,6 +524,7 @@ public class EcState
 
 	public int getSumStuff()
 	{
+		/* This appears to not be needed since waypoints are evaluated sequentially
 		if (waypoints.size() > 0)
 		{
 			EcState state = defaultDestination();
@@ -472,6 +535,7 @@ public class EcState
 			state.union(this);
 			return state.getSumStuff();
 		}
+		*/
 		
 		int i = hatcheries + lairs + hives + spawningPools + evolutionChambers + roachWarrens + hydraliskDen
 				+ banelingNest + infestationPit + greaterSpire + ultraliskCavern + gasExtractors + spire
@@ -541,14 +605,19 @@ public class EcState
 
 	public boolean waypointMissed(EcBuildOrder candidate)
 	{
-		for (EcState s : waypoints)
+		if (waypoints.size() > 0)
 		{
-			if (candidate.seconds < s.targetSeconds)
-				continue;
-			if (s.isSatisfied(candidate))
-				continue;
-			return true;
+			for (EcState s : waypoints)
+			{
+				if (candidate.seconds < s.targetSeconds)
+					continue;
+				if (s.isSatisfied(candidate))
+					continue;
+				return true;
+			}
+			return false;
 		}
-		return false;
+		else
+			return false;
 	}
 }
