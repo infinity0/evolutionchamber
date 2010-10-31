@@ -92,6 +92,9 @@ public class EcState
 	public double					actionLength		= 0;
 	public int						waits;
 	
+	public int 						maxOverDrones 		= 50;
+	public int						overDroneEfficiency = 80;
+	
 	public List<Integer>			hatcheryTimes		= new ArrayList<Integer>();
 
 	public transient List<EcState>	waypoints			= new ArrayList<EcState>();
@@ -471,10 +474,7 @@ public class EcState
 		
 		if (EcSettings.overDrone || EcSettings.workerParity)
 		{
-			int maxDrones  = 50;
-			int efficiency = 90;
-			int overDrones = ((candidate.productionTime() / 17) + candidate.usedDrones()) * efficiency / 100;
-			
+			int overDrones = getOverDrones(candidate);
 			
 			if (EcSettings.overDrone && candidate.drones < overDrones) 
 			{
@@ -482,8 +482,7 @@ public class EcState
 			}
 			if (EcSettings.workerParity) 
 			{
-				int optimalDrones = Math.min((candidate.bases() * 16) + (candidate.gasExtractors * 3), maxDrones);
-				int parityDrones  = Math.min(overDrones, optimalDrones);
+				int parityDrones  = getParityDrones(candidate);
 				
 				if (candidate.drones < parityDrones) 
 				{
@@ -495,6 +494,23 @@ public class EcState
 		return true;
 	}
 
+	public int getOverDrones(EcState s)
+	{
+		int overDrones = ((s.productionTime() / 17) + s.usedDrones()) * overDroneEfficiency / 100;
+		
+		overDrones = Math.min(overDrones, maxOverDrones);
+		
+		return overDrones;
+	}
+	
+	public int getParityDrones(EcState s)
+	{
+		int optimalDrones = Math.min((s.bases() * 16) + (s.gasExtractors * 3), maxOverDrones);
+		int parityDrones  = Math.min(s.getOverDrones(s), optimalDrones);
+		
+		return parityDrones;
+	}
+	
 	public int bases()
 	{
 		return hatcheries + lairs + evolvingHatcheries + evolvingLairs + hives + evolvingHives;
@@ -603,19 +619,14 @@ public class EcState
 
 	public boolean waypointMissed(EcBuildOrder candidate)
 	{
-		if (waypoints.size() > 0)
+		for (EcState s : waypoints)
 		{
-			for (EcState s : waypoints)
-			{
-				if (candidate.seconds < s.targetSeconds)
-					continue;
-				if (s.isSatisfied(candidate))
-					continue;
-				return true;
-			}
-			return false;
+			if (candidate.seconds < s.targetSeconds)
+				continue;
+			if (s.isSatisfied(candidate))
+				continue;
+			return true;
 		}
-		else
-			return false;
+		return false;
 	}
 }

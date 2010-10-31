@@ -246,10 +246,22 @@ public class EcEvolver extends FitnessFunction
 			{
 				if (s.seconds >= s.targetSeconds || destination.waypointMissed(s))
 				{
-					if (debug)
+					
+					if (s.drones < s.getOverDrones(s))
 					{
-						log.println("Failed to meet waypoint. " + a);
-						log.println(s.toLongString());
+						if (debug)
+						{
+							log.println("Failed to have the required " + s.getOverDrones(s) + " drones.");
+							log.println(s.toLongString());
+						}
+					}
+					else
+					{
+						if (debug)
+						{
+							log.println("Failed to meet waypoint. " + a);
+							log.println(s.toLongString());
+						}
 					}
 					return s;
 				}
@@ -272,7 +284,6 @@ public class EcEvolver extends FitnessFunction
 					if (debug)
 					{
 						log.println("Satisfied.");
-						log.println("Waypoints: " + destination.waypoints.size());
 						log.println("Number of actions in build order: " + (i - s.invalidActions));
 						log.println("---Final Output---");
 						log.println(s.toLongString());

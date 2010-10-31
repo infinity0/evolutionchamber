@@ -7,6 +7,12 @@ public class EcStandardFitness implements EcFitness {
 	public double augmentScore(EcState current, EcState destination, double score, boolean waypoint)
 	{
 		EcState c = current;
+		int overlordScore;
+		
+		if (c.overlords > destination.overlords)
+			overlordScore = (int)Math.min(100, (destination.overlords * (1 / Math.max(1, destination.supply() - destination.supplyUsed))) * 10);
+		else
+			overlordScore = (int)Math.min(100, (c.overlords * (1 / Math.max(1, c.supply() - c.supplyUsed))) * 10);
 		
 		score = augmentScore(score, c.zerglings, destination.zerglings, 25, .25, waypoint);
 		score = augmentScore(score, c.banelings, destination.banelings, 75, .75, waypoint);
@@ -18,9 +24,10 @@ public class EcStandardFitness implements EcFitness {
 		score = augmentScore(score, c.corruptors, destination.corruptors, 250, 2.5, waypoint);
 		score = augmentScore(score, c.ultralisks, destination.ultralisks, 500, 5.0, waypoint);
 		score = augmentScore(score, c.broodlords, destination.broodlords, 400, 4.0, waypoint);
-		score = augmentScore(score, c.overlords, destination.overlords, 100, 1.0, waypoint);
+		
+		score = augmentScore(score, c.overlords, destination.overlords, overlordScore, overlordScore / 100.0, waypoint);
+		
 		score = augmentScore(score, c.overseers, destination.overseers, 250, 2.5, waypoint);
-
 		score = augmentScore(score, c.gasExtractors, destination.gasExtractors, 25, .25, waypoint);
 
 		score = augmentScore(score, c.hatcheries, destination.hatcheries, 300, 3, waypoint);
