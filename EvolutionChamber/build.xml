@@ -37,8 +37,8 @@
 	<property name="test.make" value="build/test"/>
 	<property name="test.dst" value="run"/>
 
-	<property name="doc.dst" value="javadoc"/><!-- UNUSED -->
-	<property name="doc.api" value="javadoc"/>
+	<property name="doc.dst" value="site"/><!-- UNUSED -->
+	<property name="doc.api" value="site/api"/>
 
 	<property name="lib" value="lib"/>
 	<path id="lib.path">

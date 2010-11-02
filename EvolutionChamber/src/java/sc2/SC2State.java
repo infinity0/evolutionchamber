@@ -1,6 +1,7 @@
 package sc2;
 
 import sc2.action.SC2Action;
+import sc2.action.SC2ActionException;
 
 import java.util.Set;
 import java.util.List;
@@ -16,19 +17,38 @@ public class SC2State {
 
 	public enum Race { P, Z, T }
 
+	final public SC2StatDB db;
+
 	final public Race race;
 
 	final protected Set<SC2Asset> assets = new HashSet<SC2Asset>();
 
-	final protected List<SC2Action> queue = new ArrayList<SC2Action>();
+	final protected Set<SC2AssetType> research = new HashSet<SC2AssetType>();
 
-	public SC2State(Race race) {
+	final protected List<SC2Action> ongoing = new ArrayList<SC2Action>();
+
+	public SC2State(SC2StatDB db, Race race) {
+		if (db == null || race == null) { throw new NullPointerException(); }
+		this.db = db;
 		this.race = race;
 	}
 
+	public SC2State(Race race) {
+		this(SC2StatDB.getDefault(), race);
+	}
+
 	public void advance() {
-		for (SC2Action action: queue) { action.advance(); }
+		for (SC2Action action: ongoing) { action.advance(); }
 		for (SC2Asset asset: assets) { asset.advance(); }
+		// TODO
+	}
+
+	public void addAction(SC2Action action) throws SC2ActionException {
+		// TODO
+		action.init();
+	}
+
+	public void addAsset(SC2Asset asset) {
 		// TODO
 	}
 

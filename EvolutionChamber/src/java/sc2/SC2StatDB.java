@@ -14,4 +14,9 @@ public class SC2StatDB extends HashMap<String, SC2AssetType> {
 		return get(key).type();
 	}
 
+	public static SC2StatDB getDefault() {
+		// TODO
+		return null;
+	}
+
 }
