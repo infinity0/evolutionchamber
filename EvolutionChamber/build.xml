@@ -90,14 +90,19 @@
 	<target name="env">
 		<available property="lib.junit.present" classname="junit.framework.Test" classpathref="lib.path"/>
 		<available property="lib.swingx.present" classname="org.jdesktop.swingx.JXPanel" classpathref="lib.path"/>
-	</target>
-
-	<target name="libdep-swingx" depends="env" unless="${lib.swingx.present}">
-		<fail message="swingx.jar not available"/>
+		<available property="lib.jgap.present" classname="org.jgap.Gene" classpathref="lib.path"/>
 	</target>
 
 	<target name="libdep-junit" depends="env" unless="${lib.junit.present}">
 		<fail message="JUnit not available"/>
+	</target>
+
+	<target name="libdep-swingx" depends="env" unless="${lib.swingx.present}">
+		<fail message="SwingX not available"/>
+	</target>
+
+	<target name="libdep-jgap" depends="env" unless="${lib.jgap.present}">
+		<fail message="JGAP not available"/>
 	</target>
 
 	<!-- =================================================================== -->
@@ -111,7 +116,7 @@
 		<mkdir dir="${test.dst}"/>
 	</target>
 
-	<target name="dep" depends="libdep-swingx"/>
+	<target name="dep" depends="libdep-swingx, libdep-jgap"/>
 
 	<target name="build" depends="init, dep">
 		<tstamp/>
