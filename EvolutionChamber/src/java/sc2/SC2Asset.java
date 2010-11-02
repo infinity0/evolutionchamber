@@ -1,6 +1,7 @@
 package sc2;
 
 import sc2.action.SC2Action;
+import sc2.action.SC2MorphAction;
 import sc2.action.SC2ActionException;
 
 import java.util.LinkedList;
@@ -31,7 +32,7 @@ public class SC2Asset {
 
 	protected void advance(double dec) {
 		// advance queue
-		SC2Action current = queue.getFirst();
+		SC2Action current = peekQueue();
 		if (current == null) {
 			return;
 		} else if (current.advance(dec)) {
@@ -45,15 +46,31 @@ public class SC2Asset {
 		advance(1.0);
 	}
 
+	public boolean canQueue(SC2Action action) {
+		if (queue.size() >= qcap) { return false; }
+		SC2Action current = peekQueue();
+
+		// can't queue on a morphing asset
+		if (current instanceof SC2MorphAction) { return false; }
+		// can't morph when items on queue
+		if (action instanceof SC2MorphAction && current != null) { return false; }
+
+		return true;
+	}
+
+	public SC2Action peekQueue() {
+		return queue.isEmpty()? null: queue.getFirst();
+	}
+
 	/**
 	** @return The action that was pushed or {@code null} if unchanged
 	** @throws NullPointerException if the action was {@code null}
 	*/
 	public SC2Action pushQueue(SC2Action action) throws SC2ActionException {
 		if (action == null) { throw new NullPointerException(); }
-		if (queue.size() >= qcap) { return null; }
-		action.init();
+		if (!canQueue(action)) { return null; }
 		queue.addLast(action);
+		action.init();
 		return action;
 	}
 
@@ -68,8 +85,10 @@ public class SC2Asset {
 
 	/**
 	** @return The action that was popped or {@code null} if unchanged
+	** @throws NullPointerException if the action was {@code null}
 	*/
 	public SC2Action popQueue(SC2Action action) {
+		if (action == null) { throw new NullPointerException(); }
 		int i = queue.indexOf(action);
 		return (i < 0)? null: popQueue(i);
 	}
