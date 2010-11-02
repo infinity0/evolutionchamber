@@ -42,13 +42,14 @@
 
 	<property name="lib" value="lib"/>
 	<path id="lib.path">
-		<fileset dir="${lib}" includes="**/*.jar"/>
-		<fileset dir="${java.class.dir}">
+		<fileset id="lib.path.dev" dir="${lib}" includes="**/*.jar"/>
+		<fileset id="lib.path.usr" dir="${java.class.dir}">
 			<!-- possible names of jars that hold our dependencies -->
 			<include name="junit.jar"/>
 			<include name="commons-collections3.jar"/>
 			<include name="swingx.jar"/>
 			<include name="swingx-beaninfo.jar"/>
+			<include name="looks.jar"/>
 		</fileset>
 	</path>
 
@@ -128,6 +129,14 @@
 				<attribute name="Main-Class" value="${project.mainclass}"/>
 				<attribute name="Class-Path" value="commons-collections-3.2.jar jgap.jar swingx-core-1.6.2.jar looks-2.1.4.jar"/>
 			</manifest>
+		</jar>
+		<jar jarfile="${main.dst}/${ant.project.name}-nodep.jar" basedir="${main.make}">
+			<manifest>
+				<attribute name="Main-Class" value="${project.mainclass}"/>
+				<attribute name="Class-Path" value="commons-collections-3.2.jar jgap.jar swingx-core-1.6.2.jar looks-2.1.4.jar"/>
+			</manifest>
+			<zipgroupfileset refid="lib.path.dev"/>
+			<zipgroupfileset refid="lib.path.usr"/>
 		</jar>
 	</target>
 
