@@ -19,4 +19,12 @@ public class SC2StatDB extends HashMap<String, SC2AssetType> {
 		return null;
 	}
 
+	/**
+	** Create an appropriate subclass of {@link SC2Asset} for the given type.
+	*/
+	public SC2Asset createAsset(SC2AssetType type) {
+		// TODO
+		return null;
+	}
+
 }

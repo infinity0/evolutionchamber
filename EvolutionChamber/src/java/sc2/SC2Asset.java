@@ -42,6 +42,9 @@ public class SC2Asset {
 		energy = type.stat_ep.regen(energy);
 	}
 
+	/**
+	** Advance by 1 game second.
+	*/
 	public void advance() {
 		advance(1.0);
 	}
@@ -58,8 +61,18 @@ public class SC2Asset {
 		return true;
 	}
 
+	/**
+	** @return The item at the head of the queue, or {@code null}.
+	*/
 	public SC2Action peekQueue() {
 		return queue.isEmpty()? null: queue.getFirst();
+	}
+
+	/**
+	** Whether the asset is currently doing something.
+	*/
+	public boolean isActive() {
+		return peekQueue() != null;
 	}
 
 	/**

@@ -5,6 +5,8 @@ import static sc2.SC2State.Race;
 import java.util.EnumSet;
 import java.util.Set;
 import java.util.Collections;
+import java.util.Arrays;
+import java.util.HashSet;
 
 /**
 ** Represents an asset type.
@@ -21,8 +23,6 @@ public class SC2AssetType {
 	final public int cost_m;
 	final public int cost_v;
 	final public int cost_t;
-	/** supply cost. units have >=0 supply, tech/structs have null supply */
-	final public Integer cost_f;
 
 	/** built from */
 	final public SC2AssetType source;
@@ -39,99 +39,172 @@ public class SC2AssetType {
 	final public int stat_sp;
 	final public SC2EnergySchema stat_ep;
 
+	final public int armour;
 	final public double speed;
 	final public int range;
 	final public int sight;
-	/** cargo size */
-	final public int size;
+
+	final public Set<Modifier> mods;
 
 	final public SC2Attack atk_g;
 	final public SC2Attack atk_a;
-	final public int armour;
-	final public EnumSet<Modifier> mods;
+
+	/** provided food, will be 0 for most things */
+	final public int prov_f;
+
+	/** supply cost. units have >=0 supply, tech/structs have null supply */
+	final public Integer cost_f;
+	/** cargo size */
+	final public int size;
+	/** cargo capacity */
+	final public int cargo;
 
 	public Group type() {
 		return (cost_f != null)? Group.UNIT: (mods.contains(Modifier.STRUCTURE))? Group.STRUCT: Group.TECH;
 	}
 
-	/** constructor for unit types */
-	public static SC2AssetType defineUnit(
-		String name, Race race, int cost_m, int cost_v, int cost_t, int cost_f,
-		SC2AssetType source, SC2AssetType parent, Set<SC2AssetType> reqs,
-		int stat_hp, int stat_sp, SC2EnergySchema stat_ep, double speed, int range, int sight, int size,
-		SC2Attack atk_g, SC2Attack atk_a, int armour, Modifier mod_0, Modifier ... mods
-	) {
-		return new SC2AssetType(name, race, cost_m, cost_v, cost_t, cost_f,
-		  source, parent, reqs, stat_hp, stat_sp, stat_ep,
-		  speed, range, sight, size, atk_g, atk_a, armour, mod_0, mods);
+	public int supply() {
+		return cost_f == null? 0: (int)cost_f;
 	}
 
-	/** constructor for structure types */
-	public static SC2AssetType defineStructure(
-		String name, Race race, int cost_m, int cost_v, int cost_t,
-		SC2AssetType source, Set<SC2AssetType> reqs,
-		int stat_hp, int stat_sp, SC2EnergySchema stat_ep, double speed, int range, int sight, int size,
-		SC2Attack atk_g, SC2Attack atk_a, int armour, Modifier ... mods
-	) {
-		return new SC2AssetType(name, race, cost_m, cost_v, cost_t, null,
-		  source, null, reqs, stat_hp, stat_sp, stat_ep,
-		  speed, range, sight, size, atk_g, atk_a, armour, Modifier.STRUCTURE, mods);
-	}
-
-	/** constructor for structure types that don't move, don't attack, and aren't add-ons */
-	public static SC2AssetType defineStructure(
-		String name, Race race, int cost_m, int cost_v, int cost_t,
-		Set<SC2AssetType> reqs,
-		int stat_hp, int stat_sp, SC2EnergySchema stat_ep, int range, int sight, int size,
-		int armour, Modifier ... mods
-	) {
-		return new SC2AssetType(name, race, cost_m, cost_v, cost_t, null,
-		  null, null, reqs, stat_hp, stat_sp, stat_ep,
-		  0.0, range, sight, size, null, null, armour, Modifier.STRUCTURE, mods);
-	}
-
-	/** constructor for tech types */
-	public static SC2AssetType defineTech(
-		String name, Race race, int cost_m, int cost_v, int cost_t,
-		SC2AssetType source, Set<SC2AssetType> reqs
-	) {
-		return new SC2AssetType(name, race, cost_m, cost_v, cost_t, null,
-		  source, null, reqs, 0, 0, null,
-		  0.0, 0, 0, 0, null, null, 0, Modifier.TECH);
+	public static Builder initAssetType(String name, Race race, int cost_m, int cost_v, int cost_t) {
+		return new Builder(name, race, cost_m, cost_v, cost_t);
 	}
 
 	/** custom constructor */
 	protected SC2AssetType(
-		String name, Race race, int cost_m, int cost_v, int cost_t, Integer cost_f,
+		String name, Race race, int cost_m, int cost_v, int cost_t,
 		SC2AssetType source, SC2AssetType parent, Set<SC2AssetType> reqs,
-		int stat_hp, int stat_sp, SC2EnergySchema stat_ep, double speed, int range, int sight, int size,
-		SC2Attack atk_g, SC2Attack atk_a, int armour, Modifier mod_0, Modifier ... mods
+		int stat_hp, int stat_sp, SC2EnergySchema stat_ep,
+		int armour, double speed, int range, int sight,
+		EnumSet<Modifier> mods, SC2Attack atk_g, SC2Attack atk_a,
+		int prov_f, Integer cost_f, int size, int cargo
 	) {
 		this.name = non_null("name", name);
 		this.race = non_null("race", race);
 		this.cost_m = cost_m;
 		this.cost_v = cost_v;
 		this.cost_t = cost_t;
-		this.cost_f = cost_f;
+
 		this.source = source;
 		this.parent = parent;
-		this.reqs = (reqs == null)? Collections.<SC2AssetType>emptySet(): reqs;
+		this.reqs = (reqs == null)? Collections.<SC2AssetType>emptySet(): Collections.<SC2AssetType>unmodifiableSet(reqs);
+
 		this.stat_hp = stat_hp;
 		this.stat_sp = stat_sp;
 		this.stat_ep = (stat_ep == null)? SC2EnergySchema.NONE: stat_ep;
+
+		this.armour = armour;
 		this.speed = speed;
 		this.range = range;
 		this.sight = sight;
-		this.size = size;
+
+		this.mods = (mods == null)? Collections.<Modifier>emptySet(): Collections.<Modifier>unmodifiableSet(mods);
 		this.atk_g = atk_g;
 		this.atk_a = atk_a;
-		this.armour = armour;
-		this.mods = EnumSet.of(mod_0, mods);
+
+		this.prov_f = prov_f;
+		this.cost_f = cost_f;
+		this.size = size;
+		this.cargo = cargo;
 	}
 
 	private static <T> T non_null(String desc, T o) {
 		if (o == null) { throw new IllegalArgumentException(desc + " must not be null"); }
 		return o;
+	}
+
+	public static class Builder {
+
+		final String name;
+		final Race race;
+		final int cost_m;
+		final int cost_v;
+		final int cost_t;
+
+		SC2AssetType source;
+		SC2AssetType parent;
+		Set<SC2AssetType> reqs;
+
+		int stat_hp;
+		int stat_sp;
+		SC2EnergySchema stat_ep;
+
+		int armour;
+		double speed;
+		int range;
+		int sight;
+
+		EnumSet<Modifier> mods;
+
+		SC2Attack atk_g;
+		SC2Attack atk_a;
+
+		int prov_f;
+
+		public Builder(String name, Race race, int cost_m, int cost_v, int cost_t) {
+			this.name = name;
+			this.race = race;
+			this.cost_m = cost_m;
+			this.cost_v = cost_v;
+			this.cost_t = cost_t;
+		}
+
+		public Builder predecessors(SC2AssetType source, SC2AssetType parent, SC2AssetType ... reqs) {
+			this.source = source;
+			this.parent = parent;
+			this.reqs = new HashSet<SC2AssetType>(Arrays.asList(reqs));
+			return this;
+		}
+
+		public Builder setPhysical(int stat_hp, int stat_sp, SC2EnergySchema stat_ep, int armour, double speed, int range, int sight) {
+			this.stat_hp = stat_hp;
+			this.stat_sp = stat_sp;
+			this.stat_ep = stat_ep;
+			this.speed = speed;
+			this.range = range;
+			this.sight = sight;
+			return this;
+		}
+
+		public Builder setModifiers(Modifier mod_0, Modifier ... mods) {
+			this.mods = EnumSet.of(mod_0, mods);
+			return this;
+		}
+
+		public Builder setAttack(SC2Attack atk_g, SC2Attack atk_a) {
+			this.atk_g = atk_g;
+			this.atk_a = atk_a;
+			return this;
+		}
+
+		public Builder provideSupply(int prov_f) {
+			this.prov_f = prov_f;
+			return this;
+		}
+
+		public SC2AssetType buildStructure() {
+			mods.add(Modifier.STRUCTURE);
+			return new SC2AssetType(name, race, cost_m, cost_v, cost_t,
+			  source, parent, reqs,
+			  stat_hp, stat_sp, stat_ep, armour, speed, range, sight,
+			  mods, atk_g, atk_a, prov_f, null, 0, 0);
+		}
+
+		public SC2AssetType buildUnit(int cost_f, int size, int cargo) {
+			return new SC2AssetType(name, race, cost_m, cost_v, cost_t,
+			  source, parent, reqs,
+			  stat_hp, stat_sp, stat_ep, armour, speed, range, sight,
+			  mods, atk_g, atk_a, prov_f, cost_f, size, cargo);
+		}
+
+		public SC2AssetType buildTech() {
+			return new SC2AssetType(name, race, cost_m, cost_v, cost_t,
+			  source, parent, reqs,
+			  stat_hp, stat_sp, stat_ep, armour, speed, range, sight,
+			  EnumSet.of(Modifier.TECH), atk_g, atk_a, prov_f, null, 0, 0);
+		}
+
 	}
 
 }

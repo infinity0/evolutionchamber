@@ -42,6 +42,7 @@ abstract public class SC2Action {
 	** @return whether the action completed
 	*/
 	public boolean advance(double dec) {
+		if (eta <= 0) { throw new IllegalStateException("action already completed: " + this); }
 		eta -= dec;
 		if (eta <= 0) { complete(); return true; }
 		return false;
