@@ -54,8 +54,9 @@ abstract public class SC2Action {
 	abstract protected void launch() throws SC2ActionException;
 
 	/**
-	** Initialise the action. This is called upon integration into the
-	** game state, e.g. when a structure is placed, or a unit is queued.
+	** Initialise the action. This is called just before integration into the
+	** game state, e.g. when a structure is placed, or a unit is queued, and
+	** may prevent this from happening by throwing an exception.
 	**
 	** The default implementation does nothing. Subclasses might deduct
 	** resources, etc.

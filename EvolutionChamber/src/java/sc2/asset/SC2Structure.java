@@ -9,7 +9,7 @@ import sc2.SC2State;
 */
 public class SC2Structure extends SC2Asset {
 
-	protected int boost_eta;
+	protected int chrono_eta;
 
 	public SC2Structure(SC2State game, SC2AssetType type) {
 		super(game, type);
@@ -17,9 +17,9 @@ public class SC2Structure extends SC2Asset {
 	}
 
 	@Override public void advance() {
-		if (boost_eta > 0) {
+		if (chrono_eta > 0) {
 			advance(1.5);
-			boost_eta--;
+			chrono_eta--;
 		} else {
 			advance();
 		}
@@ -29,7 +29,7 @@ public class SC2Structure extends SC2Asset {
 	** Should only be called by {@link sc2.action.SC2ChronoBoost}.
 	*/
 	public void boost() {
-		boost_eta = 20;
+		chrono_eta = 20;
 	}
 
 }

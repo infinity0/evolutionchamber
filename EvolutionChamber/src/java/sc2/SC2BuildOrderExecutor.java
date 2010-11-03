@@ -26,7 +26,7 @@ public class SC2BuildOrderExecutor {
 			action.launch(game);
 
 		} catch (SC2ActionException e) {
-			if (e.canSatisfyByWaiting()) {
+			if (e.pleaseTryLater()) {
 				// TODO wait
 			} else {
 				// TODO skip
