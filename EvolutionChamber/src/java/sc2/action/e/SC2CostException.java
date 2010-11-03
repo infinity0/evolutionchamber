@@ -1,4 +1,7 @@
-package sc2.action;
+package sc2.action.e;
+
+import sc2.action.SC2ActionException;
+import sc2.action.SC2Action;
 
 /**
 ** Thrown when the required resources are not available.

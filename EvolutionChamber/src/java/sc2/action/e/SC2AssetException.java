@@ -1,5 +1,7 @@
-package sc2.action;
+package sc2.action.e;
 
+import sc2.action.SC2ActionException;
+import sc2.action.SC2Action;
 import sc2.asset.SC2AssetType;
 
 /**
