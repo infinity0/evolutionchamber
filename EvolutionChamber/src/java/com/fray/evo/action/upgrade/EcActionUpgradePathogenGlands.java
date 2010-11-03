@@ -14,7 +14,7 @@ public class EcActionUpgradePathogenGlands extends EcActionUpgrade
 	@Override
 	public void init()
 	{
-		init(150, 150, 110, "Pathogen Glands");
+		init(150, 150, 80, "Pathogen Glands");
 	}
 
 	@Override
