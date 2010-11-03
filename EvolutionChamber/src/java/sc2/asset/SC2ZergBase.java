@@ -5,11 +5,11 @@ import sc2.action.SC2ActionException;
 import sc2.SC2State;
 
 /**
-** Represents a base structure, eg. Nexus, Orbital Command, Hive.
+** Represents a zerg base. Produces larva.
 */
-public class SC2Base extends SC2Structure {
+public class SC2ZergBase extends SC2Base {
 
-	public SC2Base(SC2State game, SC2AssetType type) {
+	public SC2ZergBase(SC2State game, SC2AssetType type) {
 		super(game, type);
 		// TODO
 	}

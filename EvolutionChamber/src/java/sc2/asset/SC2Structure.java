@@ -2,19 +2,17 @@ package sc2.asset;
 
 import sc2.action.SC2Action;
 import sc2.action.SC2ActionException;
+import sc2.SC2State;
 
 /**
-** Can subclass to implement eg.
-** - SC2TerranProductionStructure (with a second queue for reactor)
-**
-** // TODO
+** Represents a structure. Can be chrono boosted.
 */
 public class SC2Structure extends SC2Asset {
 
 	protected int boost_eta;
 
-	public SC2Structure(SC2AssetType type) {
-		super(type);
+	public SC2Structure(SC2State game, SC2AssetType type) {
+		super(game, type);
 		// TODO
 	}
 

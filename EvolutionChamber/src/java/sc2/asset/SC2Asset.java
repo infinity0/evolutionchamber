@@ -3,16 +3,19 @@ package sc2.asset;
 import sc2.action.SC2Action;
 import sc2.action.SC2Morph;
 import sc2.action.SC2ActionException;
+import sc2.SC2State;
 
 import java.util.LinkedList;
 
 /**
-** Represents a completed asset. (Not researches.)
+** Represents a unit or structure asset. (Not researches.)
 */
 public class SC2Asset {
 
 	final public SC2AssetType type;
 
+	/** reference to the overall game. subclasses might need this, eg. to spawn larva. */
+	final protected SC2State game;
 	/** action queue. the first element is advanced when the asset as a whole is advanced. */
 	final protected LinkedList<SC2Action> queue = new LinkedList<SC2Action>();
 	/** current energy. */
@@ -20,14 +23,15 @@ public class SC2Asset {
 	/** current name. used by {@link SC2State} for more descriptive messages. */
 	protected String name;
 
-	public SC2Asset(SC2AssetType type, int energy) {
+	public SC2Asset(SC2State game, SC2AssetType type, int energy) {
 		if (type == null) { throw new NullPointerException(); }
+		this.game = game;
 		this.type = type;
 		this.energy = energy;
 	}
 
-	public SC2Asset(SC2AssetType type) {
-		this(type, type.stat_ep.init);
+	public SC2Asset(SC2State game, SC2AssetType type) {
+		this(game, type, type.stat_ep.init);
 	}
 
 	public String toString() {

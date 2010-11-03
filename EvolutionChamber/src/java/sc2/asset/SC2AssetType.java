@@ -150,39 +150,40 @@ public class SC2AssetType {
 			this.cost_t = cost_t;
 		}
 
-		public Builder predecessors(SC2AssetType source, SC2AssetType parent, SC2AssetType ... reqs) {
+		public Builder predecents(SC2AssetType source, SC2AssetType parent, SC2AssetType ... reqs) {
 			this.source = source;
 			this.parent = parent;
 			this.reqs = new HashSet<SC2AssetType>(Arrays.asList(reqs));
 			return this;
 		}
 
-		public Builder setDefence(SC2HealthSchema stat_hp, SC2HealthSchema stat_sp, SC2EnergySchema stat_ep) {
+		public Builder defence(SC2HealthSchema stat_hp, SC2HealthSchema stat_sp, SC2EnergySchema stat_ep) {
 			this.stat_hp = stat_hp;
 			this.stat_sp = stat_sp;
 			this.stat_ep = stat_ep;
 			return this;
 		}
 
-		public Builder setPhysical(double speed, int range, int sight) {
+		public Builder physical(double speed, int range, int sight) {
 			this.speed = speed;
 			this.range = range;
 			this.sight = sight;
 			return this;
 		}
 
-		public Builder setModifiers(Modifier mod_0, Modifier ... mods) {
+		public Builder modifier(Modifier mod_0, Modifier ... mods) {
 			this.mods = EnumSet.of(mod_0, mods);
 			return this;
 		}
 
-		public Builder setAttack(SC2Attack atk_g, SC2Attack atk_a) {
+		public Builder attacks(SC2Attack atk_g, SC2Attack atk_a) {
 			this.atk_g = atk_g;
 			this.atk_a = atk_a;
 			return this;
 		}
 
-		public Builder provideSupply(int prov_f) {
+		/** provide some supply */
+		public Builder provide(int prov_f) {
 			this.prov_f = prov_f;
 			return this;
 		}
