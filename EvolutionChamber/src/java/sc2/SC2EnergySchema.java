@@ -1,9 +1,5 @@
 package sc2;
 
-import java.util.EnumSet;
-import java.util.Set;
-import static sc2.SC2State.Race;
-
 /**
 ** Represents an asset's energy stats.
 */

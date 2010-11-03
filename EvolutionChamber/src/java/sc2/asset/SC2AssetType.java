@@ -1,7 +1,8 @@
 package sc2.asset;
 
-import sc2.SC2Attack;
+import sc2.SC2HealthSchema;
 import sc2.SC2EnergySchema;
+import sc2.SC2Attack;
 import static sc2.SC2State.Race;
 
 import java.util.EnumSet;
@@ -37,11 +38,10 @@ public class SC2AssetType {
 	*/
 	final public Set<SC2AssetType> reqs;
 
-	final public int stat_hp;
-	final public int stat_sp;
+	final public SC2HealthSchema stat_hp;
+	final public SC2HealthSchema stat_sp;
 	final public SC2EnergySchema stat_ep;
 
-	final public int armour;
 	final public double speed;
 	final public int range;
 	final public int sight;
@@ -77,8 +77,8 @@ public class SC2AssetType {
 	protected SC2AssetType(
 		String name, Race race, int cost_m, int cost_v, int cost_t,
 		SC2AssetType source, SC2AssetType parent, Set<SC2AssetType> reqs,
-		int stat_hp, int stat_sp, SC2EnergySchema stat_ep,
-		int armour, double speed, int range, int sight,
+		SC2HealthSchema stat_hp, SC2HealthSchema stat_sp, SC2EnergySchema stat_ep,
+		double speed, int range, int sight,
 		EnumSet<Modifier> mods, SC2Attack atk_g, SC2Attack atk_a,
 		int prov_f, Integer cost_f, int size, int cargo
 	) {
@@ -96,7 +96,6 @@ public class SC2AssetType {
 		this.stat_sp = stat_sp;
 		this.stat_ep = (stat_ep == null)? SC2EnergySchema.NONE: stat_ep;
 
-		this.armour = armour;
 		this.speed = speed;
 		this.range = range;
 		this.sight = sight;
@@ -128,11 +127,10 @@ public class SC2AssetType {
 		SC2AssetType parent;
 		Set<SC2AssetType> reqs;
 
-		int stat_hp;
-		int stat_sp;
+		SC2HealthSchema stat_hp;
+		SC2HealthSchema stat_sp;
 		SC2EnergySchema stat_ep;
 
-		int armour;
 		double speed;
 		int range;
 		int sight;
@@ -159,10 +157,14 @@ public class SC2AssetType {
 			return this;
 		}
 
-		public Builder setPhysical(int stat_hp, int stat_sp, SC2EnergySchema stat_ep, int armour, double speed, int range, int sight) {
+		public Builder setDefence(SC2HealthSchema stat_hp, SC2HealthSchema stat_sp, SC2EnergySchema stat_ep) {
 			this.stat_hp = stat_hp;
 			this.stat_sp = stat_sp;
 			this.stat_ep = stat_ep;
+			return this;
+		}
+
+		public Builder setPhysical(double speed, int range, int sight) {
 			this.speed = speed;
 			this.range = range;
 			this.sight = sight;
@@ -189,21 +191,21 @@ public class SC2AssetType {
 			mods.add(Modifier.STRUCTURE);
 			return new SC2AssetType(name, race, cost_m, cost_v, cost_t,
 			  source, parent, reqs,
-			  stat_hp, stat_sp, stat_ep, armour, speed, range, sight,
+			  stat_hp, stat_sp, stat_ep, speed, range, sight,
 			  mods, atk_g, atk_a, prov_f, null, 0, 0);
 		}
 
 		public SC2AssetType buildUnit(int cost_f, int size, int cargo) {
 			return new SC2AssetType(name, race, cost_m, cost_v, cost_t,
 			  source, parent, reqs,
-			  stat_hp, stat_sp, stat_ep, armour, speed, range, sight,
+			  stat_hp, stat_sp, stat_ep, speed, range, sight,
 			  mods, atk_g, atk_a, prov_f, cost_f, size, cargo);
 		}
 
 		public SC2AssetType buildTech() {
 			return new SC2AssetType(name, race, cost_m, cost_v, cost_t,
 			  source, parent, reqs,
-			  stat_hp, stat_sp, stat_ep, armour, speed, range, sight,
+			  stat_hp, stat_sp, stat_ep, speed, range, sight,
 			  EnumSet.of(Modifier.TECH), atk_g, atk_a, prov_f, null, 0, 0);
 		}
 

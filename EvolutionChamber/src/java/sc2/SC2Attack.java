@@ -5,6 +5,8 @@ package sc2;
 */
 public class SC2Attack {
 
+	// TODO deal with attack types and colossus being able to take air damage
+
 	// TODO
 
 }
