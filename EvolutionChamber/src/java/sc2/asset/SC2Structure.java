@@ -2,7 +2,7 @@ package sc2.asset;
 
 import sc2.action.SC2Action;
 import sc2.action.SC2ActionException;
-import sc2.SC2State;
+import sc2.SC2Player;
 
 /**
 ** Represents a structure. Can be chrono boosted.
@@ -11,8 +11,8 @@ public class SC2Structure extends SC2Asset {
 
 	protected int chrono_eta;
 
-	public SC2Structure(SC2State game, SC2AssetType type) {
-		super(game, type);
+	public SC2Structure(SC2Player play, SC2AssetType type) {
+		super(play, type);
 		// TODO
 	}
 

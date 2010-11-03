@@ -4,7 +4,7 @@ import sc2.SC2HealthSchema;
 import sc2.SC2EnergySchema;
 import sc2.SC2Attack;
 import sc2.require.SC2Requires;
-import static sc2.SC2State.Race;
+import static sc2.SC2World.Race;
 
 import java.util.EnumSet;
 import java.util.Set;

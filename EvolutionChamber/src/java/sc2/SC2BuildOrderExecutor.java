@@ -9,29 +9,42 @@ import sc2.asset.SC2AssetType;
 */
 public class SC2BuildOrderExecutor {
 
-	final protected SC2State game;
+	final protected SC2Player play;
 
-	public SC2BuildOrderExecutor(SC2State game) {
-		this.game = game;
+	public SC2BuildOrderExecutor(SC2Player play) {
+		this.play = play;
 	}
 
-	public void executeAll(Iterable<SC2Action> build_order) {
+	public int executeAll(Iterable<SC2Action> build_order) {
+		int skipped = 0;
 		for (SC2Action action: build_order) {
-			execute(action);
+			if (execute(action)) { skipped++; }
 		}
+		return skipped;
 	}
 
-	public void execute(SC2Action action) {
-		try {
-			action.launch(game);
+	public boolean execute(SC2Action action) {
+		while (true) {
+			try {
+				action.launch(play);
+				return true;
 
-		} catch (SC2ActionException e) {
-			if (e.pleaseTryLater()) {
-				// TODO wait
-			} else {
-				// TODO skip
+			} catch (SC2ActionException e) {
+				if (e.pleaseTryLater()) {
+					play.advance();
+					continue;
+
+				} else {
+					return false;
+				}
 			}
 		}
+	}
+
+	public static void main(String[] args) {
+		System.out.println("Hello World!");
+		System.out.println("crashing ... ");
+		System.out.println("done! program will exit");
 	}
 
 }

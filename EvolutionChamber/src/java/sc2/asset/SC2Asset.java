@@ -5,7 +5,7 @@ import sc2.action.SC2Morph;
 import sc2.action.SC2Action;
 import sc2.action.SC2ActionException;
 import sc2.require.SC2RequireException;
-import sc2.SC2State;
+import sc2.SC2Player;
 
 import java.util.LinkedList;
 
@@ -23,10 +23,10 @@ public class SC2Asset {
 
 	final public SC2AssetType type;
 
-	/** reference to the overall game. subclasses might need this, eg. to spawn larva. */
-	final protected SC2State game;
+	/** reference to the player state. subclasses might need this, eg. to spawn larva. */
+	final protected SC2Player play;
 
-	/** current name. used by {@link SC2State} for more descriptive messages. */
+	/** current name. used by {@link SC2Player} for more descriptive messages. */
 	protected String name;
 	/** current energy. */
 	protected double energy;
@@ -38,15 +38,15 @@ public class SC2Asset {
 	/** build queue. */
 	final protected LinkedList<SC2Build> queue = new LinkedList<SC2Build>();
 
-	public SC2Asset(SC2State game, SC2AssetType type, int energy) {
+	public SC2Asset(SC2Player play, SC2AssetType type, int energy) {
 		if (type == null) { throw new NullPointerException(); }
-		this.game = game;
+		this.play = play;
 		this.type = type;
 		this.energy = energy;
 	}
 
-	public SC2Asset(SC2State game, SC2AssetType type) {
-		this(game, type, type.stat_ep.init);
+	public SC2Asset(SC2Player play, SC2AssetType type) {
+		this(play, type, type.stat_ep.init);
 	}
 
 	public String toString() {

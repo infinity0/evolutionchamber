@@ -1,7 +1,7 @@
 package sc2.require;
 
 import sc2.asset.SC2Asset;
-import sc2.SC2State;
+import sc2.SC2Player;
 
 /**
 ** Represents a requirement.
@@ -9,8 +9,8 @@ import sc2.SC2State;
 public interface SC2Requires {
 
 	/**
-	** Whether the game state statisfies the requirements.
+	** Whether the player's game state statisfies the requirements.
 	*/
-	public void require(SC2State game) throws SC2RequireException;
+	public void require(SC2Player play) throws SC2RequireException;
 
 }

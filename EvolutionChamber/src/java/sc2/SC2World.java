@@ -9,15 +9,19 @@ import java.util.HashMap;
 /**
 ** Holds data for in-game asset types.
 */
-public class SC2StatDB extends HashMap<String, SC2AssetType> {
+public class SC2World {
 
-	public SC2StatDB() { }
+	public enum Race { P, Z, T }
 
-	public Group getType(String key) {
-		return get(key).type();
+	final protected HashMap<String, SC2AssetType> stat = new HashMap<String, SC2AssetType>();
+
+	public SC2World() { }
+
+	public Group getAssetGroup(String key) {
+		return stat.get(key).type();
 	}
 
-	public static SC2StatDB getDefault() {
+	public static SC2World getDefaultWorld() {
 		// TODO
 		return null;
 	}

@@ -1,6 +1,6 @@
 package sc2.require;
 
-import sc2.SC2State;
+import sc2.SC2Player;
 import sc2.asset.SC2AssetType;
 
 /**
@@ -24,8 +24,8 @@ public class SC2RequiresAsset implements SC2Requires {
 		this(type, 1, false);
 	}
 
-	@Override public void require(SC2State game) throws SC2RequireException {
-		int num = game.getAssets(type).size();
+	@Override public void require(SC2Player play) throws SC2RequireException {
+		int num = play.getAssets(type).size();
 		if (less) {
 			if (num >= req) {
 				throw new SC2AssetException(type, less, req, num, false);

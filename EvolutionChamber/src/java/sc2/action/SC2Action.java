@@ -1,6 +1,6 @@
 package sc2.action;
 
-import sc2.SC2State;
+import sc2.SC2Player;
 import sc2.action.SC2ActionException;
 
 /**
@@ -13,8 +13,8 @@ import sc2.action.SC2ActionException;
 */
 abstract public class SC2Action {
 
-	/** reference to the game state */
-	protected SC2State game;
+	/** reference to the player state */
+	protected SC2Player play;
 
 	/** double because chrono boost can increase the decrement to 1.5 */
 	public double eta;
@@ -29,19 +29,22 @@ abstract public class SC2Action {
 		this(0);
 	}
 
-	final protected void setGame(SC2State game) {
-		if (game != null) { throw new IllegalStateException("action already bound to a game!"); }
-		this.game = game;
-	}
-
 	/**
-	** Bind this action to the given game, and launch it. This is called by
+	** Bind this action to the given player, and launch it. This is called by
 	** {@link sc2.SC2BuildOrderExecutor}.
 	*/
-	final public void launch(SC2State game) throws SC2ActionException {
-		if (game == null) { throw new NullPointerException(); }
-		setGame(game);
-		launch();
+	final public void launch(SC2Player play) throws SC2ActionException {
+		if (play == null) { throw new NullPointerException(); }
+		if (this.play != null) { throw new IllegalStateException("action already bound to a player!"); }
+
+		try {
+			this.play = play;
+			launch();
+
+		} catch (SC2ActionException e) {
+			this.play = null;
+			throw e;
+		}
 	}
 
 	/**
@@ -49,7 +52,7 @@ abstract public class SC2Action {
 	** phases, this method should integrate it into the appropriate places in
 	** the game state (e.g. asset queues) for them to be triggered correctly.
 	**
-	** Called by {@link #launch(SC2State)}.
+	** Called by {@link #launch(SC2Player)}.
 	*/
 	abstract protected void launch() throws SC2ActionException;
 

@@ -154,6 +154,15 @@
 		</java>
 	</target>
 
+	<target name="test-new" depends="package" description="test the new all-races model">
+		<java classname="sc2.SC2BuildOrderExecutor" fork="true" dir="${test.dst}">
+			<classpath>
+				<pathelement path="${main.dst}/${ant.project.name}.jar"/>
+				<path refid="lib.path"/>
+			</classpath>
+		</java>
+	</target>
+
 	<target name="unit-build" depends="build, libdep-junit" unless="${test.skip}">
 		<!-- no tests yet -->
 	</target>

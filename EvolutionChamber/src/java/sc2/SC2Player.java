@@ -4,6 +4,7 @@ import sc2.action.SC2Action;
 import sc2.action.SC2ActionException;
 import sc2.asset.SC2Asset;
 import sc2.asset.SC2AssetType;
+import static sc2.SC2World.Race;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.HashMultimap;
@@ -15,16 +16,14 @@ import java.util.HashSet;
 import java.util.ArrayList;
 
 /**
-** Represents a game state.
+** Represents a game state, from the point of view of one player.
 **
 ** Currently this is mutable; it makes heavy use of SC2Action which is mutable.
 */
-public class SC2State {
-
-	public enum Race { P, Z, T }
+public class SC2Player {
 
 	/** database of game statistics */
-	final public SC2StatDB db;
+	final public SC2World star;
 	/** player's race */
 	final public Race race;
 
@@ -46,17 +45,13 @@ public class SC2State {
 	/** game ticks, currently measured in seconds */
 	protected int time;
 
-	public SC2State(SC2StatDB db, Race race) {
-		if (db == null || race == null) { throw new NullPointerException(); }
-		this.db = db;
+	public SC2Player(SC2World star, Race race) {
+		if (star == null || race == null) { throw new NullPointerException(); }
+		this.star = star;
 		this.race = race;
 		this.res_m = 50;
 		this.res_v = 0;
 		// TODO populate assets with 6 workers, 1 cc
-	}
-
-	public SC2State(Race race) {
-		this(SC2StatDB.getDefault(), race);
 	}
 
 	/**

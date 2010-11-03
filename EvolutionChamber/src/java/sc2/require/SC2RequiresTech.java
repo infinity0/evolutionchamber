@@ -1,6 +1,6 @@
 package sc2.require;
 
-import sc2.SC2State;
+import sc2.SC2Player;
 import sc2.asset.SC2AssetType;
 
 /**
@@ -14,8 +14,8 @@ public class SC2RequiresTech implements SC2Requires {
 		this.type = type;
 	}
 
-	@Override public void require(SC2State game) throws SC2RequireException {
-		if (!game.hasTech(type)) {
+	@Override public void require(SC2Player play) throws SC2RequireException {
+		if (!play.hasTech(type)) {
 			// cba writing another exception class
 			throw new SC2AssetException(type, false, 1, 0, false);
 		}
