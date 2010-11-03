@@ -1,4 +1,4 @@
-package sc2;
+package sc2.asset;
 
 import sc2.action.SC2Action;
 import sc2.action.SC2Morph;
@@ -11,14 +11,14 @@ import java.util.LinkedList;
 */
 public class SC2Asset {
 
-	/** max queue size. TODO for BO-optimisation we should probably set this to 1 */
-	final public static int qcap = 5;
-
 	final public SC2AssetType type;
 
+	/** action queue. the first element is advanced when the asset as a whole is advanced. */
 	final protected LinkedList<SC2Action> queue = new LinkedList<SC2Action>();
-
+	/** current energy. */
 	protected double energy;
+	/** current name. used by {@link SC2State} for more descriptive messages. */
+	protected String name;
 
 	public SC2Asset(SC2AssetType type, int energy) {
 		if (type == null) { throw new NullPointerException(); }
@@ -28,6 +28,15 @@ public class SC2Asset {
 
 	public SC2Asset(SC2AssetType type) {
 		this(type, type.stat_ep.init);
+	}
+
+	public String toString() {
+		return type.name + " " + name;
+	}
+
+	public void setName(String name) {
+		// could do sanity checks
+		this.name = name;
 	}
 
 	protected void advance(double dec) {
@@ -105,5 +114,8 @@ public class SC2Asset {
 		int i = queue.indexOf(action);
 		return (i < 0)? null: popQueue(i);
 	}
+
+	/** max queue size. TODO for BO-optimisation we should probably set this to 1 */
+	final public static int qcap = 5;
 
 }

@@ -2,6 +2,8 @@ package sc2;
 
 import sc2.action.SC2Action;
 import sc2.action.SC2ActionException;
+import sc2.asset.SC2Asset;
+import sc2.asset.SC2AssetType;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.HashMultimap;
@@ -21,20 +23,26 @@ public class SC2State {
 
 	public enum Race { P, Z, T }
 
+	/** database of game statistics */
 	final public SC2StatDB db;
-
+	/** player's race */
 	final public Race race;
 
+	/** current assets, stored by type */
 	final protected Multimap<SC2AssetType, SC2Asset> assets = HashMultimap.create();
-
+	/** completed research */
 	final protected Set<SC2AssetType> research = new HashSet<SC2AssetType>();
-
+	/** ongoing actions that don't belong to asset queues */
 	final protected List<SC2Action> ongoing = new ArrayList<SC2Action>();
 
 	/** mineral resources. representing as a double allows for better averaging. */
-	protected double res_m;
+	public double res_m;
 	/** vespene resources. representing as a double allows for better averaging. */
-	protected double res_v;
+	public double res_v;
+	/** food resources. representing as a double due to zergling 0.5 supply. */
+	public double res_f;
+	/** food capacity. */
+	public int max_f;
 	/** game ticks, currently measured in seconds */
 	protected int time;
 
@@ -49,34 +57,6 @@ public class SC2State {
 
 	public SC2State(Race race) {
 		this(SC2StatDB.getDefault(), race);
-	}
-
-	/**
-	** Return supply used.
-	*/
-	public int res_f() {
-		int f = act_f();
-		// TODO add units currently being produced. need to implement
-		// SC2BuildAction properly first
-		return f;
-	}
-
-	/**
-	** Return supply active, ie. in completed units, not on production queues.
-	*/
-	public int act_f() {
-		int f = 0;
-		for (SC2Asset asset: assets.values()) { f += asset.type.cost_f; }
-		return f;
-	}
-
-	/**
-	** Return supply available.
-	*/
-	public int cap_f() {
-		int f = 0;
-		for (SC2Asset asset: assets.values()) { f += asset.type.prov_f; }
-		return f;
 	}
 
 	/**

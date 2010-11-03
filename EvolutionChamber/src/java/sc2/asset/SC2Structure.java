@@ -1,9 +1,7 @@
-package sc2;
+package sc2.asset;
 
 import sc2.action.SC2Action;
 import sc2.action.SC2ActionException;
-
-import java.util.LinkedList;
 
 /**
 ** Can subclass to implement eg.

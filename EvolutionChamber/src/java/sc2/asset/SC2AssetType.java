@@ -1,5 +1,7 @@
-package sc2;
+package sc2.asset;
 
+import sc2.SC2Attack;
+import sc2.SC2EnergySchema;
 import static sc2.SC2State.Race;
 
 import java.util.EnumSet;

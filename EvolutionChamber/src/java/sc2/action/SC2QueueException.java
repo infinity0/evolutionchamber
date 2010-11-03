@@ -1,9 +1,11 @@
 package sc2.action;
 
-import sc2.SC2Asset;
+import sc2.asset.SC2Asset;
 
 /**
 ** Thrown when an asset's queue can't accept the action.
+**
+** TODO distinguish between case where it will accept it later, or not.
 */
 public class SC2QueueException extends SC2ActionException {
 

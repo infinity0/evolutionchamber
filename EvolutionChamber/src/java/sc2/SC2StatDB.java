@@ -1,7 +1,10 @@
 package sc2;
 
+import sc2.asset.SC2AssetType;
+import sc2.asset.SC2Asset;
+import static sc2.asset.SC2AssetType.Group;
+
 import java.util.HashMap;
-import static sc2.SC2AssetType.Group;
 
 /**
 ** Holds data for in-game asset types.

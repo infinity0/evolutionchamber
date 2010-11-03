@@ -1,6 +1,6 @@
 package sc2.action;
 
-import sc2.SC2AssetType;
+import sc2.asset.SC2AssetType;
 
 /**
 ** Thrown when a required asset is not found.
