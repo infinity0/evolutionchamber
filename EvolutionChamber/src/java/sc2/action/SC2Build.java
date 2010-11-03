@@ -1,16 +1,24 @@
 package sc2.action;
 
+import sc2.asset.SC2AssetType;
+
 /**
-** Represents a build task on an {@link sc2.asset.SC2Asset}. This does *not*
-** include construction of structures, which are done by workers.
+** Represents a build that uses a queue slot on an {@link sc2.asset.SC2Asset}.
+** This does *not* include structure construction, which are done by workers.
 **
 ** Examples:
 ** - Hive builds Queen
 ** - Stargate builds Carrier
 ** - Carrier builds interceptor
 */
-public class SC2Build /*extends SC2Action*/ {
+public class SC2Build extends SC2AssetAction {
 
-	// TODO
+	public SC2Build(SC2AssetType type) {
+		super(type);
+	}
+
+	@Override protected void launch() throws SC2ActionException {
+		// TODO
+	}
 
 }

@@ -107,7 +107,7 @@ public class SC2AssetType {
 		this.cargo = cargo;
 	}
 
-	private static <T> T non_null(String desc, T o) {
+	public static <T> T non_null(String desc, T o) {
 		if (o == null) { throw new IllegalArgumentException(desc + " must not be null"); }
 		return o;
 	}

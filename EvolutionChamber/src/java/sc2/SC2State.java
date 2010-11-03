@@ -29,7 +29,7 @@ public class SC2State {
 	final public Race race;
 
 	/** current assets, stored by type */
-	final protected Multimap<SC2AssetType, SC2Asset> assets = HashMultimap.create();
+	final protected HashMultimap<SC2AssetType, SC2Asset> assets = HashMultimap.create();
 	/** completed research */
 	final protected Set<SC2AssetType> research = new HashSet<SC2AssetType>();
 	/** ongoing actions that don't belong to asset queues */
@@ -83,6 +83,10 @@ public class SC2State {
 
 	public void addAsset(SC2Asset asset) {
 		// TODO
+	}
+
+	public Set<SC2Asset> getAssets(SC2AssetType type) {
+		return assets.get(type);
 	}
 
 	//public Set<SC2Asset> getWorkers();

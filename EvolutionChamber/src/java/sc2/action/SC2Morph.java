@@ -1,5 +1,7 @@
 package sc2.action;
 
+import sc2.asset.SC2AssetType;
+
 /**
 ** Represents a 1:1 morph action. Examples:
 **
@@ -9,26 +11,13 @@ package sc2.action;
 ** - Command Center -> Orbital Command
 ** - Zergling -> Baneling
 */
-public class SC2Morph extends SC2Action {
+public class SC2Morph extends SC2AssetAction {
 
-	public SC2Morph() {
-		super(0); // dummy so the thing compiles
-		// TODO
+	public SC2Morph(SC2AssetType type) {
+		super(type);
 	}
 
 	@Override protected void launch() throws SC2ActionException {
-		// TODO
-	}
-
-	@Override public void init() throws SC2ActionException {
-		// TODO
-	}
-
-	@Override public void complete() {
-		// TODO
-	}
-
-	@Override public void cancel() {
 		// TODO
 	}
 
