@@ -3,6 +3,9 @@ package sc2.action;
 /**
 ** Thrown when the required supply is not available. We distinguish this from
 ** {@link SC2CostException} because this can't be satisfied just by waiting.
+**
+** On second thoughts this might never be needed since supply checking is done
+** in advance() and not init()...
 */
 public class SC2FoodException extends SC2ActionException {
 

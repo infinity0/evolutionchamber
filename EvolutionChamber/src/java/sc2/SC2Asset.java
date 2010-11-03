@@ -1,7 +1,7 @@
 package sc2;
 
 import sc2.action.SC2Action;
-import sc2.action.SC2MorphAction;
+import sc2.action.SC2Morph;
 import sc2.action.SC2ActionException;
 
 import java.util.LinkedList;
@@ -54,9 +54,9 @@ public class SC2Asset {
 		SC2Action current = peekQueue();
 
 		// can't queue on a morphing asset
-		if (current instanceof SC2MorphAction) { return false; }
+		if (current instanceof SC2Morph) { return false; }
 		// can't morph when items on queue
-		if (action instanceof SC2MorphAction && current != null) { return false; }
+		if (action instanceof SC2Morph && current != null) { return false; }
 
 		return true;
 	}

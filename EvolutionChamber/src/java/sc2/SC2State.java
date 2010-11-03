@@ -31,8 +31,11 @@ public class SC2State {
 
 	final protected List<SC2Action> ongoing = new ArrayList<SC2Action>();
 
-	protected int res_m;
-	protected int res_v;
+	/** mineral resources. representing as a double allows for better averaging. */
+	protected double res_m;
+	/** vespene resources. representing as a double allows for better averaging. */
+	protected double res_v;
+	/** game ticks, currently measured in seconds */
 	protected int time;
 
 	public SC2State(SC2StatDB db, Race race) {
