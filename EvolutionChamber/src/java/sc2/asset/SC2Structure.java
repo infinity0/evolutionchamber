@@ -26,7 +26,7 @@ public class SC2Structure extends SC2Asset {
 	}
 
 	/**
-	** Should only be called by {@link SC2ChronoBoostAction}.
+	** Should only be called by {@link sc2.action.SC2ChronoBoost}.
 	*/
 	public void boost() {
 		boost_eta = 20;

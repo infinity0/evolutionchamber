@@ -1,10 +1,8 @@
 package sc2.action;
 
-import sc2.SC2State;
-
 /**
-** Represents a build task on an {@link SC2Asset}. This does *not* include
-** construction of structures.
+** Represents a build task on an {@link sc2.asset.SC2Asset}. This does *not*
+** include construction of structures, which are done by workers.
 **
 ** Examples:
 ** - Hive builds Queen

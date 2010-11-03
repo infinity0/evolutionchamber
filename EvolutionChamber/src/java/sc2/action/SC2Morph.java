@@ -1,7 +1,5 @@
 package sc2.action;
 
-import sc2.SC2State;
-
 /**
 ** Represents a 1:1 morph action. Examples:
 **
@@ -13,12 +11,12 @@ import sc2.SC2State;
 */
 public class SC2Morph extends SC2Action {
 
-	public SC2Morph(SC2State game) {
-		super(null, 0); // dummy so the thing compiles
+	public SC2Morph() {
+		super(0); // dummy so the thing compiles
 		// TODO
 	}
 
-	@Override public void launch() throws SC2ActionException {
+	@Override protected void launch() throws SC2ActionException {
 		// TODO
 	}
 

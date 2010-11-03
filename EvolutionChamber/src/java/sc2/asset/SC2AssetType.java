@@ -31,11 +31,8 @@ public class SC2AssetType {
 	final public SC2AssetType source;
 	/** morphs from */
 	final public SC2AssetType parent;
-	/**
-	** Requirements. eg. cyber core for stalker. Used by {@link SC2BuildAction}
-	** and {@link SC2UpgradeAction}. Protoss mothership has a separate build
-	** action and this field isn't necessary.
-	*/
+	/** Build requirements. eg. Cybernetics Core for Stalker. Used by {@link
+	** sc2.action.SC2Build} and {@link sc2.action.SC2Upgrade}. */
 	final public Set<SC2AssetType> reqs;
 
 	final public SC2HealthSchema stat_hp;

@@ -9,22 +9,36 @@ import sc2.action.SC2ActionException;
 abstract public class SC2Action {
 
 	/** reference to the game state */
-	final protected SC2State game;
+	protected SC2State game;
 
 	/** double because chrono boost can increase the decrement to 1.5 */
 	public double eta;
 
-	public SC2Action(SC2State game, int cost_t) {
+	public SC2Action(int cost_t) {
 		if (game == null) { throw new NullPointerException(); }
-		this.game = game;
 		this.eta = cost_t;
 	}
 
+	protected void setGame(SC2State game) {
+		if (game != null) { throw new IllegalStateException("action already bound to a game!"); }
+		this.game = game;
+	}
+
 	/**
-	** Launch the action, integrating it into the appropriate places in the
-	** game state (e.g. asset queues). This is called by {@link SC2BOExecutor}.
+	** Bind this action to the given game and launch it. This is called by
+	** {@link sc2.SC2BuildOrderExecutor}.
 	*/
-	abstract public void launch() throws SC2ActionException;
+	final public void launch(SC2State game) throws SC2ActionException {
+		if (game == null) { throw new NullPointerException(); }
+		setGame(game);
+		launch();
+	}
+
+	/**
+	** Launch the action, integrating it into the appropriate places (e.g.
+	** asset queues). Called by {@link #launch(SC2State)}
+	*/
+	abstract protected void launch() throws SC2ActionException;
 
 	/**
 	** Initialise the action. This is called upon integration into the
@@ -46,9 +60,9 @@ abstract public class SC2Action {
 	** @param rate Timer decrement; should be 1.0 unless Chrono Boost is used.
 	** @return whether the action completed
 	*/
-	public boolean advance(double dec) {
+	public boolean advance(double rate) {
 		if (eta <= 0) { throw new IllegalStateException("action already completed: " + this); }
-		eta -= dec;
+		eta -= rate;
 		if (eta <= 0) { complete(); return true; }
 		return false;
 	}
@@ -65,9 +79,9 @@ abstract public class SC2Action {
 
 	/**
 	** Advance the action at a normal rate. This method delegates to {@link
-	** advance(double)}, so subclasses need not override it.
+	** #advance(double)}, so subclasses need not (and cannot) override it.
 	*/
-	public boolean advance() {
+	final public boolean advance() {
 		return advance(1.0);
 	}
 
