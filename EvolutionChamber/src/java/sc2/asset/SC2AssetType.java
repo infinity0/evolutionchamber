@@ -3,6 +3,7 @@ package sc2.asset;
 import sc2.SC2HealthSchema;
 import sc2.SC2EnergySchema;
 import sc2.SC2Attack;
+import sc2.require.SC2Requires;
 import static sc2.SC2State.Race;
 
 import java.util.EnumSet;
@@ -33,7 +34,7 @@ public class SC2AssetType {
 	final public SC2AssetType parent;
 	/** Build requirements. eg. Cybernetics Core for Stalker. Used by {@link
 	** sc2.action.SC2Build} and {@link sc2.action.SC2Upgrade}. */
-	final public Set<SC2AssetType> reqs;
+	final public Set<SC2Requires> reqs;
 
 	final public SC2HealthSchema stat_hp;
 	final public SC2HealthSchema stat_sp;
@@ -73,7 +74,7 @@ public class SC2AssetType {
 	/** custom constructor */
 	protected SC2AssetType(
 		String name, Race race, int cost_m, int cost_v, int cost_t,
-		SC2AssetType source, SC2AssetType parent, Set<SC2AssetType> reqs,
+		SC2AssetType source, SC2AssetType parent, Set<SC2Requires> reqs,
 		SC2HealthSchema stat_hp, SC2HealthSchema stat_sp, SC2EnergySchema stat_ep,
 		double speed, int range, int sight,
 		EnumSet<Modifier> mods, SC2Attack atk_g, SC2Attack atk_a,
@@ -87,7 +88,7 @@ public class SC2AssetType {
 
 		this.source = source;
 		this.parent = parent;
-		this.reqs = (reqs == null)? Collections.<SC2AssetType>emptySet(): Collections.<SC2AssetType>unmodifiableSet(reqs);
+		this.reqs = (reqs == null)? Collections.<SC2Requires>emptySet(): Collections.<SC2Requires>unmodifiableSet(reqs);
 
 		this.stat_hp = stat_hp;
 		this.stat_sp = stat_sp;
@@ -122,7 +123,7 @@ public class SC2AssetType {
 
 		SC2AssetType source;
 		SC2AssetType parent;
-		Set<SC2AssetType> reqs;
+		Set<SC2Requires> reqs;
 
 		SC2HealthSchema stat_hp;
 		SC2HealthSchema stat_sp;
@@ -147,10 +148,10 @@ public class SC2AssetType {
 			this.cost_t = cost_t;
 		}
 
-		public Builder predecents(SC2AssetType source, SC2AssetType parent, SC2AssetType ... reqs) {
+		public Builder predecents(SC2AssetType source, SC2AssetType parent, SC2Requires ... reqs) {
 			this.source = source;
 			this.parent = parent;
-			this.reqs = new HashSet<SC2AssetType>(Arrays.asList(reqs));
+			this.reqs = new HashSet<SC2Requires>(Arrays.asList(reqs));
 			return this;
 		}
 

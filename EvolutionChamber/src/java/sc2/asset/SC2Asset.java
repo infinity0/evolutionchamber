@@ -95,8 +95,8 @@ public class SC2Asset {
 	public SC2Action pushQueue(SC2Action action) throws SC2ActionException {
 		if (action == null) { throw new NullPointerException(); }
 		if (!canQueue(action)) { return null; }
-		queue.addLast(action);
 		action.init();
+		queue.addLast(action);
 		return action;
 	}
 

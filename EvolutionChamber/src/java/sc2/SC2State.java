@@ -89,6 +89,10 @@ public class SC2State {
 		return assets.get(type);
 	}
 
+	public boolean hasTech(SC2AssetType type) {
+		return research.contains(type);
+	}
+
 	//public Set<SC2Asset> getWorkers();
 	//public Set<SC2Asset> getUnits();
 	//public Set<SC2Asset> getStructures();

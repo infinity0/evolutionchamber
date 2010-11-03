@@ -2,7 +2,6 @@ package sc2;
 
 import sc2.action.SC2Action;
 import sc2.action.SC2ActionException;
-import sc2.action.e.*;
 import sc2.asset.SC2AssetType;
 
 /**
@@ -26,26 +25,12 @@ public class SC2BuildOrderExecutor {
 		try {
 			action.launch(game);
 
-		} catch (SC2LarvaException e) {
-			if (e.can_wait) {
-				// TODO wait
-			} else {
-				// TODO skip
-			}
-
-		} catch (SC2QueueException e) {
-			if (e.can_wait) {
-				// TODO wait
-			} else {
-				// TODO skip
-			}
-
-		} catch (SC2CostException e) {
-			// TODO wait
-		} catch (SC2AssetException e) {
-			// TODO skip
 		} catch (SC2ActionException e) {
-			// TODO skip
+			if (e.canSatisfyByWaiting()) {
+				// TODO wait
+			} else {
+				// TODO skip
+			}
 		}
 	}
 
