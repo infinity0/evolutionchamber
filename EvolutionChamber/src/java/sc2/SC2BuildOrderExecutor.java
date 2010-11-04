@@ -3,6 +3,7 @@ package sc2;
 import sc2.action.SC2Action;
 import sc2.action.SC2ActionException;
 import sc2.asset.SC2AssetType;
+import sc2.io.serial.SC2IOFactory;
 
 import java.util.Arrays;
 
@@ -48,22 +49,9 @@ public class SC2BuildOrderExecutor {
 		System.out.println("crashing ... ");
 		System.out.println("done! program will exit");
 
-		//SC2World world = new SC2World();
-		//SC2AssetType type = createAssetType(world, "Nexus | S P 400 0 100 | :: | - 0 0 10");
-	}
-
-	public static SC2AssetType createAssetType(SC2World world, String line) {
-		String[] parts = line.split(" \\| ");
-
-		// name
-		String name = parts[0].trim();
-		// core
-		String[] core = parts[1].split(" ");
-
-		System.out.println(Arrays.toString(parts));
-		System.out.println(name + Arrays.toString(core));
-
-		return null;
+		SC2World world = new SC2World();
+		SC2IOFactory factory = new SC2IOFactory(world);
+		factory.addAssetType("Nexus | S P | build 400 0 100 | - 0 0 10");
 	}
 
 }

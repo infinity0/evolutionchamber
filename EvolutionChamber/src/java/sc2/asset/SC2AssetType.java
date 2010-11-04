@@ -207,7 +207,7 @@ public class SC2AssetType {
 	}
 
 	public enum Group {
-		U("unit"), S("struct"), T("tech");
+		S("struct"), T("tech"), U("unit");
 		final public String name;
 		Group(String name) {
 			this.name = name;
