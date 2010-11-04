@@ -33,10 +33,17 @@ public class EcActionBuildDrone extends EcAction implements Serializable
 			@Override
 			public void run()
 			{
-//				if (e.debug)
-//					e.mining(s," +1 on mineral");
-				s.dronesGoingOnMinerals--;
-				s.dronesOnMinerals++;
+				if (s.droneIsScouting == false && s.drones >= e.getDestination().scoutDrone)
+				{
+					s.droneIsScouting = true; 
+					if (e.debug)
+						e.mining(s," +1 Scouting Drone");
+				}
+				else
+				{
+					s.dronesGoingOnMinerals--;
+					s.dronesOnMinerals++;
+				}
 			}
 		});
 	}

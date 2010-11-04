@@ -57,6 +57,7 @@ public class EcState
 	public int						corruptors			= 0;
 	public int						ultralisks			= 0;
 	public int						broodlords			= 0;
+	public int						scoutDrone			= 0;
 
 	public boolean					metabolicBoost		= false;
 	public boolean					adrenalGlands		= false;
@@ -143,6 +144,7 @@ public class EcState
 		s.sporeCrawlers = sporeCrawlers;
 		s.nydusNetwork = nydusNetwork;
 		s.nydusWorm = nydusWorm;
+		s.scoutDrone = scoutDrone;
 
 		s.zerglings = zerglings;
 		s.banelings = banelings;

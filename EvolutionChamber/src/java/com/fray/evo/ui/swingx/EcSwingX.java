@@ -462,6 +462,17 @@ public class EcSwingX extends JXPanel implements EcReportable
 			}
 		});
 		gridy++;
+		if (i == 4) // only put this option on the Final waypoint.
+		{
+			addInput(component, "Scout with _ drone", new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					destination[4].scoutDrone = getDigit(e);
+				}
+			});
+		}
+		gridy++;
 		addCheck(component, "Pneumatized Carapace", new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -1019,6 +1030,24 @@ public class EcSwingX extends JXPanel implements EcReportable
 		container.add(button, gridBagConstraints);
 		button.addActionListener(actionListener);
 		return button;
+	}
+	
+	private JLabel addLabel(JPanel container, String string)
+	{
+		final JLabel label = new JLabel();
+
+		GridBagConstraints gridBagConstraints;
+		label.setText(string);
+		gridBagConstraints = new GridBagConstraints();
+		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+		gridBagConstraints.anchor = GridBagConstraints.NORTHWEST;
+		gridBagConstraints.weightx = 0.5;
+		gridBagConstraints.gridwidth = 2;
+		gridBagConstraints.gridy = gridy;
+		gridBagConstraints.insets = new Insets(1, 1, 1, 1);
+		container.add(label, gridBagConstraints);
+		
+		return label;
 	}
 	
 	private JButton addButton(JPanel container, String string, int gridwidth, ActionListener actionListener)

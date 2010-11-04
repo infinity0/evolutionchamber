@@ -22,6 +22,7 @@ public class EcBuildOrder extends EcState implements Serializable
 	public int				queensBuilding		= 0;
 	public int				spiresInUse			= 0;
 	public int				evolutionChambersInUse;
+	public boolean 			droneIsScouting		= false;
 
 	transient MultiValueMap	futureAction		= new MultiValueMap();
 	ArrayList<EcAction>		actions				= new ArrayList<EcAction>();

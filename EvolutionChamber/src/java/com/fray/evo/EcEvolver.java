@@ -320,5 +320,10 @@ public class EcEvolver extends FitnessFunction
 	{
 		log.println("@" + s.timestamp() + "\tMining: \t" + string.trim());
 	}
+	
+	public EcState getDestination()
+	{
+		return destination;
+	}
 
 }
