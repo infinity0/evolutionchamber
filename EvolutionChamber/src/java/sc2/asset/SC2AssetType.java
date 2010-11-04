@@ -14,6 +14,7 @@ import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.List;
 import java.util.Collections;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
@@ -42,15 +43,14 @@ public class SC2AssetType {
 	final public SC2Attack atk_g;
 	final public SC2Attack atk_a;
 
-	/** provided food, will be 0 for most things */
+	/** provided food. */
 	final public int prov_f;
-
-	/** supply cost. units have >=0 supply, tech/structs have null supply */
+	/** supply cost. units have >=0 cost, tech/structs have null cost. */
 	final public Float cost_f;
-	/** cargo size */
-	final public int size;
-	/** cargo capacity */
-	final public int cargo;
+	/** cargo size. -1 means air unit. TODO use a better representation. */
+	final public int cg_size;
+	/** cargo capacity. */
+	final public int cg_cap;
 
 	public Group group() {
 		return (cost_f != null)? Group.U: (mods.contains(Modifier.STRUCTURE))? Group.S: Group.T;
@@ -97,7 +97,7 @@ public class SC2AssetType {
 		SC2HealthSchema stat_hp, SC2HealthSchema stat_sp, SC2EnergySchema stat_ep,
 		double speed, int range, int sight,
 		EnumSet<Modifier> mods, SC2Attack atk_g, SC2Attack atk_a,
-		int prov_f, Float cost_f, int size, int cargo
+		int prov_f, Float cost_f, int cg_size, int cg_cap
 	) {
 		this.name = non_null("name", name);
 		this.race = non_null("race", race);
@@ -118,8 +118,8 @@ public class SC2AssetType {
 
 		this.prov_f = prov_f;
 		this.cost_f = cost_f;
-		this.size = size;
-		this.cargo = cargo;
+		this.cg_size = cg_size;
+		this.cg_cap = cg_cap;
 	}
 
 	public static class Builder {
@@ -127,7 +127,7 @@ public class SC2AssetType {
 		final String name;
 		final Race race;
 
-		SC2AssetActionSchema[] actions;
+		List<SC2AssetActionSchema> actions = new java.util.ArrayList<SC2AssetActionSchema>();
 
 		SC2HealthSchema stat_hp;
 		SC2HealthSchema stat_sp;
@@ -143,14 +143,18 @@ public class SC2AssetType {
 		SC2Attack atk_a;
 
 		int prov_f;
+		Float cost_f;
+		int cg_size;
+		int cg_cap;
+
 
 		public Builder(String name, Race race) {
 			this.name = name;
 			this.race = race;
 		}
 
-		public Builder actions(SC2AssetActionSchema ... actions) {
-			this.actions = actions;
+		public Builder add(SC2AssetActionSchema ... acts) {
+			for (SC2AssetActionSchema act: acts) { actions.add(act); }
 			return this;
 		}
 
@@ -185,23 +189,31 @@ public class SC2AssetType {
 			return this;
 		}
 
-		public SC2AssetType buildStructure() {
-			if (mods != null) { mods.add(Modifier.STRUCTURE); } else { mods = EnumSet.of(Modifier.STRUCTURE); }
-			return new SC2AssetType(name, race, actions,
-			  stat_hp, stat_sp, stat_ep, speed, range, sight,
-			  mods, atk_g, atk_a, prov_f, null, 0, 0);
+		public Builder struct() {
+			if (mods == null) {
+				mods.add(Modifier.STRUCTURE);
+			} else {
+				mods = EnumSet.of(Modifier.STRUCTURE);
+			}
+			return this;
 		}
 
-		public SC2AssetType buildUnit(float cost_f, int size, int cargo) {
-			return new SC2AssetType(name, race, actions,
-			  stat_hp, stat_sp, stat_ep, speed, range, sight,
-			  mods, atk_g, atk_a, prov_f, cost_f, size, cargo);
+		public Builder tech() {
+			mods = EnumSet.of(Modifier.TECH);
+			return this;
 		}
 
-		public SC2AssetType buildTech() {
-			return new SC2AssetType(name, race, actions,
+		public Builder unit(float cost_f, int cg_size, int cg_cap) {
+			this.cost_f = cost_f;
+			this.cg_size = cg_size;
+			this.cg_cap = cg_cap;
+			return this;
+		}
+
+		public SC2AssetType build() {
+			return new SC2AssetType(name, race, actions.<SC2AssetActionSchema>toArray(new SC2AssetActionSchema[actions.size()]),
 			  stat_hp, stat_sp, stat_ep, speed, range, sight,
-			  EnumSet.of(Modifier.TECH), atk_g, atk_a, prov_f, null, 0, 0);
+			  mods, atk_g, atk_a, prov_f, cost_f, cg_size, cg_cap);
 		}
 
 	}

@@ -56,7 +56,7 @@ public class SC2BuildOrderExecutor {
 		factory.addAssetType(Race.P, Group.S, "Nexus               | cstr_p : 400   0 100                        | prov_f: 10");
 		factory.addAssetType(Race.P, Group.T, "Ground Weapons Level 2      | build : 175 175 190 : Forge : Twilight Council, Ground Weapons Level 1");
 		factory.addAssetType(Race.P, Group.U, "Zealot          | u: 2 2 0 | build : 100   0  38 : Gateway                       | warpin : 100   0  28 : Warp Gate");
-
+		factory.addAssetType(Race.P, Group.U, "Phoenix         | u: 2 A 0 | build : 150 100  45 : Stargate");
 	}
 
 }
