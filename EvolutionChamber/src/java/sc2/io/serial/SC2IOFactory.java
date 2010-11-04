@@ -4,6 +4,8 @@ import sc2.SC2World;
 import sc2.asset.SC2AssetType;
 import sc2.action.SC2AssetActionSchema;
 import sc2.require.SC2Requires;
+import sc2.require.SC2RequiresAsset;
+import sc2.require.SC2RequiresTech;
 import static sc2.SC2World.Race;
 import static sc2.asset.SC2AssetType.Group;
 import static sc2.asset.SC2AssetType.Builder;
@@ -16,6 +18,7 @@ import static com.google.common.collect.ImmutableList.copyOf;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Scanner;
 import java.util.NoSuchElementException;
 import static java.lang.Integer.parseInt;
 import static java.lang.Float.parseFloat;
@@ -131,8 +134,37 @@ public class SC2IOFactory {
 	}
 
 	protected SC2Requires[] getRequires(List<String> items) {
-		// TODO
-		return null;
+		List<SC2Requires> reqs = Lists.transform(items, new Function<String, SC2Requires>() {
+			@Override public SC2Requires apply(String name) { return getRequires(name); }
+		});
+		return reqs.toArray(new SC2Requires[reqs.size()]);
+	}
+
+	protected SC2Requires getRequires(String item) {
+		// let it throw NPE
+		if (item.length() == 0) {
+			throw new IllegalArgumentException("invalid requirement (empty string)");
+		}
+
+		boolean less = false;
+		int req = 1;
+		switch (item.charAt(0)) {
+		case '<':
+			less = true;
+		case '>':
+			Scanner sc = new Scanner(item.substring(1));
+			req = sc.nextInt();
+			item = sc.next();
+			break;
+		}
+
+		SC2AssetType type = getAssetType(item);
+		switch (type.group()) {
+		case T:
+			return new SC2RequiresTech(type);
+		default:
+			return new SC2RequiresAsset(type, req, less);
+		}
 	}
 
 	protected SC2AssetType getAssetType(String name) {

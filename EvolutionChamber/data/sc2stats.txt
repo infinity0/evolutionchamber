@@ -11,11 +11,11 @@
 #
 #     SOURCE :: NAME , ...
 #    REQUIRE :: REQ , ...
-#        REQ :: [">="<int>||"<="<int>] NAME
+#        REQ :: [ ">" <int> || "<" <int> ] NAME
 # MORPH_PREP :: NAME
 #  MORPH_NUM :: NUM_SRC NUM_DST
 #
-#     COST_F :: "h" | <float>
+#     COST_F :: "h" || <float>
 #     COST_T :: <double>
 # CARGO_SIZE :: "A" || <int>
 #          * :: <int>
@@ -26,7 +26,7 @@
 #    ||     exclusive or, i.e. one of
 #    []     optional
 #    ""     literal string
-#    <>     primitive data type
+#   <T>     primitive data type
 #
 
 [ Protoss Structures ]
@@ -91,7 +91,7 @@ Colossus        | u: 6 8 0 | build : 300 200  75 : Robotics Facility : Robotics 
 Phoenix         | u: 2 A 0 | build : 150 100  45 : Stargate
 Void Ray        | u: 3 A 0 | build : 250 150  60 : Stargate
 Carrier         | u: 6 A 0 | build : 350 250 120 : Stargate : Fleet Beacon
-Mothership      | u: 8 A 0 | build : 400 400 160 : Nexus : Fleet Beacon, <=0 Mothership
+Mothership      | u: 8 A 0 | build : 400 400 160 : Nexus : Fleet Beacon, <1 Mothership
 Interceptor     | u: 0 A 0 | build :  25   0   8 : Carrier
 Archon          | u: 4 4 0 | morph :   0   0  12 : High Templar, Dark Templar ::: 2 1
 

@@ -54,10 +54,10 @@ public class SC2BuildOrderExecutor {
 		SC2World world = new SC2World();
 		SC2IOFactory factory = new SC2IOFactory(world);
 		factory.addAssetType(Race.P, Group.S, "Nexus               | cstr_p : 400   0 100                        | prov_f: 10");
+		factory.addAssetType(Race.P, Group.U, "Mothership      | u: 8 A 0 | build : 400 400 160 : Nexus : < 0 Mothership, Fleet Beacon");
 		factory.addAssetType(Race.P, Group.T, "Ground Weapons Level 2      | build : 175 175 190 : Forge : Twilight Council, Ground Weapons Level 1");
 		factory.addAssetType(Race.P, Group.U, "Zealot          | u: 2 2 0 | build : 100   0  38 : Gateway                       | warpin : 100   0  28 : Warp Gate");
 		factory.addAssetType(Race.P, Group.U, "Phoenix         | u: 2 A 0 | build : 150 100  45 : Stargate");
-		factory.addAssetType(Race.P, Group.U, "Mothership      | u: 8 A 0 | build : 400 400 160 : Nexus : Fleet Beacon, <=0 Mothership");
 		factory.addAssetType(Race.Z, Group.U, "Archon          | u: 4 4 0 | morph :   0   0  12 : High Templar, Dark Templar ::: 2 1");
 		factory.addAssetType(Race.P, Group.U, "Larva           | u: 0 0 0 |");
 		factory.addAssetType(Race.P, Group.U, "Cocoon          | u: 0 0 0 |");

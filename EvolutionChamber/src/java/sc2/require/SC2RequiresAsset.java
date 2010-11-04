@@ -10,7 +10,7 @@ public class SC2RequiresAsset implements SC2Requires {
 
 	final protected SC2AssetType type;
 	final protected int req;
-	/** whether we want a number <= {@link #req}, or else >=. */
+	/** whether we want a number < {@link #req}, or else >. */
 	final protected boolean less;
 
 	public SC2RequiresAsset(SC2AssetType type, int req, boolean less) {
@@ -21,18 +21,18 @@ public class SC2RequiresAsset implements SC2Requires {
 
 	/** Create a require that at least one of the asset type is available */
 	public SC2RequiresAsset(SC2AssetType type) {
-		this(type, 1, false);
+		this(type, 0, false);
 	}
 
 	@Override public void require(SC2Player play) throws SC2RequireException {
 		int num = play.getAssets(type).size();
 		if (less) {
-			if (num >= req) {
+			if (num > req) {
 				throw new SC2AssetException(type, less, req, num, false);
 			}
 		} else {
-			if (num <= req) {
-				throw new SC2AssetException(type, less, req, num, false); // TODO should not be false, check the queues
+			if (num < req) {
+				throw new SC2AssetException(type, less, req, num, false); // TODO should *not* be false, check the queues
 			}
 		}
 	}
