@@ -3,9 +3,9 @@
 #      ASSET :: NAME | PART | ...
 #       NAME :: <string>
 #
-#       PART :: ACTION COST_M COST_V COST_T : [SOURCE] : [REQUIRE] : [MORPHPARAM]
-#            || "prov_f" PROV_F
-#            || "u" COST_F CARGO_SIZE CARGO_SPACE
+#       PART :: ACTION : COST_M COST_V COST_T : [SOURCE] : [REQUIRE] : [MORPHPARAM]
+#            || "prov_f" : PROV_F
+#            || "u" : COST_F CARGO_SIZE CARGO_SPACE
 #
 #     ACTION :: "build" || "morph" || "warpin" || "cstr_p" || "cstr_t"
 #
@@ -30,71 +30,71 @@
 
 [ Protoss Structures ]
 
-Nexus               | cstr_p 400   0 100                        | prov_f 10
-Pylon               | cstr_p 100   0  25                        | prov_f 8
-Assimilator         | cstr_p  75   0  30                        |
-Gateway             | cstr_p 150   0  65 :: Nexus               | morph 0 0 10 : Warp Gate : Warpgate
-Forge               | cstr_p 150   0  45                        |
-Photon Cannon       | cstr_p 150   0  40 :: Forge               |
-Cybernetics Core    | cstr_p 150   0  50 :: Gateway             |
-Warp Gate           | morph    0   0  10 : Gateway : Warpgate   |
-Twilight Council    | cstr_p 150 100  50 :: Cybernetics Core    |
-Robotics Facility   | cstr_p 200 100  65 :: Cybernetics Core    |
-Stargate            | cstr_p 150 150  60 :: Cybernetics Core    |
-Templar Archives    | cstr_p 150 200  50 :: Twilight Council    |
-Dark Shrine         | cstr_p 100 250 100 :: Twilight Council    |
-Robotics Bay        | cstr_p 200 200  65 :: Robotics Facility   |
-Fleet Beacon        | cstr_p 300 200  60 :: Stargate            |
+Nexus               | cstr_p : 400   0 100                        | prov_f: 10
+Pylon               | cstr_p : 100   0  25                        | prov_f: 8
+Assimilator         | cstr_p :  75   0  30                        |
+Gateway             | cstr_p : 150   0  65 :: Nexus               | morph : 0 0 10 : Warp Gate : Warpgate
+Forge               | cstr_p : 150   0  45                        |
+Photon Cannon       | cstr_p : 150   0  40 :: Forge               |
+Cybernetics Core    | cstr_p : 150   0  50 :: Gateway             |
+Warp Gate           | morph  :   0   0  10 : Gateway : Warpgate   |
+Twilight Council    | cstr_p : 150 100  50 :: Cybernetics Core    |
+Robotics Facility   | cstr_p : 200 100  65 :: Cybernetics Core    |
+Stargate            | cstr_p : 150 150  60 :: Cybernetics Core    |
+Templar Archives    | cstr_p : 150 200  50 :: Twilight Council    |
+Dark Shrine         | cstr_p : 100 250 100 :: Twilight Council    |
+Robotics Bay        | cstr_p : 200 200  65 :: Robotics Facility   |
+Fleet Beacon        | cstr_p : 300 200  60 :: Stargate            |
 
 [ Protoss Tech ]
 
-Ground Weapons Level 1      | build 100 100 160 : Forge
-Ground Armor Level 1        | build 100 100 160 : Forge
-Shields Level 1             | build 200 200 160 : Forge
-Air Weapons Level 1         | build 100 100 160 : Cybernetics Core
-Air Armor Level 1           | build 150 150 160 : Cybernetics Core
-Warpgate                    | build  50  50 140 : Cybernetics Core
-Hallucination               | build 100 100 110 : Cybernetics Core
-Charge                      | build 200 200 140 : Twilight Council
-Blink                       | build 150 150 110 : Twilight Council
-Ground Weapons Level 2      | build 175 175 190 : Forge : Twilight Council, Ground Weapons Level 1
-Ground Armor Level 2        | build 175 175 190 : Forge : Twilight Council, Ground Armor Level 1
-Shields Level 2             | build 300 300 190 : Forge : Twilight Council, Shields Level 1
-Air Weapons Level 2         | build 175 175 190 : Cybernetics Core : Fleet Beacon
-Air Armor Level 2           | build 225 225 190 : Cybernetics Core : Fleet Beacon
-Khaydarin Amulet            | build 150 150 110 : Templar Archives
-Psionic Storm               | build 200 200 110 : Templar Archives
-Gravitic Boosters           | build 100 100  80 : Robotics Bay
-Gravitic Drive              | build 100 100  80 : Robotics Bay
-Extended Thermal Lances     | build 200 200 140 : Robotics Bay
-Flux Vanes                  | build 150 150  80 : Fleet Beacon
-Graviton Catapult           | build 150 150  80 : Fleet Beacon
-Ground Armor Level 3        | build 250 250 220 : Forge : Ground Armor Level 2
-Ground Weapons Level 3      | build 250 250 220 : Forge : Ground Weapons Level 2
-Shields Level 3             | build 400 400 220 : Forge : Shields Level 2
-Air Weapons Level 3         | build 250 250 220 : Cybernetics Core : Air Weapons Level 2
-Air Armor Level 3           | build 300 300 220 : Cybernetics Core : Air Armor Level 2
+Ground Weapons Level 1      | build : 100 100 160 : Forge
+Ground Armor Level 1        | build : 100 100 160 : Forge
+Shields Level 1             | build : 200 200 160 : Forge
+Air Weapons Level 1         | build : 100 100 160 : Cybernetics Core
+Air Armor Level 1           | build : 150 150 160 : Cybernetics Core
+Warpgate                    | build :  50  50 140 : Cybernetics Core
+Hallucination               | build : 100 100 110 : Cybernetics Core
+Charge                      | build : 200 200 140 : Twilight Council
+Blink                       | build : 150 150 110 : Twilight Council
+Ground Weapons Level 2      | build : 175 175 190 : Forge : Twilight Council, Ground Weapons Level 1
+Ground Armor Level 2        | build : 175 175 190 : Forge : Twilight Council, Ground Armor Level 1
+Shields Level 2             | build : 300 300 190 : Forge : Twilight Council, Shields Level 1
+Air Weapons Level 2         | build : 175 175 190 : Cybernetics Core : Fleet Beacon
+Air Armor Level 2           | build : 225 225 190 : Cybernetics Core : Fleet Beacon
+Khaydarin Amulet            | build : 150 150 110 : Templar Archives
+Psionic Storm               | build : 200 200 110 : Templar Archives
+Gravitic Boosters           | build : 100 100  80 : Robotics Bay
+Gravitic Drive              | build : 100 100  80 : Robotics Bay
+Extended Thermal Lances     | build : 200 200 140 : Robotics Bay
+Flux Vanes                  | build : 150 150  80 : Fleet Beacon
+Graviton Catapult           | build : 150 150  80 : Fleet Beacon
+Ground Armor Level 3        | build : 250 250 220 : Forge : Ground Armor Level 2
+Ground Weapons Level 3      | build : 250 250 220 : Forge : Ground Weapons Level 2
+Shields Level 3             | build : 400 400 220 : Forge : Shields Level 2
+Air Weapons Level 3         | build : 250 250 220 : Cybernetics Core : Air Weapons Level 2
+Air Armor Level 3           | build : 300 300 220 : Cybernetics Core : Air Armor Level 2
 
 [ Protoss Units ]
 
-Probe           | u 1 1 0 | build  50   0  17 : Nexus:
-Zealot          | u 2 2 0 | build 100   0  38 : Gateway                       | warpin 100   0  28 : Warp Gate
-Sentry          | u 2 2 0 | build  50 100  42 : Gateway : Cybernetics Core    | warpin  50 100  32 : Warp Gate
-Stalker         | u 2 2 0 | build 125  50  42 : Gateway : Cybernetics Core    | warpin  50 100  32 : Warp Gate
-Observer        | u 1 A 0 | build  50 100  40 : Robotics Facility
-Warp Prism      | u 2 A 8 | build 200   0  50 : Robotics Facility
-Immortal        | u 4 4 0 | build 250 100  55 : Robotics Facility
-High Templar    | u 2 2 0 | build  50 150  55 : Gateway : Templar Archives    | warpin  50 150  45 : Warp Gate
-Dark Templar    | u 2 2 0 | build 125 125  55 : Gateway : Dark Shrine         | warpin 125 125  45 : Warp Gate
-Colossus        | u 6 8 0 | build 300 200  75 : Robotics Facility : Robotics Bay
-Phoenix         | u 2 A 0 | build 150 100  45 : Stargate
-Void Ray        | u 3 A 0 | build 250 150  60 : Stargate
-Carrier         | u 6 A 0 | build 350 250 120 : Stargate : Fleet Beacon
-Mothership      | u 8 A 0 | build 400 400 160 : Nexus : Fleet Beacon, <=0 Mothership
-Interceptor     | u 0 A 0 | build  25   0   8 : Carrier
-Archon          | u 4 4 0 | morph   0   0  12 : High Templar, Dark Templar :: 2 1 Archon
+Probe           | u: 1 1 0 | build :  50   0  17 : Nexus:
+Zealot          | u: 2 2 0 | build : 100   0  38 : Gateway                       | warpin : 100   0  28 : Warp Gate
+Sentry          | u: 2 2 0 | build :  50 100  42 : Gateway : Cybernetics Core    | warpin :  50 100  32 : Warp Gate
+Stalker         | u: 2 2 0 | build : 125  50  42 : Gateway : Cybernetics Core    | warpin :  50 100  32 : Warp Gate
+Observer        | u: 1 A 0 | build :  50 100  40 : Robotics Facility
+Warp Prism      | u: 2 A 8 | build : 200   0  50 : Robotics Facility
+Immortal        | u: 4 4 0 | build : 250 100  55 : Robotics Facility
+High Templar    | u: 2 2 0 | build :  50 150  55 : Gateway : Templar Archives    | warpin :  50 150  45 : Warp Gate
+Dark Templar    | u: 2 2 0 | build : 125 125  55 : Gateway : Dark Shrine         | warpin : 125 125  45 : Warp Gate
+Colossus        | u: 6 8 0 | build : 300 200  75 : Robotics Facility : Robotics Bay
+Phoenix         | u: 2 A 0 | build : 150 100  45 : Stargate
+Void Ray        | u: 3 A 0 | build : 250 150  60 : Stargate
+Carrier         | u: 6 A 0 | build : 350 250 120 : Stargate : Fleet Beacon
+Mothership      | u: 8 A 0 | build : 400 400 160 : Nexus : Fleet Beacon, <=0 Mothership
+Interceptor     | u: 0 A 0 | build :  25   0   8 : Carrier
+Archon          | u: 4 4 0 | morph :   0   0  12 : High Templar, Dark Templar :: 2 1 Archon
 
 
 [ Zerg Units ]
 
-Zergling        | u h 1 0 | morph  50   0  24 : Larva : Spawning Pool : 1 2 Cocoon
+Zergling        | u: h 1 0 | morph : 50   0  24 : Larva : Spawning Pool : 1 2 Cocoon

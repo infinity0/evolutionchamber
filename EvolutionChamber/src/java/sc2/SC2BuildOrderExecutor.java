@@ -4,6 +4,8 @@ import sc2.action.SC2Action;
 import sc2.action.SC2ActionException;
 import sc2.asset.SC2AssetType;
 import sc2.io.serial.SC2IOFactory;
+import static sc2.SC2World.Race;
+import static sc2.asset.SC2AssetType.Group;
 
 import java.util.Arrays;
 
@@ -51,7 +53,10 @@ public class SC2BuildOrderExecutor {
 
 		SC2World world = new SC2World();
 		SC2IOFactory factory = new SC2IOFactory(world);
-		factory.addAssetType("Nexus | S P | build 400 0 100 | - 0 0 10");
+		factory.addAssetType(Race.P, Group.S, "Nexus               | cstr_p : 400   0 100                        | prov_f: 10");
+		factory.addAssetType(Race.P, Group.T, "Ground Weapons Level 2      | build : 175 175 190 : Forge : Twilight Council, Ground Weapons Level 1");
+		factory.addAssetType(Race.P, Group.U, "Zealot          | u: 2 2 0 | build : 100   0  38 : Gateway                       | warpin : 100   0  28 : Warp Gate");
+
 	}
 
 }
