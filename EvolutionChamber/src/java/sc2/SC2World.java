@@ -11,23 +11,6 @@ import java.util.HashMap;
 */
 public class SC2World {
 
-	public enum Race {
-		P, Z, T;
-
-		public static Race fromString(String s) {
-			return s.length() == 0? fromChar('\0'): fromChar(s.charAt(0));
-		}
-
-		public static Race fromChar(char c) {
-			switch (c) {
-			case 'P': return Race.P;
-			case 'Z': return Race.Z;
-			case 'T': return Race.P;
-			default: throw new IllegalArgumentException("invalid race");
-			}
-		}
-	}
-
 	final public HashMap<String, SC2AssetType> stat = new HashMap<String, SC2AssetType>();
 
 	public SC2World() { }
@@ -47,6 +30,14 @@ public class SC2World {
 	public SC2Asset createAsset(SC2AssetType type) {
 		// TODO
 		return null;
+	}
+
+	public enum Race {
+		P("protoss"), Z("zerg"), T("terran");
+		final public String name;
+		Race(String name) {
+			this.name = name;
+		}
 	}
 
 }

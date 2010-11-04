@@ -53,7 +53,7 @@ public class SC2AssetType {
 	final public int cargo;
 
 	public Group group() {
-		return (cost_f != null)? Group.UNIT: (mods.contains(Modifier.STRUCTURE))? Group.STRUCT: Group.TECH;
+		return (cost_f != null)? Group.U: (mods.contains(Modifier.STRUCTURE))? Group.S: Group.T;
 	}
 
 	/**
@@ -207,24 +207,14 @@ public class SC2AssetType {
 	}
 
 	public enum Group {
-		UNIT, STRUCT, TECH;
-
-		public static Group fromString(String s) {
-			return s.length() == 0? fromChar('\0'): fromChar(s.charAt(0));
-		}
-
-		public static Group fromChar(char c) {
-			switch (c) {
-			case 'U': return Group.UNIT;
-			case 'S': return Group.STRUCT;
-			case 'T': return Group.TECH;
-			default: throw new IllegalArgumentException("invalid group");
-			}
+		U("unit"), S("struct"), T("tech");
+		final public String name;
+		Group(String name) {
+			this.name = name;
 		}
 	}
 
-	public enum Modifier { STRUCTURE, ARMORED, LIGHT, BIOLOGICAL,
-		// TODO
-		/** dummy modifier for techs */ TECH }
+	public enum Modifier { TECH, STRUCTURE, ARMORED, BIOLOGICAL, LIGHT, MASSIVE,
+	  MECHANICAL, PSIONIC, DETECTOR; }
 
 }
