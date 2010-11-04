@@ -10,13 +10,21 @@ import static sc2.asset.SC2AssetType.Builder;
 import static sc2.action.SC2AssetAction.Action;
 
 import com.google.common.base.Splitter;
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import static com.google.common.collect.ImmutableList.copyOf;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
+import static java.lang.Integer.parseInt;
+import static java.lang.Float.parseFloat;
+import static java.lang.Double.parseDouble;
 
 /**
 ** Handles serialisation of base data types such as {@link SC2AssetType}.
+**
+** TODO use a parser generator like ANTLR or something.
 */
 public class SC2IOFactory {
 
@@ -61,7 +69,7 @@ public class SC2IOFactory {
 			} else if (head.equals("prov_f")) {
 				// provide supply
 				String str = SEP_STATS.split(cmpts.next()).iterator().next();
-				curr_builder.provide(Integer.parseInt(str));
+				curr_builder.provide(parseInt(str));
 				System.out.println("    provides " + str + " supply");
 
 			} else if (head.equals("u")) {
@@ -84,36 +92,53 @@ public class SC2IOFactory {
 	}
 
 	protected void parseUnitStats(List<String> stats) {
-		float cost_f = Float.parseFloat(stats.get(0));
+		// turn h into 0.5 for zerglings
+		float cost_f = stats.get(0).equals("h")? 0.5f: parseFloat(stats.get(0));
 		// turn A into -1 for air units
-		int cg_size = stats.get(1).toUpperCase().equals("A")? -1: Integer.parseInt(stats.get(1));
-		int cg_cap = Integer.parseInt(stats.get(2));
+		int cg_size = stats.get(1).equals("A")? -1: parseInt(stats.get(1));
+		int cg_cap = parseInt(stats.get(2));
 		curr_builder.unit(cost_f, cg_size, cg_cap);
 	}
 
 	protected void parseAssetActionSchema(Action act, List<String> args) {
 		List<String> cost = copyOf(SEP_STATS.split(args.get(0)));
-		int cost_m = Integer.parseInt(cost.get(0));
-		int cost_v = Integer.parseInt(cost.get(1));
-		double cost_t = Double.parseDouble(cost.get(2));
+		int cost_m = parseInt(cost.get(0));
+		int cost_v = parseInt(cost.get(1));
+		double cost_t = parseDouble(cost.get(2));
 
-		SC2AssetType[] src = (args.size() <= 1)? null: getAssetTypes(copyOf(SEP_ITEMS.split(args.get(1))));
-		SC2Requires[] req = (args.size() <= 2)? null: getRequires(copyOf(SEP_ITEMS.split(args.get(2))));
+		SC2AssetType[] src = (args.size() > 1)? getAssetTypes(copyOf(SEP_ITEMS.split(args.get(1)))): null;
+		SC2Requires[] req = (args.size() > 2)? getRequires(copyOf(SEP_ITEMS.split(args.get(2)))): null;
 
-		if (args.size() <= 3) {
-			curr_builder.add(new SC2AssetActionSchema(act, src, req, cost_m, cost_v, cost_t));
+		if (args.size() > 3) {
+			SC2AssetType prep = (args.get(3).length() == 0)? null: getAssetType(args.get(3));
+			int num_src = 1, num_dst = 1;
+			if (args.size() > 4) {
+				List<String> num = copyOf(SEP_STATS.split(args.get(4)));
+				num_src = parseInt(num.get(0));
+				num_dst = parseInt(num.get(1));
+			}
+			curr_builder.add(new SC2AssetActionSchema(act, src, req, cost_m, cost_v, cost_t, prep, num_src, num_dst));
 		} else {
-			throw new UnsupportedOperationException("not implemented");
-			// TODO
+			curr_builder.add(new SC2AssetActionSchema(act, src, req, cost_m, cost_v, cost_t));
 		}
 	}
 
 	protected SC2AssetType[] getAssetTypes(List<String> items) {
-		return null;
+		List<SC2AssetType> types = Lists.transform(items, new Function<String, SC2AssetType>() {
+			@Override public SC2AssetType apply(String name) { return getAssetType(name); }
+		});
+		return types.toArray(new SC2AssetType[types.size()]);
 	}
 
 	protected SC2Requires[] getRequires(List<String> items) {
+		// TODO
 		return null;
+	}
+
+	protected SC2AssetType getAssetType(String name) {
+		SC2AssetType type = world.stat.get(name);
+		if (type == null) { throw new NoSuchElementException("asset " + name + " has not yet been defined"); }
+		return type;
 	}
 
 	/**
@@ -123,7 +148,7 @@ public class SC2IOFactory {
 		// TODO
 	}
 
-	final public static Splitter SEP_ASSET = Splitter.on('|').trimResults();
+	final public static Splitter SEP_ASSET = Splitter.on('|').trimResults().omitEmptyStrings();
 	final public static Splitter SEP_PARTS = Splitter.on(':').trimResults();
 	final public static Splitter SEP_ITEMS = Splitter.on(',').trimResults();
 	final public static Splitter SEP_STATS = Splitter.on(' ').omitEmptyStrings();

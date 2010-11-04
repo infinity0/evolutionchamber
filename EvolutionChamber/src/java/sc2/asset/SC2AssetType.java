@@ -154,7 +154,7 @@ public class SC2AssetType {
 		}
 
 		public Builder add(SC2AssetActionSchema ... acts) {
-			for (SC2AssetActionSchema act: acts) { actions.add(act); }
+			actions.addAll(Arrays.asList(acts));
 			return this;
 		}
 

@@ -37,30 +37,31 @@ public class SC2AssetActionSchema {
 	/** time cost */
 	final public double cost_t;
 
+	/** prepare-asset. used by {@link SC2Morph} e.g. to make a Larva into a Cocoon, when morphing Zerg units */
+	final public SC2AssetType pre;
+
 	/** number of source assets. used by {@link SC2Morph} e.g. when morphing Archons */
 	final public int num_src;
 	/** number of target assets. used by {@link SC2Morph} e.g. when morphing Zerglings */
 	final public int num_dst;
-	/** prepare-asset. used by {@link SC2Morph} e.g. to make a Larva into a Cocoon, when morphing Zerg units */
-	final public SC2AssetType pre;
 
 	public SC2AssetActionSchema(Action act, SC2AssetType[] src, SC2Requires[] req,
 	  int cost_m, int cost_v, double cost_t,
-	  int num_src, int num_dst, SC2AssetType pre) {
+	  SC2AssetType pre, int num_src, int num_dst) {
 		this.act = non_null("action", act);
 		this.src = non_null_copy(src, new SC2AssetType[0]);
 		this.req = non_null_copy(req, new SC2Requires[0]);
 		this.cost_m = cost_m;
 		this.cost_v = cost_v;
 		this.cost_t = cost_t;
+		this.pre = pre;
 		this.num_src = num_src;
 		this.num_dst = num_dst;
-		this.pre = pre;
 	}
 
 	public SC2AssetActionSchema(Action act, SC2AssetType[] src, SC2Requires[] req,
 	  int cost_m, int cost_v, double cost_t) {
-		this(act, src, req, cost_m, cost_v, cost_t, 1, 1, null);
+		this(act, src, req, cost_m, cost_v, cost_t, null, 1, 1);
 	}
 
 	public List<SC2AssetType> src() { return Arrays.asList(src); }

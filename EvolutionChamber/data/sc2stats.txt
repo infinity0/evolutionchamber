@@ -3,7 +3,7 @@
 #      ASSET :: NAME | PART | ...
 #       NAME :: <string>
 #
-#       PART :: ACTION : COST_M COST_V COST_T : [SOURCE] : [REQUIRE] : [MORPHPARAM]
+#       PART :: ACTION : COST_M COST_V COST_T : [SOURCE] : [REQUIRE] : [MORPH_PREP] : [MORPH_NUM]
 #            || "prov_f" : PROV_F
 #            || "u" : COST_F CARGO_SIZE CARGO_SPACE
 #
@@ -12,10 +12,10 @@
 #     SOURCE :: NAME , ...
 #    REQUIRE :: REQ , ...
 #        REQ :: [">="<int>||"<="<int>] NAME
-# MORPHPARAM :: NUM_SRC NUM_INT [PREPARE]
-#    PREPARE :: NAME
+# MORPH_PREP :: NAME
+#  MORPH_NUM :: NUM_SRC NUM_DST
 #
-#     COST_F :: <float>
+#     COST_F :: "h" | <float>
 #     COST_T :: <double>
 # CARGO_SIZE :: "A" || <int>
 #          * :: <int>
@@ -93,9 +93,11 @@ Void Ray        | u: 3 A 0 | build : 250 150  60 : Stargate
 Carrier         | u: 6 A 0 | build : 350 250 120 : Stargate : Fleet Beacon
 Mothership      | u: 8 A 0 | build : 400 400 160 : Nexus : Fleet Beacon, <=0 Mothership
 Interceptor     | u: 0 A 0 | build :  25   0   8 : Carrier
-Archon          | u: 4 4 0 | morph :   0   0  12 : High Templar, Dark Templar :: 2 1 Archon
+Archon          | u: 4 4 0 | morph :   0   0  12 : High Templar, Dark Templar ::: 2 1
 
 
 [ Zerg Units ]
 
-Zergling        | u: 0.5 1 0 | morph : 50   0  24 : Larva : Spawning Pool : 1 2 Cocoon
+Larva           | u: 0 0 0 |
+Cocoon          | u: 0 0 0 |
+Zergling        | u: h 1 0 | morph : 50   0  24 : Larva : Spawning Pool : Cocoon : 1 2
