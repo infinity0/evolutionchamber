@@ -35,31 +35,28 @@ public class SC2IOFactory {
 
 		String name = parts.next();
 		System.out.println(name);
-		Builder b = SC2AssetType.initAssetType(name, race);
+		Builder build = SC2AssetType.initAssetType(name, race);
 		while (parts.hasNext()) {
 			String part = parts.next();
 			Iterator<String> cmpts = SEP_PARTS.split(part).iterator();
 
 			String head = cmpts.next();
-			System.out.println("  " + head);
-
 			if (head.length() == 0) {
 				throw new IllegalArgumentException("empty head on part: " + part);
 
 			} else if (head.equals("prov_f")) {
 				// provide supply
 				String str = SEP_STATS.split(cmpts.next()).iterator().next();
-				// TODO needs to account for zergling = 0.5 supply
-				b.provide(Integer.parseInt(str));
-				System.out.println("    providing " + str + " supply");
+				build.provide(Integer.parseInt(str));
+				System.out.println("    provides " + str + " supply");
 
 			} else if (head.equals("u")) {
 				// unit stats
 				List<String> stats = ImmutableList.copyOf(SEP_STATS.split(cmpts.next()));
-				System.out.println(stats);
+				System.out.println("    unit stats " + stats);
 
 			} else {
-				System.out.println(ImmutableList.copyOf(cmpts));
+				System.out.println("    " + head + " " + ImmutableList.copyOf(cmpts));
 				processAssetAction(race, group, Action.fromString(head), cmpts);
 			}
 		}

@@ -15,7 +15,8 @@
 # MORPHPARAM :: NUM_SRC NUM_INT [PREPARE]
 #    PREPARE :: NAME
 #
-#     COST_F :: "h" || <int>
+#     COST_F :: <float>
+#     COST_T :: <double>
 # CARGO_SIZE :: "A" || <int>
 #          * :: <int>
 #
@@ -60,8 +61,8 @@ Blink                       | build : 150 150 110 : Twilight Council
 Ground Weapons Level 2      | build : 175 175 190 : Forge : Twilight Council, Ground Weapons Level 1
 Ground Armor Level 2        | build : 175 175 190 : Forge : Twilight Council, Ground Armor Level 1
 Shields Level 2             | build : 300 300 190 : Forge : Twilight Council, Shields Level 1
-Air Weapons Level 2         | build : 175 175 190 : Cybernetics Core : Fleet Beacon
-Air Armor Level 2           | build : 225 225 190 : Cybernetics Core : Fleet Beacon
+Air Weapons Level 2         | build : 175 175 190 : Cybernetics Core : Fleet Beacon, Air Weapons Level 1
+Air Armor Level 2           | build : 225 225 190 : Cybernetics Core : Fleet Beacon, Air Armor Level 1
 Khaydarin Amulet            | build : 150 150 110 : Templar Archives
 Psionic Storm               | build : 200 200 110 : Templar Archives
 Gravitic Boosters           | build : 100 100  80 : Robotics Bay
@@ -97,4 +98,4 @@ Archon          | u: 4 4 0 | morph :   0   0  12 : High Templar, Dark Templar ::
 
 [ Zerg Units ]
 
-Zergling        | u: h 1 0 | morph : 50   0  24 : Larva : Spawning Pool : 1 2 Cocoon
+Zergling        | u: 0.5 1 0 | morph : 50   0  24 : Larva : Spawning Pool : 1 2 Cocoon

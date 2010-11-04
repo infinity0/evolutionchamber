@@ -35,7 +35,7 @@ public class SC2AssetActionSchema {
 	/** vespene cost */
 	final public int cost_v;
 	/** time cost */
-	final public int cost_t;
+	final public double cost_t;
 
 	/** number of source assets. used by {@link SC2Morph} e.g. when morphing Archons */
 	final public int num_src;
@@ -45,7 +45,7 @@ public class SC2AssetActionSchema {
 	final public SC2AssetType pre;
 
 	public SC2AssetActionSchema(Action act, SC2AssetType[] src, SC2Requires[] req,
-	  int cost_m, int cost_v, int cost_t,
+	  int cost_m, int cost_v, double cost_t,
 	  int num_src, int num_dst, SC2AssetType pre) {
 		this.act = non_null("action", act);
 		this.src = non_null_copy(src, new SC2AssetType[0]);
@@ -59,7 +59,7 @@ public class SC2AssetActionSchema {
 	}
 
 	public SC2AssetActionSchema(Action act, SC2AssetType[] src, SC2Requires[] req,
-	  int cost_m, int cost_v, int cost_t) {
+	  int cost_m, int cost_v, double cost_t) {
 		this(act, src, req, cost_m, cost_v, cost_t, 1, 1, null);
 	}
 
