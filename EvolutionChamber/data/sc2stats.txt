@@ -100,4 +100,5 @@ Archon          | u: 4 4 0 | morph :   0   0  12 : High Templar, Dark Templar ::
 
 Larva           | u: 0 0 0 |
 Cocoon          | u: 0 0 0 |
+Drone           | u: 1 1 0 | morph : 50   0  17 : Larva :               : Cocoon
 Zergling        | u: h 1 0 | morph : 50   0  24 : Larva : Spawning Pool : Cocoon : 1 2
