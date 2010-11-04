@@ -12,16 +12,17 @@
 #     SOURCE :: NAME , ...
 #    REQUIRE :: REQ , ...
 #        REQ :: [">="<int>||"<="<int>] NAME
-# MORPHPARAM :: NUM_SRC NUM_INT PREPARE
+# MORPHPARAM :: NUM_SRC NUM_INT [PREPARE]
 #    PREPARE :: NAME
 #
-#     COST_F :: "A" || <int>
+#     COST_F :: "h" || <int>
+# CARGO_SIZE :: "A" || <int>
 #          * :: <int>
 #
 # Meta-syntax:
 #
 #   ...     list (of arbitrary size)
-#    ||     exclusive or, i.e. one of (also line-break instead of ||)
+#    ||     exclusive or, i.e. one of
 #    []     optional
 #    ""     literal string
 #    <>     primitive data type
@@ -33,7 +34,7 @@ Nexus               | cstr_p 400   0 100                        | prov_f 10
 Pylon               | cstr_p 100   0  25                        | prov_f 8
 Assimilator         | cstr_p  75   0  30                        |
 Gateway             | cstr_p 150   0  65 :: Nexus               | morph 0 0 10 : Warp Gate : Warpgate
-Forge               | cstr_p 150   0  35                        |
+Forge               | cstr_p 150   0  45                        |
 Photon Cannon       | cstr_p 150   0  40 :: Forge               |
 Cybernetics Core    | cstr_p 150   0  50 :: Gateway             |
 Warp Gate           | morph    0   0  10 : Gateway : Warpgate   |
@@ -63,7 +64,7 @@ Air Weapons Level 2         | build 175 175 190 : Cybernetics Core : Fleet Beaco
 Air Armor Level 2           | build 225 225 190 : Cybernetics Core : Fleet Beacon
 Khaydarin Amulet            | build 150 150 110 : Templar Archives
 Psionic Storm               | build 200 200 110 : Templar Archives
-Gravitic Boosters           | build 100 100 110 : Robotics Bay
+Gravitic Boosters           | build 100 100  80 : Robotics Bay
 Gravitic Drive              | build 100 100  80 : Robotics Bay
 Extended Thermal Lances     | build 200 200 140 : Robotics Bay
 Flux Vanes                  | build 150 150  80 : Fleet Beacon
@@ -82,13 +83,18 @@ Sentry          | u 2 2 0 | build  50 100  42 : Gateway : Cybernetics Core    | 
 Stalker         | u 2 2 0 | build 125  50  42 : Gateway : Cybernetics Core    | warpin  50 100  32 : Warp Gate
 Observer        | u 1 A 0 | build  50 100  40 : Robotics Facility
 Warp Prism      | u 2 A 8 | build 200   0  50 : Robotics Facility
-Immortal        | u 4 4 0 | build 250 100  50 : Robotics Facility
+Immortal        | u 4 4 0 | build 250 100  55 : Robotics Facility
 High Templar    | u 2 2 0 | build  50 150  55 : Gateway : Templar Archives    | warpin  50 150  45 : Warp Gate
 Dark Templar    | u 2 2 0 | build 125 125  55 : Gateway : Dark Shrine         | warpin 125 125  45 : Warp Gate
 Colossus        | u 6 8 0 | build 300 200  75 : Robotics Facility : Robotics Bay
 Phoenix         | u 2 A 0 | build 150 100  45 : Stargate
 Void Ray        | u 3 A 0 | build 250 150  60 : Stargate
 Carrier         | u 6 A 0 | build 350 250 120 : Stargate : Fleet Beacon
-Mothership      | u 8 A 0 | build 400 400 160 : Nexus : Fleet Beacon,<=0 Mothership
+Mothership      | u 8 A 0 | build 400 400 160 : Nexus : Fleet Beacon, <=0 Mothership
 Interceptor     | u 0 A 0 | build  25   0   8 : Carrier
-Archon          | u 4 4 0 | morph   0   0  12 : High Templar, Dark Templar
+Archon          | u 4 4 0 | morph   0   0  12 : High Templar, Dark Templar :: 2 1 Archon
+
+
+[ Zerg Units ]
+
+Zergling        | u h 1 0 | morph  50   0  24 : Larva : Spawning Pool : 1 2 Cocoon
