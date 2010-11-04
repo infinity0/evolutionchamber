@@ -11,14 +11,29 @@ import java.util.HashMap;
 */
 public class SC2World {
 
-	public enum Race { P, Z, T }
+	public enum Race {
+		P, Z, T;
 
-	final protected HashMap<String, SC2AssetType> stat = new HashMap<String, SC2AssetType>();
+		public static Race fromString(String s) {
+			return s.length() == 0? fromChar('\0'): fromChar(s.charAt(0));
+		}
+
+		public static Race fromChar(char c) {
+			switch (c) {
+			case 'P': return Race.P;
+			case 'Z': return Race.Z;
+			case 'T': return Race.P;
+			default: throw new IllegalArgumentException("invalid race");
+			}
+		}
+	}
+
+	final public HashMap<String, SC2AssetType> stat = new HashMap<String, SC2AssetType>();
 
 	public SC2World() { }
 
 	public Group getAssetGroup(String key) {
-		return stat.get(key).type();
+		return stat.get(key).group();
 	}
 
 	public static SC2World getDefaultWorld() {

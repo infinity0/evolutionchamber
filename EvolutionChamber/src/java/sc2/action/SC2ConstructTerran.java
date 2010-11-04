@@ -9,7 +9,7 @@ import sc2.asset.SC2AssetType;
 public class SC2ConstructTerran extends SC2AssetAction {
 
 	public SC2ConstructTerran(SC2AssetType type) {
-		super(type);
+		super(type, SC2AssetAction.Action.CSTR_T);
 	}
 
 	@Override protected void launch() throws SC2ActionException {

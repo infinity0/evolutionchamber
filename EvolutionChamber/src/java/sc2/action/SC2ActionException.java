@@ -29,8 +29,8 @@ public class SC2ActionException extends Exception {
 	/**
 	** Whether the action *may* work later, just by waiting.
 	**
-	** This essentially causes {@link SC2BuildOrderExecutor} to block on the
-	** action until it succeeds, or fails definitively (ie. the {@link
+	** This essentially causes {@link sc2.SC2BuildOrderExecutor} to block on
+	** the action until it succeeds, or fails definitively (ie. the {@link
 	** #pleaseTryLater()} call returns {@code false}).
 	**
 	** This should be set te {@code true} as much as possible without causing

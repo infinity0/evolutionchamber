@@ -1,40 +1,33 @@
 package sc2.asset;
 
+import sc2.SC2Attack;
 import sc2.SC2HealthSchema;
 import sc2.SC2EnergySchema;
-import sc2.SC2Attack;
-import sc2.require.SC2Requires;
+import sc2.action.SC2AssetAction;
+import sc2.action.SC2AssetActionSchema;
 import static sc2.SC2World.Race;
+import static sc2.ArgUtils.non_null;
+import static sc2.ArgUtils.non_null_copy;
+import static sc2.ArgUtils.non_null_immute_set;
 
+import java.util.EnumMap;
 import java.util.EnumSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.Collections;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.NoSuchElementException;
 
 /**
 ** Represents an asset type.
 */
 public class SC2AssetType {
 
-	public enum Group { UNIT, STRUCT, TECH }
-	public enum Modifier { STRUCTURE, ARMORED, LIGHT, BIOLOGICAL,
-		// TODO
-		/** dummy modifier for techs */ TECH }
-
 	final public String name;
 	final public Race race;
-	final public int cost_m;
-	final public int cost_v;
-	final public int cost_t;
 
-	/** built from */
-	final public SC2AssetType source;
-	/** morphs from */
-	final public SC2AssetType parent;
-	/** Build requirements. eg. Cybernetics Core for Stalker. Used by {@link
-	** sc2.action.SC2Build} and {@link sc2.action.SC2Upgrade}. */
-	final public Set<SC2Requires> reqs;
+	/** possible actions to obtain an asset of this type */
+	final protected SC2AssetActionSchema[] actions;
 
 	final public SC2HealthSchema stat_hp;
 	final public SC2HealthSchema stat_sp;
@@ -59,22 +52,48 @@ public class SC2AssetType {
 	/** cargo capacity */
 	final public int cargo;
 
-	public Group type() {
+	public Group group() {
 		return (cost_f != null)? Group.UNIT: (mods.contains(Modifier.STRUCTURE))? Group.STRUCT: Group.TECH;
 	}
 
+	/**
+	** Return the food cost, or 0 if this asset type does not use supply
+	*/
 	public int supply() {
 		return cost_f == null? 0: (int)cost_f;
 	}
 
-	public static Builder initAssetType(String name, Race race, int cost_m, int cost_v, int cost_t) {
-		return new Builder(name, race, cost_m, cost_v, cost_t);
+	/**
+	** Return the first schema for the given type. In the current SC2, this
+	** will be the only schema for the type.
+	*/
+	public SC2AssetActionSchema getSchema(SC2AssetAction.Action act) {
+		for (SC2AssetActionSchema s: actions) {
+			if (s.act == act) { return s; }
+		}
+		throw new NoSuchElementException("action " + act + " not available for asset type " + this.name);
+	}
+
+	/**
+	** Return all schemas for the given action. This is provided in cases
+	** future patches introduce this capability.
+	*/
+	public SC2AssetActionSchema[] getAllSchemas(SC2AssetAction.Action act) {
+		SC2AssetActionSchema[] all = new SC2AssetActionSchema[actions.length];
+		int i = 0;
+		for (SC2AssetActionSchema s: actions) {
+			if (s.act == act) { all[i++] = s; }
+		}
+		return Arrays.copyOf(all, i);
+	}
+
+	public static Builder initAssetType(String name, Race race) {
+		return new Builder(name, race);
 	}
 
 	/** custom constructor */
 	protected SC2AssetType(
-		String name, Race race, int cost_m, int cost_v, int cost_t,
-		SC2AssetType source, SC2AssetType parent, Set<SC2Requires> reqs,
+		String name, Race race, SC2AssetActionSchema[] actions,
 		SC2HealthSchema stat_hp, SC2HealthSchema stat_sp, SC2EnergySchema stat_ep,
 		double speed, int range, int sight,
 		EnumSet<Modifier> mods, SC2Attack atk_g, SC2Attack atk_a,
@@ -82,13 +101,8 @@ public class SC2AssetType {
 	) {
 		this.name = non_null("name", name);
 		this.race = non_null("race", race);
-		this.cost_m = cost_m;
-		this.cost_v = cost_v;
-		this.cost_t = cost_t;
 
-		this.source = source;
-		this.parent = parent;
-		this.reqs = (reqs == null)? Collections.<SC2Requires>emptySet(): Collections.<SC2Requires>unmodifiableSet(reqs);
+		this.actions = non_null_copy(actions, new SC2AssetActionSchema[0]);
 
 		this.stat_hp = stat_hp;
 		this.stat_sp = stat_sp;
@@ -98,7 +112,7 @@ public class SC2AssetType {
 		this.range = range;
 		this.sight = sight;
 
-		this.mods = (mods == null)? Collections.<Modifier>emptySet(): Collections.<Modifier>unmodifiableSet(mods);
+		this.mods = non_null_immute_set(mods);
 		this.atk_g = atk_g;
 		this.atk_a = atk_a;
 
@@ -108,22 +122,12 @@ public class SC2AssetType {
 		this.cargo = cargo;
 	}
 
-	public static <T> T non_null(String desc, T o) {
-		if (o == null) { throw new IllegalArgumentException(desc + " must not be null"); }
-		return o;
-	}
-
 	public static class Builder {
 
 		final String name;
 		final Race race;
-		final int cost_m;
-		final int cost_v;
-		final int cost_t;
 
-		SC2AssetType source;
-		SC2AssetType parent;
-		Set<SC2Requires> reqs;
+		SC2AssetActionSchema[] actions;
 
 		SC2HealthSchema stat_hp;
 		SC2HealthSchema stat_sp;
@@ -140,18 +144,13 @@ public class SC2AssetType {
 
 		int prov_f;
 
-		public Builder(String name, Race race, int cost_m, int cost_v, int cost_t) {
+		public Builder(String name, Race race) {
 			this.name = name;
 			this.race = race;
-			this.cost_m = cost_m;
-			this.cost_v = cost_v;
-			this.cost_t = cost_t;
 		}
 
-		public Builder predecents(SC2AssetType source, SC2AssetType parent, SC2Requires ... reqs) {
-			this.source = source;
-			this.parent = parent;
-			this.reqs = new HashSet<SC2Requires>(Arrays.asList(reqs));
+		public Builder actions(SC2AssetActionSchema ... actions) {
+			this.actions = actions;
 			return this;
 		}
 
@@ -187,27 +186,45 @@ public class SC2AssetType {
 		}
 
 		public SC2AssetType buildStructure() {
-			mods.add(Modifier.STRUCTURE);
-			return new SC2AssetType(name, race, cost_m, cost_v, cost_t,
-			  source, parent, reqs,
+			if (mods != null) { mods.add(Modifier.STRUCTURE); } else { mods = EnumSet.of(Modifier.STRUCTURE); }
+			return new SC2AssetType(name, race, actions,
 			  stat_hp, stat_sp, stat_ep, speed, range, sight,
 			  mods, atk_g, atk_a, prov_f, null, 0, 0);
 		}
 
 		public SC2AssetType buildUnit(int cost_f, int size, int cargo) {
-			return new SC2AssetType(name, race, cost_m, cost_v, cost_t,
-			  source, parent, reqs,
+			return new SC2AssetType(name, race, actions,
 			  stat_hp, stat_sp, stat_ep, speed, range, sight,
 			  mods, atk_g, atk_a, prov_f, cost_f, size, cargo);
 		}
 
 		public SC2AssetType buildTech() {
-			return new SC2AssetType(name, race, cost_m, cost_v, cost_t,
-			  source, parent, reqs,
+			return new SC2AssetType(name, race, actions,
 			  stat_hp, stat_sp, stat_ep, speed, range, sight,
 			  EnumSet.of(Modifier.TECH), atk_g, atk_a, prov_f, null, 0, 0);
 		}
 
 	}
+
+	public enum Group {
+		UNIT, STRUCT, TECH;
+
+		public static Group fromString(String s) {
+			return s.length() == 0? fromChar('\0'): fromChar(s.charAt(0));
+		}
+
+		public static Group fromChar(char c) {
+			switch (c) {
+			case 'U': return Group.UNIT;
+			case 'S': return Group.STRUCT;
+			case 'T': return Group.TECH;
+			default: throw new IllegalArgumentException("invalid group");
+			}
+		}
+	}
+
+	public enum Modifier { STRUCTURE, ARMORED, LIGHT, BIOLOGICAL,
+		// TODO
+		/** dummy modifier for techs */ TECH }
 
 }

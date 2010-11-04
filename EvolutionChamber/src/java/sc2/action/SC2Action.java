@@ -17,7 +17,7 @@ abstract public class SC2Action {
 	protected SC2Player play;
 
 	/** double because chrono boost can increase the decrement to 1.5 */
-	public double eta;
+	protected double eta;
 
 	public SC2Action(int eta) {
 		if (eta < 0) { throw new IllegalArgumentException("can't have negative eta: " + eta); }

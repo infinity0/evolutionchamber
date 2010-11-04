@@ -191,7 +191,7 @@
 		<javadoc classpathref="lib.path" sourcepath="${main.src}" destdir="${doc.api}" use="true">
 			<fileset dir="${main.src}" includes="**/*.java" />
 			<classpath refid="lib.path"/>
-			<link href="http://java.sun.com/j2se/1.5.0/docs/api"/>
+			<link href="http://download.oracle.com/javase/6/docs/api"/>
 		</javadoc>
 	</target>
 

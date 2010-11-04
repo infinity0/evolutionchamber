@@ -14,7 +14,7 @@ import sc2.asset.SC2AssetType;
 public class SC2Build extends SC2AssetAction {
 
 	public SC2Build(SC2AssetType type) {
-		super(type);
+		super(type, SC2AssetAction.Action.BUILD);
 	}
 
 	@Override protected void launch() throws SC2ActionException {

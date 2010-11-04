@@ -14,7 +14,7 @@ import sc2.asset.SC2AssetType;
 public class SC2Morph extends SC2AssetAction {
 
 	public SC2Morph(SC2AssetType type) {
-		super(type);
+		super(type, SC2AssetAction.Action.MORPH);
 	}
 
 	@Override protected void launch() throws SC2ActionException {

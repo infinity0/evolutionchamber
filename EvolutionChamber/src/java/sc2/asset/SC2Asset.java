@@ -146,7 +146,7 @@ public class SC2Asset {
 	/**
 	** Remove an action from the queue, {@link SC2Build#cancel()} is called.
 	**
-	** @param action Action to remove.
+	** @param build Action to remove.
 	** @return The index of the popped action, index 0 being the current slot,
 	**         or {@code -1} if not found.
 	*/
