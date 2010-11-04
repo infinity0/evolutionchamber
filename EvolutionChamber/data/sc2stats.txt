@@ -28,6 +28,12 @@
 #    ""     literal string
 #   <T>     primitive data type
 #
+# General notes:
+#
+# - Food cost for a unit includes previous morph forms. This means we don't
+#   need to define -1 food cost for structures, when we lose a drone.
+#
+
 
 [ Protoss Structures ]
 
@@ -96,30 +102,23 @@ Interceptor     | u: 0 A 0 | build :  25   0   8 : Carrier
 Archon          | u: 4 4 0 | morph :   0   0  12 : High Templar, Dark Templar ::: 2 1
 
 
-
 [ Zerg Structures ]
 
-Hatchery          | morph : 300   0 100 : Drone                 | prov_f : 2
+Hatchery          | morph : 300   0 100 : Drone                     | prov_f : 2
 Extractor         | morph :  25   0  30 : Drone
 Spawning Pool     | morph : 200   0  65 : Drone : Hatchery
-Evolution Chamber | morph :  75   0  35 : Drone : Hatchery 
+Evolution Chamber | morph :  75   0  35 : Drone : Hatchery
 Spine Crawler     | morph : 100   0  50 : Drone : Spawning Pool
 Roach Warren      | morph : 150   0  55 : Drone : Spawning Pool
 Baneling Nest     | morph : 100  50  60 : Drone : Spawning Pool
 Spore Crawler     | morph :  75   0  30 : Drone : Evolution Chamber
-                                        
 Lair              | morph : 150 100  80 : Hatchery : Spawning Pool
 Hydralisk Den     | morph : 100 100  40 : Drone : Lair
 Infestation Pit   | morph : 100 100  50 : Drone : Lair
 Spire             | morph : 200 200 100 : Drone : Lair
-
-# consider cargo capacity?
-Nydus Network     | morph : 200 200  50 : Drone : Lair
-
-# build/warpin?
-Nydus Worm        | build : 100 100  20 :       : Nydus Network
-
-Hive              | morph : 200 150 100 : Lair : Infestation Pit
+Nydus Network     | morph : 200 200  50 : Drone : Lair                  # consider cargo capacity?
+Nydus Worm        | build : 100 100  20 : Nydus Network                 # build/warpin?
+Hive              | morph : 200 150 100 : Lair  : Infestation Pit
 Greater Spire     | morph : 100 150 100 : Spire : Hive
 Ultralisk Cavern  | morph : 150 200 65  : Drone : Hive
 
@@ -132,7 +131,7 @@ Metabolic Boost         | build : 100 100 110 : Spawning Pool
 Adrenal Glands          | build : 200 200 130 : Spawning Pool : Hive
 Melee Attacks Level 1   | build : 100 100 160 : Evolution Chamber
 Melee Attacks Level 2   | build : 150 150 190 : Evolution Chamber : Lair
-Melee Attacks Level 3   | build : 200 200 220 : Evolution Chamber : Hive 
+Melee Attacks Level 3   | build : 200 200 220 : Evolution Chamber : Hive
 Missile Attacks Level 1 | build : 100 100 160 : Evolution Chamber
 Missile Attacks Level 2 | build : 150 150 190 : Evolution Chamber : Lair
 Missile Attacks Level 3 | build : 200 200 220 : Evolution Chamber : Hive
@@ -147,7 +146,7 @@ Neural Parasite         | build : 150 150 110 : Infestation Pit
 Pathogen Glands         | build : 150 150  80 : Infestation Pit
 Flyer Attacks Level 1   | build : 100 100 160 : Spire :
 Flyer Attacks Level 2   | build : 175 175 190 : Spire : Lair
-Flyer Attacks Level 3   | build : 250 250 220 : Spire : Hive 
+Flyer Attacks Level 3   | build : 250 250 220 : Spire : Hive
 Flyer Carapace Level 1  | build : 150 150 160 : Spire :
 Flyer Carapace Level 2  | build : 225 225 190 : Spire : Lair
 Flyer Carapace Level 3  | build : 300 300 220 : Spire : Hive
@@ -155,23 +154,23 @@ Chitinous Plating       | build : 150 150 110 : Ultralisk Cavern
 
 [ Zerg Units ]
 
+# TODO: the "9" cargo stats need to be corrected to their actual values
+# TODO: Overlord only has 8 cargo capacity when Ventral Sacs are researched
+# TODO: Cocoons of Banelings, Overseers and Brood Lords have different unit stats (HP/AR)
+
 Larva           | u: 0 0 0 |
 Cocoon          | u: 0 0 0 |
-Drone           | u: 1 1 0 | morph : 50    0  17 : Larva :               : Cocoon
+Drone           | u: 1 1 0 | morph :  50   0  17 : Larva     :                 : Cocoon
+Overlord        | u: 0 A 8 | morph : 100   0  25 : Larva     :                 : Cocoon     | prov_f : 8
+Zergling        | u: h 1 0 | morph :  50   0  24 : Larva     : Spawning Pool   : Cocoon : 1 2
+Queen           | u: 2 9 0 | build : 150   0  50 : Hatchery
+Roach           | u: 2 9 0 | morph :  75  25  27 : Larva     : Roach Warren    : Cocoon
+Baneling        | u: h 9 0 | morph :  25  25  20 : Zergling  : Baneling Nest   : Cocoon
+Overseer        | u: 0 9 0 | morph :  50 100  17 : Overlord  : Lair            : Cocoon     | prov_f : 8
+Hydralisk       | u: 2 9 0 | morph : 100  50  33 : Larva     : Hydralisk Den   : Cocoon
+Infestor        | u: 2 9 0 | morph : 100 150  50 : Larva     : Infestation Pit : Cocoon
+Mutalisk        | u: 2 A 0 | morph : 100 100  33 : Larva     : Spire           : Cocoon
+Corruptor       | u: 2 A 0 | morph : 150 100  40 : Larva     : Spire           : Cocoon
+Ultralisk       | u: 6 9 0 | morph : 300 200  70 : Larva     : Ultralisk Den   : Cocoon
+Brood Lord      | u: 4 A 0 | morph : 150 150  34 : Corruptor : Greater Spire   : Cocoon
 
-# Overlord only has 8 cargo capacity when Ventral Sacs are researched
-Overlord        | u: 0 A 8 | morph : 100   0  25 : Larva :               : Cocoon | prov_f : 8
-                                          
-Zergling        | u: h 1 0 | morph : 50    0  24 : Larva : Spawning Pool : Cocoon : 1 2
-Queen           | u: 2 ? 0 | build : 150   0  50 : Hatchery
-Roach           | u: 2 ? 0 | morph : 75   25  27 : Larva : Roach Warren  : Cocoon
-Baneling        | u: h ? 0 | morph : 25   25  20 : Zergling : Baneling Nest : Cocoon
-Overseer        | u: 0 ? 0 | morph : 50   100 17 : Overlord : Lair : Cocoon | prov_f : 8
-Hydralisk       | u: 2 ? 0 | morph : 100  50  33 : Larva : Hydralisk Den : Cocoon
-Infestor        | u: 2 ? 0 | morph : 100 150  50 : Larva : Infestation Pit : Cocoon
-Mutalisk        | u: 2 A 0 | morph : 100 100  33 : Larva : Spire : Cocoon
-Corruptor       | u: 2 A 0 | morph : 150 100  40 : Larva : Spire : Cocoon
-Ultralisk       | u: 6 ? 0 | morph : 300 200  70 : Larva : Ultralisk Den : Cocoon
-
-# 2+2 food or 2+4 food?
-Brood Lord      | u: 4 A 0 | morph : 150 150  34 : Corruptor : Greater Spire : Cocoon
