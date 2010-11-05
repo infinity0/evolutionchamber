@@ -1,31 +1,31 @@
 package com.fray.evo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.fray.evo.fitness.EcFitness;
 import static java.lang.Math.*;
 
-public class EcState
+public class EcState implements Serializable
 {
-	
-	public EcState() {
-		fitness = EcSettings.getFitnessFunction();
+	public EcSettings	settings	= new EcSettings();
+
+	public EcState()
+	{
 		hatcheryTimes.add(new Integer(0));
 	}
-	
-	private EcFitness				fitness = null;
-	
-	public double preTimeScore = 0.0;
-	public double timeBonus = 0.0;
-	
+
+	public double					preTimeScore		= 0.0;
+	public double					timeBonus			= 0.0;
+
 	public double					minerals			= 50;
 	public double					gas					= 0;
 	public double					supplyUsed			= 6;
-	public int						evolvingHatcheries  = 0;
+	public int						evolvingHatcheries	= 0;
 	public int						evolvingLairs		= 0;
 	public int						evolvingHives		= 0;
-	public int 						requiredBases	    = 1;
+	public int						requiredBases		= 1;
 	public int						hatcheries			= 1;
 	public int						lairs				= 0;
 	public int						hives				= 0;
@@ -43,6 +43,8 @@ public class EcState
 	public int						sporeCrawlers		= 0;
 	public int						nydusNetwork		= 0;
 	public int						nydusWorm			= 0;
+
+	public int						larva				= 3;
 
 	public int						drones				= 6;
 	public int						overlords			= 1;
@@ -92,13 +94,13 @@ public class EcState
 	public int						invalidActions		= 0;
 	public double					actionLength		= 0;
 	public int						waits;
-	
-	public int 						maxOverDrones 		= 50;
-	public int						overDroneEfficiency = 80;
-	
+
+	public int						maxOverDrones		= 50;
+	public int						overDroneEfficiency	= 80;
+
 	public List<Integer>			hatcheryTimes		= new ArrayList<Integer>();
 
-	public transient List<EcState>	waypoints			= new ArrayList<EcState>();
+	public List<EcState>	waypoints			= new ArrayList<EcState>();
 
 	@Override
 	public Object clone() throws CloneNotSupportedException
@@ -121,6 +123,7 @@ public class EcState
 				e.printStackTrace();
 			}
 
+		s.settings = settings;
 		s.minerals = minerals;
 		s.gas = gas;
 		s.supplyUsed = supplyUsed;
@@ -196,7 +199,7 @@ public class EcState
 
 	public int supply()
 	{
-		return Math.min((overlords + overseers) * 8 + 2 * bases(),200);
+		return Math.min((overlords + overseers) * 8 + 2 * bases(), 200);
 	}
 
 	public static EcState defaultDestination()
@@ -213,102 +216,102 @@ public class EcState
 
 	public double score(EcState candidate)
 	{
-		return fitness.score(candidate, this);
+		return settings.getFitnessFunction().score(candidate, this);
 	}
-	
+
 	public void union(EcState s)
 	{
-		if(s.requiredBases > requiredBases)
+		if (s.requiredBases > requiredBases)
 			requiredBases = s.requiredBases;
-		
-		if(s.lairs > lairs)
+
+		if (s.lairs > lairs)
 			lairs = s.lairs;
-		
-		if(s.hives > hives)
+
+		if (s.hives > hives)
 			hives = s.hives;
-		
-		if(s.spawningPools > spawningPools)
+
+		if (s.spawningPools > spawningPools)
 			spawningPools = s.spawningPools;
-		
-		if(s.banelingNest > banelingNest)
+
+		if (s.banelingNest > banelingNest)
 			banelingNest = s.banelingNest;
-		
-		if(s.evolutionChambers > evolutionChambers)
+
+		if (s.evolutionChambers > evolutionChambers)
 			evolutionChambers = s.evolutionChambers;
-		
-		if(s.roachWarrens > roachWarrens)
+
+		if (s.roachWarrens > roachWarrens)
 			roachWarrens = s.roachWarrens;
-		
-		if(s.hydraliskDen > hydraliskDen)
+
+		if (s.hydraliskDen > hydraliskDen)
 			hydraliskDen = s.hydraliskDen;
-		
-		if(s.infestationPit > infestationPit)
+
+		if (s.infestationPit > infestationPit)
 			infestationPit = s.infestationPit;
-		
-		if(s.greaterSpire > greaterSpire)
+
+		if (s.greaterSpire > greaterSpire)
 			greaterSpire = s.greaterSpire;
-		
-		if(s.ultraliskCavern > ultraliskCavern)
+
+		if (s.ultraliskCavern > ultraliskCavern)
 			ultraliskCavern = s.ultraliskCavern;
-		
-		if(s.gasExtractors > gasExtractors)
+
+		if (s.gasExtractors > gasExtractors)
 			gasExtractors = s.gasExtractors;
-		
-		if(s.spire > spire)
+
+		if (s.spire > spire)
 			spire = s.spire;
-		
-		if(s.spineCrawlers > spineCrawlers)
+
+		if (s.spineCrawlers > spineCrawlers)
 			spineCrawlers = s.spineCrawlers;
-		
-		if(s.sporeCrawlers > sporeCrawlers)
+
+		if (s.sporeCrawlers > sporeCrawlers)
 			sporeCrawlers = s.sporeCrawlers;
-		
-		if(s.nydusNetwork > nydusNetwork)
+
+		if (s.nydusNetwork > nydusNetwork)
 			nydusNetwork = s.nydusNetwork;
-		
-		if(s.nydusWorm > nydusWorm)
+
+		if (s.nydusWorm > nydusWorm)
 			nydusWorm = s.nydusWorm;
-		
-		if(s.zerglings > zerglings)
+
+		if (s.zerglings > zerglings)
 			zerglings = s.zerglings;
-		
-		if(s.banelings > banelings)
+
+		if (s.banelings > banelings)
 			banelings = s.banelings;
-		
-		if(s.roaches > roaches)
+
+		if (s.roaches > roaches)
 			roaches = s.roaches;
-		
-		if(s.mutalisks > mutalisks)
+
+		if (s.mutalisks > mutalisks)
 			mutalisks = s.mutalisks;
-		
-		if(s.drones > drones)
+
+		if (s.drones > drones)
 			drones = s.drones;
-		
-		if(s.nydusNetwork > nydusNetwork)
+
+		if (s.nydusNetwork > nydusNetwork)
 			nydusNetwork = s.nydusNetwork;
-		
-		if(s.queens > queens)
+
+		if (s.queens > queens)
 			queens = s.queens;
-		
-		if(s.hydralisks > hydralisks)
+
+		if (s.hydralisks > hydralisks)
 			hydralisks = s.hydralisks;
-		
-		if(s.infestors > infestors)
+
+		if (s.infestors > infestors)
 			infestors = s.infestors;
-		
-		if(s.corruptors > corruptors)
+
+		if (s.corruptors > corruptors)
 			corruptors = s.corruptors;
-		
-		if(s.ultralisks > ultralisks)
+
+		if (s.ultralisks > ultralisks)
 			ultralisks = s.ultralisks;
-		
-		if(s.broodlords > broodlords)
+
+		if (s.broodlords > broodlords)
 			broodlords = s.broodlords;
-		
-		if(s.overlords > overlords)
+
+		if (s.overlords > overlords)
 			overlords = s.overlords;
-		
-		if(s.overseers > overseers)
+
+		if (s.overseers > overseers)
 			overseers = s.overseers;
 
 		metabolicBoost = s.metabolicBoost | metabolicBoost;
@@ -342,7 +345,7 @@ public class EcState
 	}
 
 	public boolean isSatisfied(EcState candidate)
-	{		
+	{
 
 		if (waypoints.size() > 0)
 		{
@@ -354,8 +357,7 @@ public class EcState
 			state.union(this);
 			return state.isSatisfied(candidate);
 		}
-	
-		
+
 		if (candidate.drones < drones)
 			return false;
 		if (candidate.zerglings < zerglings)
@@ -472,72 +474,70 @@ public class EcState
 			return false;
 		if ((!candidate.chitinousPlating) & chitinousPlating)
 			return false;
-		
-		
-		if (EcSettings.overDrone || EcSettings.workerParity)
+
+		if (candidate.settings.overDrone || candidate.settings.workerParity)
 		{
 			int overDrones = getOverDrones(candidate);
-			
-			if (EcSettings.overDrone && candidate.drones < overDrones) 
+
+			if (candidate.settings.overDrone && candidate.drones < overDrones)
 			{
 				return false;
 			}
-			if (EcSettings.workerParity) 
+			if (candidate.settings.workerParity)
 			{
-				int parityDrones  = getParityDrones(candidate);
-				
-				if (candidate.drones < parityDrones) 
+				int parityDrones = getParityDrones(candidate);
+
+				if (candidate.drones < parityDrones)
 				{
 					return false;
 				}
 			}
 		}
-		
+
 		return true;
 	}
 
 	public int getOverDrones(EcState s)
 	{
 		int overDrones = ((s.productionTime() / 17) + s.usedDrones()) * overDroneEfficiency / 100;
-		
+
 		overDrones = Math.min(overDrones, maxOverDrones);
-		
+
 		return overDrones;
 	}
-	
+
 	public int getParityDrones(EcState s)
 	{
 		int optimalDrones = Math.min((s.bases() * 16) + (s.gasExtractors * 3), maxOverDrones);
-		int parityDrones  = Math.min(s.getOverDrones(s), optimalDrones);
-		
+		int parityDrones = Math.min(s.getOverDrones(s), optimalDrones);
+
 		return parityDrones;
 	}
-	
+
 	public int bases()
 	{
 		return hatcheries + lairs + evolvingHatcheries + evolvingLairs + hives + evolvingHives;
 	}
-	
+
 	public int productionTime()
 	{
 		int productionTime = 0;
-		
+
 		// Calculate raw hatchery production time
-		for (int i = 0; i < hatcheryTimes.size(); i++) 
+		for (int i = 0; i < hatcheryTimes.size(); i++)
 		{
-		    productionTime += seconds - hatcheryTimes.get(i); // TODO: Change to constant
+			productionTime += seconds - hatcheryTimes.get(i); // TODO: Change to
+																// constant
 		}
-		
+
 		return productionTime;
 	}
-	
+
 	public int usedDrones()
 	{
-		return (evolvingHatcheries + evolvingLairs + evolvingHives + (hatcheries - 1)
-				+ lairs + hives + spawningPools + evolutionChambers + roachWarrens
-				+ hydraliskDen + banelingNest + infestationPit 
-				+ ultraliskCavern + gasExtractors + spire + spineCrawlers
-				+ sporeCrawlers + nydusWorm);
+		return (evolvingHatcheries + evolvingLairs + evolvingHives + (hatcheries - 1) + lairs + hives + spawningPools
+				+ evolutionChambers + roachWarrens + hydraliskDen + banelingNest + infestationPit + ultraliskCavern
+				+ gasExtractors + spire + spineCrawlers + sporeCrawlers + nydusWorm);
 	}
 
 	public int getSumStuff()
@@ -552,13 +552,13 @@ public class EcState
 			state.union(this);
 			return state.getSumStuff();
 		}
-		
+
 		int i = hatcheries + lairs + hives + spawningPools + evolutionChambers + roachWarrens + hydraliskDen
 				+ banelingNest + infestationPit + greaterSpire + ultraliskCavern + gasExtractors + spire
 				+ spineCrawlers + sporeCrawlers + nydusNetwork + nydusWorm
 
-				+ drones + overlords + overseers + zerglings + banelings * 2 + roaches + mutalisks + infestors + queens
-				+ hydralisks + corruptors + ultralisks + broodlords * 2;
+				+ drones + overlords + overseers + zerglings + banelings * 2 + roaches + mutalisks*2 + infestors*2 + queens
+				+ hydralisks*2 + corruptors*2 + ultralisks*2 + broodlords * 4;
 
 		if (metabolicBoost)
 			i++;
@@ -619,8 +619,107 @@ public class EcState
 		return i;
 	}
 
+	public String timestamp()
+	{
+		return seconds / 60 + ":" + (seconds % 60 < 10 ? "0" : "") + seconds % 60;
+	}
+
+	public String toCompleteString()
+	{
+		StringBuilder sb = new StringBuilder();
+		sb.append("At time: " + timestamp());
+		sb.append("\nMinerals: " + (int) minerals + "\tGas:      " + (int) gas + "\tSupply:   " + ((int) supplyUsed)
+				+ "/" + supply() + "\tLarva: " + larva);
+		appendBuildStuff(sb);
+		return sb.toString();
+	}
+
+	public String toUnitsOnlyString()
+	{
+		StringBuilder sb = new StringBuilder();
+		appendBuildStuff(sb);
+		return sb.toString();
+	}
+
+	private void appendBuildStuff(StringBuilder sb)
+	{
+		append(sb, "Drones", drones);
+		append(sb, "Overlords", overlords);
+		append(sb, "Overseers", overseers);
+		append(sb, "Queens", queens);
+		append(sb, "Zerglings", zerglings);
+		append(sb, "Banelings", banelings);
+		append(sb, "Roaches", roaches);
+		append(sb, "Hydralisks", hydralisks);
+		append(sb, "Infestors", infestors);
+		append(sb, "Mutalisks", mutalisks);
+		append(sb, "Corruptors", corruptors);
+		append(sb, "Ultralisks", ultralisks);
+		append(sb, "Brood Lords", broodlords);
+
+		append(sb, "Hatcheries", hatcheries);
+		append(sb, "Lairs", lairs);
+		append(sb, "Hives", hives);
+		append(sb, "Gas Extractors", gasExtractors);
+		append(sb, "Spawning Pools", spawningPools);
+		append(sb, "Baneling Nest", banelingNest);
+		append(sb, "Roach Warrens", roachWarrens);
+		append(sb, "Hydralisk Den", hydraliskDen);
+		append(sb, "Infestation Pit", infestationPit);
+		append(sb, "Spire", spire);
+		append(sb, "Ultralisk Cavern", ultraliskCavern);
+		append(sb, "Greater Spire", greaterSpire);
+		append(sb, "Evolution Chambers", evolutionChambers);
+		append(sb, "Spine Crawlers", spineCrawlers);
+		append(sb, "Spore Crawlers", sporeCrawlers);
+		append(sb, "Nydus Networks", nydusNetwork);
+		append(sb, "Nydus Worms", nydusWorm);
+
+		append(sb, "Melee +1", melee1);
+		append(sb, "Melee +2", melee2);
+		append(sb, "Melee +3", melee3);
+		append(sb, "Missile +1", missile1);
+		append(sb, "Missile +2", missile2);
+		append(sb, "Missile +3", missile3);
+		append(sb, "Armor +1", armor1);
+		append(sb, "Armor +2", armor2);
+		append(sb, "Armor +3", armor3);
+		append(sb, "Flyer Attack +1", flyerAttack1);
+		append(sb, "Flyer Attack +2", flyerAttack2);
+		append(sb, "Flyer Attack +3", flyerAttack3);
+		append(sb, "Flyer Armor +1", flyerArmor1);
+		append(sb, "Flyer Armor +2", flyerArmor2);
+		append(sb, "Flyer Armor +3", flyerArmor3);
+		append(sb, "Metabolic Boost", metabolicBoost);
+		append(sb, "Adrenal Glands", adrenalGlands);
+		append(sb, "Glial Reconstitution", glialReconstitution);
+		append(sb, "Tunneling Claws", tunnelingClaws);
+		append(sb, "Burrow", burrow);
+		append(sb, "Pneumatized Carapace", pneumatizedCarapace);
+		append(sb, "Ventral Sacs", ventralSacs);
+		append(sb, "Centrifugal Hooks", centrifugalHooks);
+		append(sb, "Grooved Spines", groovedSpines);
+		append(sb, "Neural Parasite", neuralParasite);
+		append(sb, "Pathogen Glands", pathogenGlands);
+		append(sb, "Chitinous Plating", chitinousPlating);
+	}
+
+	private void append(StringBuilder sb, String name, boolean doit)
+	{
+		if (doit)
+			sb.append("\n" + name);
+	}
+
+	private void append(StringBuilder sb, String name, int count)
+	{
+		if (count > 0)
+			sb.append("\n" + name + ": " + count);
+	}
+
 	public boolean waypointMissed(EcBuildOrder candidate)
 	{
+		if (waypoints == null)
+			waypoints = new ArrayList<EcState>();
 		for (EcState s : waypoints)
 		{
 			if (candidate.seconds < s.targetSeconds)

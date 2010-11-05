@@ -12,7 +12,6 @@ import com.fray.evo.action.EcAction;
 public class EcBuildOrder extends EcState implements Serializable
 {
 	static final long		serialVersionUID	= 1L;
-	public int				larva				= 3;
 	public int				dronesGoingOnMinerals	= 6;	
 	public int				dronesGoingOnGas	= 0;
 	public int				dronesOnMinerals	= 0;
@@ -25,7 +24,7 @@ public class EcBuildOrder extends EcState implements Serializable
 	public boolean 			droneIsScouting		= false;
 
 	transient MultiValueMap	futureAction		= new MultiValueMap();
-	ArrayList<EcAction>		actions				= new ArrayList<EcAction>();
+	public ArrayList<EcAction>		actions				= new ArrayList<EcAction>();
 
 	public EcBuildOrder()
 	{
@@ -39,10 +38,21 @@ public class EcBuildOrder extends EcState implements Serializable
             }});
 	}
 	
+	public EcBuildOrder(EcState importDestination)
+	{
+		importDestination.assign(this);
+	}
+
 	@Override
 	public EcBuildOrder clone() throws CloneNotSupportedException
 	{
 		final EcBuildOrder s = new EcBuildOrder();
+		assign(s);
+		return s;
+	}
+
+	private void assign(final EcBuildOrder s)
+	{
 		s.larva = larva;
 		s.dronesGoingOnMinerals = dronesGoingOnMinerals;
 		s.dronesGoingOnGas = dronesGoingOnGas;
@@ -51,96 +61,18 @@ public class EcBuildOrder extends EcState implements Serializable
 		s.buildingLarva = buildingLarva;
 		s.queensBuilding = queensBuilding;
 		s.evolutionChambersInUse = evolutionChambersInUse;
-		assign(s);
-		return s;
+		super.assign(s);
 	}
 
-	@Override
 	public String toString()
+	{
+		return toUnitsOnlyString().replaceAll("\n"," ");
+	}
+	
+	public String toShortString()
 	{
 		return ("@" + timestamp() + "\tM:" + (int) minerals + "\tG:" + (int) gas + "\tL:" + larva + "\tS:"
 				+ ((int) supplyUsed) + "/" + supply());
-	}
-
-	public String toLongString()
-	{
-		StringBuilder sb = new StringBuilder();
-		sb.append("At time: " + timestamp());
-		sb.append("\nMinerals: " + (int) minerals + "\tGas:      " + (int) gas + "\tSupply:   " + ((int) supplyUsed)
-				+ "/" + supply() + "\tLarva: " + larva);
-
-		append(sb, "Drones", drones);
-		append(sb, "Overlords", overlords);
-		append(sb, "Overseers", overseers);
-		append(sb, "Queens", queens);
-		append(sb, "Zerglings", zerglings);
-		append(sb, "Banelings", banelings);
-		append(sb, "Roaches", roaches);
-		append(sb, "Hydralisks", hydralisks);
-		append(sb, "Infestors", infestors);
-		append(sb, "Mutalisks", mutalisks);
-		append(sb, "Corruptors", corruptors);
-		append(sb, "Ultralisks", ultralisks);
-		append(sb, "Brood Lords", broodlords);
-
-		append(sb, "Hatcheries", hatcheries);
-		append(sb, "Lairs", lairs);
-		append(sb, "Hives", hives);
-		append(sb, "Gas Extractors", gasExtractors);
-		append(sb, "Spawning Pools", spawningPools);
-		append(sb, "Baneling Nest", banelingNest);
-		append(sb, "Roach Warrens", roachWarrens);
-		append(sb, "Hydralisk Den", hydraliskDen);
-		append(sb, "Infestation Pit", infestationPit);
-		append(sb, "Spire", spire);
-		append(sb, "Ultralisk Cavern", ultraliskCavern);
-		append(sb, "Greater Spire", greaterSpire);
-		append(sb, "Evolution Chambers", evolutionChambers);
-		append(sb, "Spine Crawlers", spineCrawlers);
-		append(sb, "Spore Crawlers", sporeCrawlers);
-		append(sb, "Nydus Networks", nydusNetwork);
-		append(sb, "Nydus Worms", nydusWorm);
-
-		append(sb, "Melee +1", melee1);
-		append(sb, "Melee +2", melee2);
-		append(sb, "Melee +3", melee3);
-		append(sb, "Missile +1", missile1);
-		append(sb, "Missile +2", missile2);
-		append(sb, "Missile +3", missile3);
-		append(sb, "Armor +1", armor1);
-		append(sb, "Armor +2", armor2);
-		append(sb, "Armor +3", armor3);
-		append(sb, "Flyer Attack +1", flyerAttack1);
-		append(sb, "Flyer Attack +2", flyerAttack2);
-		append(sb, "Flyer Attack +3", flyerAttack3);
-		append(sb, "Flyer Armor +1", flyerArmor1);
-		append(sb, "Flyer Armor +2", flyerArmor2);
-		append(sb, "Flyer Armor +3", flyerArmor3);
-		append(sb, "Metabolic Boost", metabolicBoost);
-		append(sb, "Adrenal Glands", adrenalGlands);
-		append(sb, "Glial Reconstitution", glialReconstitution);
-		append(sb, "Tunneling Claws", tunnelingClaws);
-		append(sb, "Burrow", burrow);
-		append(sb, "Pneumatized Carapace", pneumatizedCarapace);
-		append(sb, "Ventral Sacs", ventralSacs);
-		append(sb, "Centrifugal Hooks", centrifugalHooks);
-		append(sb, "Grooved Spines", groovedSpines);
-		append(sb, "Neural Parasite", neuralParasite);
-		append(sb, "Pathogen Glands", pathogenGlands);
-		append(sb, "Chitinous Plating", chitinousPlating);
-		return sb.toString();
-	}
-
-	private void append(StringBuilder sb, String name, boolean doit)
-	{
-		if (doit)
-			sb.append("\n" + name);
-	}
-
-	private void append(StringBuilder sb, String name, int count)
-	{
-		if (count > 0)
-			sb.append("\n" + name + ": " + count);
 	}
 
 	public List<EcAction> getActions()
@@ -156,6 +88,8 @@ public class EcBuildOrder extends EcState implements Serializable
 	public void addFutureAction(double time, Runnable runnable)
 	{
 		time = seconds + time;
+		if (futureAction == null)
+			futureAction = new MultiValueMap();
 		futureAction.put(time, runnable);
 		actionLength++;
 	}
@@ -324,11 +258,6 @@ public class EcBuildOrder extends EcState implements Serializable
 		gas += mineGas();
 	}
 
-	public String timestamp()
-	{
-		return seconds / 60 + ":" + (seconds%60 < 10 ? "0" : "") + seconds % 60;
-	}
-	
 	public String timestampIncremented(int increment)
 	{
 		int incrementedSeconds = seconds + increment;

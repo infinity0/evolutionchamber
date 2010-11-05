@@ -37,7 +37,7 @@ public class EcActionBuildRoachWarren extends EcAction implements Serializable
 	{
 		if (s.spawningPools == 0)
 			return true;
-		if (s.roachWarrens >= (new Date().getMinutes()%2)+1)
+		if (s.roachWarrens >= 1)
 			return true;
 		return false;
 	}

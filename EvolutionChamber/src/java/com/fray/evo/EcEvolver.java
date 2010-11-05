@@ -20,8 +20,6 @@ public class EcEvolver extends FitnessFunction
 	public static long evaluations = 0;
 	public static long cachehits = 0;
 
-//	public static Map<Integer, Double>	scoreMap	= Collections.synchronizedMap(new EcCacheMap<Integer, Double>());
-
 	public EcEvolver(EcState source, EcState destination)
 	{
 		this.source = source;
@@ -47,25 +45,14 @@ public class EcEvolver extends FitnessFunction
 		EcBuildOrder s;
 		try
 		{
-//			String chrome = getAlleleAsString(arg0);
 			Double score;
-//			score = scoreMap.get(chrome.hashCode());
-//			if (score != null)
-//			{
-//				cachehits++;
-//				return score.doubleValue();
-//			}
 			evaluations++;
 			s = populateBuildOrder((EcBuildOrder) source, arg0);
 			score = destination.score(doEvaluate(s));
-			
-			// System.out.println(chrome);
-//			scoreMap.put(chrome.hashCode(), score);
 			return score;
 		}
 		catch (CloneNotSupportedException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return Double.NEGATIVE_INFINITY;
@@ -94,46 +81,49 @@ public class EcEvolver extends FitnessFunction
 		try
 		{
 			s = populateBuildOrder((EcBuildOrder) source, arg0);
-			
-			StringBuilder sb = new StringBuilder();
-			
-			int i = 0;
-			for (EcAction a : s.getActions())
-			{
-				i++;
-				if (a.isInvalid(s))
-				{
-					continue;
-				}
-				while (!a.canExecute(s))
-				{
-					if (s.seconds >= s.targetSeconds || destination.waypointMissed(s))
-					{
-						return "No finished build yet. A waypoint was not reached.";
-					}
-					
-					if (destination.isSatisfied(s))
-					{
-						return sb.toString();
-					}
-				}
-				
-				if (!(a instanceof EcActionWait) && !(a instanceof EcActionBuildDrone))
-				{
-					sb.append((int)s.supplyUsed + "  " + a.toBuildOrderString() + "\tM:" + (int)s.minerals + "\tG:" + (int)s.gas + "\n");	
-				}
-				
-				a.execute(s, this);
-			}
-
-			return "No finished build yet. Ran out of things to do.";
-			
+			return doSimpleEvaluate(s);
 		}
 		catch (CloneNotSupportedException e)
 		{
 			e.printStackTrace();
 			return "";
 		}
+	}
+
+	public String doSimpleEvaluate(EcBuildOrder s)
+	{
+		StringBuilder sb = new StringBuilder();
+		
+		int i = 0;
+		for (EcAction a : s.getActions())
+		{
+			i++;
+			if (a.isInvalid(s))
+			{
+				continue;
+			}
+			while (!a.canExecute(s))
+			{
+				if (s.seconds >= s.targetSeconds || destination.waypointMissed(s))
+				{
+					return "No finished build yet. A waypoint was not reached.";
+				}
+				
+				if (destination.isSatisfied(s))
+				{
+					return sb.toString();
+				}
+			}
+			
+			if (!(a instanceof EcActionWait) && !(a instanceof EcActionBuildDrone))
+			{
+				sb.append((int)s.supplyUsed + "  " + a.toBuildOrderString(s) + "\tM:" + (int)s.minerals + "\tG:" + (int)s.gas + "\n");	
+			}
+			
+			a.execute(s, this);
+		}
+
+		return "No finished build yet. Ran out of things to do.";
 	}
 
 	public String getYabotBuildOrder(IChromosome arg0)
@@ -144,64 +134,68 @@ public class EcEvolver extends FitnessFunction
 		{
 			s = populateBuildOrder((EcBuildOrder) source, arg0);
 			
-			StringBuilder sb = new StringBuilder();
-			
-			sb.append("1 [i] EC Optimized Build | 11 | EvolutionChamber | Add description here please. [/i] [s] ");
-			
-			int i = 0;
-			for (EcAction a : s.getActions())
-			{
-				i++;
-				if (a.isInvalid(s))
-				{
-					continue;
-				}
-				while (!a.canExecute(s))
-				{					
-					if (s.seconds >= s.targetSeconds || destination.waypointMissed(s))
-					{
-						return "No finished build yet. A waypoint was not reached.";
-					}
-					
-					if (destination.isSatisfied(s))
-					{
-						sb.deleteCharAt(sb.length() - 1); // remove trailing pipe |
-						sb.append(" [/s]"); // Add ending tag
-						
-						if (sb.length() > 770)
-						{
-							sb.append("\nBuild was too long. Please trim it by " + (sb.length() - 770) + " characters or try a new build.");
-							sb.append("\nThis YABOT string will not work until you fix this!");
-						}
-						return sb.toString();
-					}
-				}
-				
-				if (!(a instanceof EcActionWait) && !(a instanceof EcActionBuildDrone))
-				{
-					if(!(a instanceof EcActionExtractorTrick))
-					{
-						sb.append(" " + (int)s.supplyUsed + "  " + (int)s.minerals + "  " + (int)s.gas + "  " + s.timestamp() + " 1 " + a.yabotGetType() + "  " + a.yabotGetItem() + " 0" + a.yabotGetTag() + "|");
-					}
-					else
-					{
-						// Yabot doesn't support extractor trick so the author suggested telling it to build an extractor and send a cancel string shortly after for the same building
-						sb.append(" " + (int)s.supplyUsed + "  " + (int)s.minerals + "  " + (int)s.gas + "  " + s.timestamp() + " 1 " + "0" + "  " + "35" + " 0" + " Extractor_Trick " + "|");
-						sb.append(" " + (int)s.supplyUsed + "  " + (int)s.minerals + "  " + (int)s.gas + "  " + s.timestampIncremented(3) + " 1 " + "0" + "  " + "35" + " 1" + " Extractor_Trick " + "|");
-					}
-				}
-				
-				a.execute(s, this);
-			}
-
-			return "No finished build yet. Ran out of things to do.";
-			
+			return doYABOTEvaluate(s);
 		}
 		catch (CloneNotSupportedException e)
 		{
 			e.printStackTrace();
 			return "";
 		}
+	}
+
+	public String doYABOTEvaluate(EcBuildOrder s)
+	{
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append("1 [i] EC Optimized Build | 11 | EvolutionChamber | Add description here please. [/i] [s] ");
+		
+		int i = 0;
+		for (EcAction a : s.getActions())
+		{
+			i++;
+			if (a.isInvalid(s))
+			{
+				continue;
+			}
+			while (!a.canExecute(s))
+			{					
+				if (s.seconds >= s.targetSeconds || destination.waypointMissed(s))
+				{
+					return "No finished build yet. A waypoint was not reached.";
+				}
+				
+				if (destination.isSatisfied(s))
+				{
+					sb.deleteCharAt(sb.length() - 1); // remove trailing pipe |
+					sb.append(" [/s]"); // Add ending tag
+					
+					if (sb.length() > 770)
+					{
+						sb.append("\nBuild was too long. Please trim it by " + (sb.length() - 770) + " characters or try a new build.");
+						sb.append("\nThis YABOT string will not work until you fix this!");
+					}
+					return sb.toString();
+				}
+			}
+			
+			if (!(a instanceof EcActionWait) && !(a instanceof EcActionBuildDrone))
+			{
+				if(!(a instanceof EcActionExtractorTrick))
+				{
+					sb.append(" " + (int)s.supplyUsed + "  " + (int)s.minerals + "  " + (int)s.gas + "  " + s.timestamp() + " 1 " + a.yabotGetType(s) + "  " + a.yabotGetItem(s) + " 0" + a.yabotGetTag(s) + "|");
+				}
+				else
+				{
+					// Yabot doesn't support extractor trick so the author suggested telling it to build an extractor and send a cancel string shortly after for the same building
+					sb.append(" " + (int)s.supplyUsed + "  " + (int)s.minerals + "  " + (int)s.gas + "  " + s.timestamp() + " 1 " + "0" + "  " + "35" + " 0" + " Extractor_Trick " + "|");
+					sb.append(" " + (int)s.supplyUsed + "  " + (int)s.minerals + "  " + (int)s.gas + "  " + s.timestampIncremented(3) + " 1 " + "0" + "  " + "35" + " 1" + " Extractor_Trick " + "|");
+				}
+			}
+			
+			a.execute(s, this);
+		}
+
+		return "No finished build yet. Ran out of things to do.";
 	}
 	
 	public static EcBuildOrder populateBuildOrder(EcBuildOrder source, IChromosome arg0)
@@ -231,7 +225,7 @@ public class EcEvolver extends FitnessFunction
 
 	public PrintStream	log	= System.out;
 
-	public EcState doEvaluate(EcBuildOrder s)
+	public EcBuildOrder doEvaluate(EcBuildOrder s)
 	{
 		int i = 0;
 		for (EcAction a : s.getActions())
@@ -247,12 +241,12 @@ public class EcEvolver extends FitnessFunction
 				if (s.seconds >= s.targetSeconds || destination.waypointMissed(s))
 				{
 					
-					if (s.drones < s.getOverDrones(s))
+					if (s.settings.overDrone && s.drones < s.getOverDrones(s))
 					{
 						if (debug)
 						{
 							log.println("Failed to have the required " + s.getOverDrones(s) + " drones.");
-							log.println(s.toLongString());
+							log.println(s.toCompleteString());
 						}
 					}
 					else
@@ -260,7 +254,7 @@ public class EcEvolver extends FitnessFunction
 						if (debug)
 						{
 							log.println("Failed to meet waypoint. " + a);
-							log.println(s.toLongString());
+							log.println(s.toCompleteString());
 						}
 					}
 					return s;
@@ -273,7 +267,7 @@ public class EcEvolver extends FitnessFunction
 						if (se.targetSeconds == s.seconds && se.getSumStuff() > 0)
 						{
 							log.println("---Waypoint " + waypointIndex + "---");
-							log.println(s.toLongString());
+							log.println(s.toCompleteString());
 							log.println("----------------");
 						}
 						waypointIndex++;
@@ -285,8 +279,11 @@ public class EcEvolver extends FitnessFunction
 					{
 						log.println("Satisfied.");
 						log.println("Number of actions in build order: " + (i - s.invalidActions));
+
+						log.print("-------Goal-------");
+						log.println(destination.toUnitsOnlyString());
 						log.println("---Final Output---");
-						log.println(s.toLongString());
+						log.println(s.toCompleteString());
 						log.println("------------------");
 					}
 					return s;
@@ -294,14 +291,14 @@ public class EcEvolver extends FitnessFunction
 			}
 			
 			if (debug && !(a instanceof EcActionWait))
-				log.println(s.toString() + "\t" + a);
+				log.println(s.toShortString() + "\t" + a);
 
 			a.execute(s, this);
 		}
 		if (debug)
 		{
 			log.println("Ran out of things to do.");
-			log.println(s.toLongString());
+			log.println(s.toCompleteString());
 		}
 		return s;
 	}

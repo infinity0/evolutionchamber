@@ -43,7 +43,7 @@ public class EcActionBuildHatchery extends EcAction implements Serializable
 	
 	@Override
 	public boolean isInvalid(EcBuildOrder s) {
-		if(s.supplyUsed < EcSettings.minimumHatcherySupply)
+		if(s.supplyUsed < s.settings.minimumHatcherySupply)
 			return true;
 		return false;
 	}

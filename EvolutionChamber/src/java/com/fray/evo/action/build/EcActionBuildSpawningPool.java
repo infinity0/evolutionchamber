@@ -36,9 +36,9 @@ public class EcActionBuildSpawningPool extends EcAction implements Serializable
 	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{
-		if (s.spawningPools >= (new Date().getMinutes()%2)+1)
+		if (s.spawningPools >= 1)
 			return true;
-		if(s.supplyUsed < EcSettings.minimumPoolSupply)
+		if(s.supplyUsed < s.settings.minimumPoolSupply)
 			return true;
 		return super.isInvalid(s);
 	}

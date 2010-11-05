@@ -25,7 +25,7 @@ public abstract class EcAction implements Serializable
 		return getClass().getSimpleName().replace("EcAction", "");
 	}
 	
-	public String toBuildOrderString()
+	public String toBuildOrderString(EcState state)
 	{
 		//remove all the prefixes
 		String result = 
@@ -33,7 +33,7 @@ public abstract class EcAction implements Serializable
 		.replace("EcAction", "")
 		.replace("Build", "")
 		.replace("Upgrade", "");
-		if (EcSettings.pullThreeWorkersOnly)
+		if (state.settings.pullThreeWorkersOnly)
 		{
 			result = result.replace("MineGas", "+3 Drones on gas").replace("MineMineral", "+3 Drones on minerals");
 		}
@@ -44,7 +44,7 @@ public abstract class EcAction implements Serializable
 		return result;
 	}
 	
-	public String yabotGetTag()
+	public String yabotGetTag(EcState s)
 	{
 		//Get the item type for Yabot Output
 		String result = 
@@ -107,7 +107,7 @@ public abstract class EcAction implements Serializable
 		.replace("CentrifugalHooks", " ")
 		.replace("NeuralParasite", " ")
 		.replace("PathogenGlands", " ");
-		if (EcSettings.pullThreeWorkersOnly)
+		if (s.settings.pullThreeWorkersOnly)
 		{
 			result = result.replace("MineGas", " Add_3_drones_to_gas ").replace("MineMineral ", " Add_3_drones_to_minerals ");
 		}
@@ -118,7 +118,7 @@ public abstract class EcAction implements Serializable
 		return result;
 	}
 	
-	public String yabotGetType()
+	public String yabotGetType(EcState s)
 	{
 		//Get the item type for Yabot Output
 		String result = 
@@ -181,7 +181,7 @@ public abstract class EcAction implements Serializable
 		.replace("CentrifugalHooks", "3")
 		.replace("NeuralParasite", "3")
 		.replace("PathogenGlands", "3");
-		if (EcSettings.pullThreeWorkersOnly)
+		if (s.settings.pullThreeWorkersOnly)
 		{
 			result = result.replace("MineGas", "0").replace("MineMineral", "0");
 		}
@@ -192,7 +192,7 @@ public abstract class EcAction implements Serializable
 		return result;
 	}
 	
-	public String yabotGetItem()
+	public String yabotGetItem(EcState s)
 	{
 		//Get the Item number for Yabot Output
 		String result = 
@@ -255,7 +255,7 @@ public abstract class EcAction implements Serializable
 		.replace("CentrifugalHooks", "45")
 		.replace("NeuralParasite", "49")
 		.replace("PathogenGlands", "50");
-		if (EcSettings.pullThreeWorkersOnly)
+		if (s.settings.pullThreeWorkersOnly)
 		{
 			result = result.replace("MineGas", "0").replace("MineMineral", "0");
 		}

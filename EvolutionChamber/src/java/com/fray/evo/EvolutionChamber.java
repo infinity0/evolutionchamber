@@ -34,31 +34,31 @@ public class EvolutionChamber
 {
 	// The seeds files. (one and a backup, in case execution stops while the
 	// file is half written)
-	private static File			SEEDS_EVO			= null;
-	private static File			SEEDS_EVO_2			= null;
-	
+	private static File			SEEDS_EVO				= null;
+	private static File			SEEDS_EVO_2				= null;
+
 	public int					CHROMOSOME_LENGTH		= 120;
 	int							NUM_THREADS				= Runtime.getRuntime().availableProcessors();
-	int							MAX_NUM_THREADS			= Runtime.getRuntime().availableProcessors()*4;
-	public int					POPULATION_SIZE	 		= 200;
-	public double				BASE_MUTATION_RATE 		= 5;
+	int							MAX_NUM_THREADS			= Runtime.getRuntime().availableProcessors() * 4;
+	public int					POPULATION_SIZE			= 200;
+	public double				BASE_MUTATION_RATE		= 5;
 	int							STAGNATION_LIMIT_MIN	= 50;
 
 	public Double				bestScore				= new Double(0);
-	public Integer				stagnationLimit 		= new Integer(0);
+	public Integer				stagnationLimit			= new Integer(0);
 	public Double				waterMark				= new Double(0);
 
-	static List<EcBuildOrder>	seeds					= new ArrayList<EcBuildOrder>();
-	private EcState			destination				= EcState.defaultDestination();
+	public List<EcBuildOrder>	seeds					= new ArrayList<EcBuildOrder>();
+	private EcState				destination				= EcState.defaultDestination();
 	public EcReportable			reportInterface;
 	public List<Thread>			threads					= new ArrayList<Thread>();
-	private boolean			killThreads				= false;
+	private boolean				killThreads				= false;
 	public static Double[]		bestScores;
-	public static Integer[]	evolutionsSinceDiscovery;
-	private boolean 			firstrun 				= true;
-	private boolean 			newbestscore 			= false;
+	public static Integer[]		evolutionsSinceDiscovery;
+	private boolean				firstrun				= true;
+	private boolean				newbestscore			= false;
 
-	static 
+	static
 	{
 		try
 		{
@@ -81,6 +81,7 @@ public class EvolutionChamber
 	{
 		killThreads = false;
 		firstrun = true;
+		haveSavedBefore = false;
 		EcState s = importSource();
 		EcState d = getInternalDestination();
 		EcAction.setup(d);
@@ -130,37 +131,44 @@ public class EvolutionChamber
 		bestScores[threadIndex] = new Double(0);
 		evolutionsSinceDiscovery[threadIndex] = new Integer(0);
 		DefaultConfiguration.reset(threadIndex + " thread.");
-		
+
 		final EcEvolver myFunc = new EcEvolver(source, destination);
-		
+
 		final Configuration conf = constructConfiguration(threadIndex, myFunc);
 
 		final Genotype population = Genotype.randomInitialGenotype(conf);
 
-		if(!firstrun)
+		if (!firstrun)
 		{
 			int totalevoSinceDiscoveryOnBest = 0;
 			int numBestThreads = 0;
-			synchronized(bestScores)	{
-				for(int i = 0; i < bestScores.length; i++ ) {
-					if(bestScores[i] >= bestScore) {
+			synchronized (bestScores)
+			{
+				for (int i = 0; i < bestScores.length; i++)
+				{
+					if (bestScores[i] >= bestScore)
+					{
 						numBestThreads++;
 						totalevoSinceDiscoveryOnBest += evolutionsSinceDiscovery[i];
 					}
 				}
 			}
-			
-			if(!(totalevoSinceDiscoveryOnBest > Math.max(stagnationLimit, STAGNATION_LIMIT_MIN) * numBestThreads) && numBestThreads < Math.max(Math.ceil(NUM_THREADS / 3), 1)) {
-				loadOldBuildOrders(population, conf,myFunc);
+
+			if (!(totalevoSinceDiscoveryOnBest > Math.max(stagnationLimit, STAGNATION_LIMIT_MIN) * numBestThreads)
+					&& numBestThreads < Math.max(Math.ceil(NUM_THREADS / 3), 1))
+			{
+				loadOldBuildOrders(population, conf, myFunc);
 			}
 		}
-		else if (firstrun && threadIndex == 0) {
-			loadOldBuildOrders(population, conf,myFunc);
+		else if (firstrun && threadIndex == 0)
+		{
+			loadOldBuildOrders(population, conf, myFunc);
 		}
-		else if (firstrun && threadIndex == NUM_THREADS - 1) {
+		else if (firstrun && threadIndex == NUM_THREADS - 1)
+		{
 			firstrun = false;
 		}
-		
+
 		final Thread thread = new Thread(population);
 		conf.getEventManager().addEventListener(GeneticEvent.GENOTYPE_EVOLVED_EVENT, new GeneticEventListener()
 		{
@@ -181,28 +189,29 @@ public class EvolutionChamber
 					evolutionsSinceDiscovery[threadIndex] = 0;
 					BASE_MUTATION_RATE = 1;
 					if (reportInterface != null)
-						reportInterface.threadScore(threadIndex,getOutput(myFunc,fittestChromosome,fitnessValue));
+						reportInterface.threadScore(threadIndex, getOutput(myFunc, fittestChromosome, fitnessValue));
 				}
 				else
 					evolutionsSinceDiscovery[threadIndex]++;
 
 				int highestevosSinceDiscovery = 0;
-				for(int i = 0; i < bestScores.length; i++ )
+				for (int i = 0; i < bestScores.length; i++)
 				{
-					if(bestScores[i] >= bestScore)
+					if (bestScores[i] >= bestScore)
 					{
-						if(evolutionsSinceDiscovery[i] > highestevosSinceDiscovery)
+						if (evolutionsSinceDiscovery[i] > highestevosSinceDiscovery)
 							highestevosSinceDiscovery = evolutionsSinceDiscovery[i];
 					}
 				}
-				
-				stagnationLimit = (int)Math.ceil(highestevosSinceDiscovery * (.5));
-				
-				if(fitnessValue < bestScore)
+
+				stagnationLimit = (int) Math.ceil(highestevosSinceDiscovery * (.5));
+
+				if (fitnessValue < bestScore)
 				{
-					if (evolutionsSinceDiscovery[threadIndex] > Math.max(stagnationLimit, STAGNATION_LIMIT_MIN) && fitnessValue < waterMark)
+					if (evolutionsSinceDiscovery[threadIndex] > Math.max(stagnationLimit, STAGNATION_LIMIT_MIN)
+							&& fitnessValue < waterMark)
 					{
-						//Stagnation. Suicide village and try again.
+						// Stagnation. Suicide village and try again.
 						System.out.println("Restarting thread " + threadIndex);
 						try
 						{
@@ -214,9 +223,9 @@ public class EvolutionChamber
 						}
 						thread.interrupt();
 					}
-					else if(evolutionsSinceDiscovery[threadIndex] > Math.max(stagnationLimit, STAGNATION_LIMIT_MIN) * 3)
+					else if (evolutionsSinceDiscovery[threadIndex] > Math.max(stagnationLimit, STAGNATION_LIMIT_MIN) * 3)
 					{
-						//Stagnation. Suicide village and try again.
+						// Stagnation. Suicide village and try again.
 						System.out.println("Restarting thread " + threadIndex);
 						try
 						{
@@ -231,24 +240,25 @@ public class EvolutionChamber
 				}
 				else if (evolutionsSinceDiscovery[threadIndex] > Math.max(stagnationLimit, STAGNATION_LIMIT_MIN))
 				{
-					if(newbestscore)
+					if (newbestscore)
 					{
 						waterMark = fitnessValue;
 					}
-					
+
 					int totalevoSinceDiscoveryOnBest = 0;
 					int numBestThreads = 0;
-					
-					for(int i = 0; i < bestScores.length; i++ )
+
+					for (int i = 0; i < bestScores.length; i++)
 					{
-						if(bestScores[i] >= bestScore)
+						if (bestScores[i] >= bestScore)
 						{
 							numBestThreads++;
 							totalevoSinceDiscoveryOnBest += evolutionsSinceDiscovery[i];
 						}
 					}
-					
-					if(totalevoSinceDiscoveryOnBest > Math.max(stagnationLimit, STAGNATION_LIMIT_MIN) * 3 * numBestThreads)
+
+					if (totalevoSinceDiscoveryOnBest > Math.max(stagnationLimit, STAGNATION_LIMIT_MIN) * 3
+							* numBestThreads)
 					{
 						// Deadlock, open this thread.
 						System.out.println("Restarting thread " + threadIndex);
@@ -275,10 +285,10 @@ public class EvolutionChamber
 						String exactBuildOrder = getOutput(myFunc, fittestChromosome, fitnessValue);
 						String buildOrder = getBuildOrder(myFunc, fittestChromosome);
 						String yabotBuildOrder = getYabotBuildOrder(myFunc, fittestChromosome);
-						
+
 						if (reportInterface != null)
-							reportInterface.bestScore(myFunc.evaluateGetBuildOrder(fittestChromosome),
-									bestScore.intValue(), exactBuildOrder, buildOrder, yabotBuildOrder);
+							reportInterface.bestScore(myFunc.evaluateGetBuildOrder(fittestChromosome), bestScore
+									.intValue(), exactBuildOrder, buildOrder, yabotBuildOrder);
 
 						displayChromosome(fittestChromosome);
 						saveSeeds(fittestChromosome);
@@ -304,19 +314,19 @@ public class EvolutionChamber
 		String results = new String(byteArrayOutputStream.toByteArray());
 		return results;
 	}
-	
+
 	public String getBuildOrder(final EcEvolver myFunc, IChromosome fittestChromosome)
 	{
 		String results = myFunc.getBuildOrder(fittestChromosome);
 		return results;
 	}
-	
+
 	public String getYabotBuildOrder(final EcEvolver myFunc, IChromosome fittestChromosome)
 	{
 		String results = myFunc.getYabotBuildOrder(fittestChromosome);
 		return results;
 	}
-	
+
 	private void restart(final EcState source, final EcState destination, final int threadIndex, final Thread t1)
 	{
 		// Stagnation. Suicide village and try again.
@@ -331,7 +341,7 @@ public class EvolutionChamber
 		}
 		t1.interrupt();
 	}
-	
+
 	private Configuration constructConfiguration(final int threadIndex, final EcEvolver myFunc)
 			throws InvalidConfigurationException
 	{
@@ -416,7 +426,7 @@ public class EvolutionChamber
 		}
 	}
 
-	private static void loadSeeds()
+	public void loadSeeds()
 	{
 		try
 		{
@@ -470,7 +480,7 @@ public class EvolutionChamber
 
 	protected synchronized void saveSeeds(IChromosome fittestChromosome)
 	{
-		EcBuildOrder bo = importSource();
+		EcBuildOrder bo = new EcBuildOrder(importDestination());
 		try
 		{
 			bo = EcEvolver.populateBuildOrder(bo, fittestChromosome);
@@ -484,6 +494,12 @@ public class EvolutionChamber
 			e.printStackTrace();
 		}
 
+		saveSeeds();
+
+	}
+
+	public void saveSeeds()
+	{
 		try
 		{
 			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(SEEDS_EVO, false));
@@ -501,7 +517,6 @@ public class EvolutionChamber
 		{
 			e.printStackTrace();
 		}
-
 	}
 
 	private Gene[] importInitialGenes(Configuration conf)
@@ -525,6 +540,7 @@ public class EvolutionChamber
 	{
 		EcBuildOrder ecBuildOrder = new EcBuildOrder();
 		ecBuildOrder.targetSeconds = importDestination().targetSeconds;
+		ecBuildOrder.settings = importDestination().settings;
 		return ecBuildOrder;
 	}
 

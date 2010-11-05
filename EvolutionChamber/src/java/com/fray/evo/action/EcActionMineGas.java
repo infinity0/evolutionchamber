@@ -14,7 +14,7 @@ public class EcActionMineGas extends EcAction implements Serializable
 	@Override
 	public void execute(final EcBuildOrder s, final EcEvolver e)
 	{
-		if (EcSettings.pullThreeWorkersOnly) 
+		if (s.settings.pullThreeWorkersOnly) 
 		{
 			s.dronesGoingOnGas += 3;
 			s.dronesOnMinerals -= 3;
@@ -29,7 +29,7 @@ public class EcActionMineGas extends EcAction implements Serializable
 			@Override
 			public void run()
 			{
-				if (EcSettings.pullThreeWorkersOnly) 
+				if (s.settings.pullThreeWorkersOnly) 
 				{
 					if (e.debug)
 						e.mining(s," +3 on gas");

@@ -76,7 +76,7 @@ public class EcRequirementTree
 		add(actions,new EcActionWait(), destination);
 		add(actions,new EcActionBuildQueen(), destination);
 		add(actions,new EcActionBuildDrone(), destination);
-		if (EcSettings.useExtractorTrick)
+		if (destination.settings.useExtractorTrick)
 			add(actions,new EcActionExtractorTrick(), destination);
 		add(actions,new EcActionBuildHatchery(), destination);
 		add(actions,new EcActionBuildOverlord(), destination);

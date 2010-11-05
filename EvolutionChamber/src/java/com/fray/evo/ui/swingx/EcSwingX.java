@@ -1,11 +1,14 @@
 package com.fray.evo.ui.swingx;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -13,8 +16,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,6 +34,7 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
@@ -39,22 +48,26 @@ import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.JXStatusBar;
 import org.jgap.InvalidConfigurationException;
 
+import com.fray.evo.EcBuildOrder;
 import com.fray.evo.EcEvolver;
 import com.fray.evo.EcReportable;
 import com.fray.evo.EcSettings;
 import com.fray.evo.EcState;
 import com.fray.evo.EvolutionChamber;
+import com.fray.evo.action.EcAction;
 import com.fray.evo.util.EcAutoUpdate;
 
 public class EcSwingX extends JXPanel implements EcReportable
 {
-	public static String		EC_VERSION		= "0017";
+	public static String		EC_VERSION		= "0018";
 	private JTextArea			outputText;
 	private JLabel				status1;
 	private JLabel				status2;
@@ -81,6 +94,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 	private JButton				switchYabotButton;
 	private JTextArea			statsText;
 	private JTabbedPane			tabPane;
+	private JList				historyList;
 
 	public static void main(String[] args)
 	{
@@ -102,7 +116,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 				frame.setTitle("Evolution Chamber v" + EC_VERSION);
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				frame.getContentPane().add(new EcSwingX());
-				frame.setPreferredSize(new Dimension(900, 825));
+				frame.setPreferredSize(new Dimension(900, 830));
 				frame.pack();
 				frame.setLocationRelativeTo(null);
 
@@ -114,7 +128,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 				updateFrame.setSize(new Dimension(250, 70));
 				updateFrame.setLocationRelativeTo(null);
 				updateFrame.setVisible(true);
-				
+
 				SwingUtilities.invokeLater(new Runnable()
 				{
 					@Override
@@ -140,12 +154,16 @@ public class EcSwingX extends JXPanel implements EcReportable
 		JSplitPane outside = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		{ // Left
 			JPanel leftbottom = new JPanel(new GridBagLayout());
-			JScrollPane stuffPanel = new JScrollPane(leftbottom);
+			JPanel stuffPanel = leftbottom;
 			{
 				{
 					addControlParts(leftbottom);
 					tabPane = new JTabbedPane(JTabbedPane.LEFT);
 					{
+						JPanel start = new JPanel(new BorderLayout());
+						addStart(start);
+						tabPane.addTab("History", start);
+
 						for (int i = 0; i < 5; i++)
 						{
 							JPanel lb = new JPanel(new GridBagLayout());
@@ -155,13 +173,16 @@ public class EcSwingX extends JXPanel implements EcReportable
 								tabPane.addTab("WP" + Integer.toString(i), lb);
 							addInputContainer(i, lb);
 						}
+
 						JPanel stats = new JPanel(new BorderLayout());
 						addStats(stats);
+						tabPane.addTab("Stats", stats);
+
 						JPanel settings = new JPanel(new GridBagLayout());
 						addSettings(settings);
-						tabPane.addTab("Stats", stats);
 						tabPane.addTab("Settings", settings);
-						tabPane.setSelectedIndex(4);
+
+						tabPane.setSelectedIndex(5);
 					}
 					GridBagConstraints gridBagConstraints = new GridBagConstraints();
 					gridBagConstraints.anchor = GridBagConstraints.WEST;
@@ -176,7 +197,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 			}
 			outside.setLeftComponent(stuffPanel);
 		}
-		{ //Right
+		{ // Right
 			JPanel right = new JPanel(new GridBagLayout());
 			addOutputContainer(right);
 			addOutputButtons(right);
@@ -187,92 +208,264 @@ public class EcSwingX extends JXPanel implements EcReportable
 		outside.setDividerLocation(395);
 	}
 
+	private void addStart(JPanel start)
+	{
+		historyList = new JList();
+//		historyList.addPropertyChangeListener(new PropertyChangeListener()
+//		{
+//			@Override
+//			public void propertyChange(PropertyChangeEvent arg0)
+//			{
+//				historyList.setFixedCellWidth(start.getWidth());
+//			
+//			}
+//		});
+		start.add(historyList);
+		historyList.addListSelectionListener(new ListSelectionListener()
+		{
+			@Override
+			public void valueChanged(ListSelectionEvent e)
+			{
+				displayBuild((EcBuildOrder) historyList.getSelectedValue());
+			}
+		});
+		final PopupMenu deleteMenu = new PopupMenu("Options");
+		MenuItem menuItem = new MenuItem("Delete");
+		menuItem.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				ec.seeds.remove(historyList.getSelectedValue());
+				refreshHistory();
+				ec.saveSeeds();
+			}
+		});
+		deleteMenu.add(menuItem);
+		menuItem = new MenuItem("Load");
+		menuItem.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				expandWaypoints((EcState) historyList.getSelectedValue());
+				readDestinations();
+			}
+		});
+		deleteMenu.insert(menuItem, 0);
+		historyList.add(deleteMenu);
+		historyList.addMouseListener(new MouseAdapter()
+		{
+			public void mouseClicked(MouseEvent me)
+			{
+				// if right mouse button clicked (or me.isPopupTrigger())
+				if (SwingUtilities.isRightMouseButton(me) && !historyList.isSelectionEmpty()
+						&& historyList.locationToIndex(me.getPoint()) == historyList.getSelectedIndex())
+				{
+					deleteMenu.show(historyList, me.getX(), me.getY());
+				}
+			}
+		});
+		ec.loadSeeds();
+		refreshHistory();
+	}
+
+	private void displayBuild(EcBuildOrder destination)
+	{
+		if (destination == null)
+			return;
+		EcBuildOrder source = new EcBuildOrder();
+		EcBuildOrder source2 = new EcBuildOrder();
+		EcBuildOrder source3 = new EcBuildOrder();
+		EcEvolver evolver;
+		try
+		{
+			evolver = new EcEvolver(source, destination.clone());
+			ByteArrayOutputStream baos;
+			evolver.log = new PrintStream(baos = new ByteArrayOutputStream());
+			evolver.debug = true;
+			for (EcAction a : destination.actions)
+			{
+				source.addAction(a.getClass().newInstance());
+				source2.addAction(a.getClass().newInstance());
+				source3.addAction(a.getClass().newInstance());
+			}
+			source.targetSeconds = destination.targetSeconds;
+			source2.targetSeconds = destination.targetSeconds;
+			source3.targetSeconds = destination.targetSeconds;
+			EcBuildOrder result = evolver.doEvaluate(source);
+			String detailedText = new String(baos.toByteArray());
+			String simpleText = evolver.doSimpleEvaluate(source2);
+			String yabotText = evolver.doYABOTEvaluate(source3);
+			receiveBuildOrders(detailedText, simpleText, yabotText);
+		}
+		catch (CloneNotSupportedException e)
+		{
+			e.printStackTrace();
+		}
+		catch (InstantiationException e)
+		{
+			e.printStackTrace();
+		}
+		catch (IllegalAccessException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	private void refreshHistory()
+	{
+		ArrayList<EcBuildOrder> results = new ArrayList<EcBuildOrder>();
+		for (EcBuildOrder destination : ec.seeds)
+		{
+			EcBuildOrder source = new EcBuildOrder();
+			EcEvolver evolver = new EcEvolver(source, destination);
+			evolver.debug = true;
+			for (EcAction a : destination.actions)
+				source.addAction(a);
+			source.targetSeconds = destination.targetSeconds;
+			EcBuildOrder result = evolver.doEvaluate(source);
+			if (result.seconds > 60)
+				results.add(destination);
+		}
+		historyList.setListData(results.toArray());
+	}
+
 	private void addSettings(JPanel settings)
 	{
 		{
-			//somebody enlighten me please how this could be done easier... but it works  :)
-			final String[] radioButtonCaptions = {"None", "Until saturation", "Allow overdroning"};
+			// somebody enlighten me please how this could be done easier... but
+			// it works :)
+			final String[] radioButtonCaptions = { "None", "Until saturation", "Allow overdroning" };
 			final int defaultSelected;
-			if (EcSettings.overDrone) {
+			if (destination[destination.length - 1].settings.overDrone)
+			{
 				defaultSelected = 1;
-			} 
-			else if (EcSettings.workerParity) 
+			}
+			else if (destination[destination.length - 1].settings.workerParity)
 			{
 				defaultSelected = 2;
-			} 
-			else 
+			}
+			else
 			{
 				defaultSelected = 0;
 			}
-			addRadioButtonBox(settings, "Enforce Worker Parity", radioButtonCaptions, defaultSelected, new ActionListener()
-			{
-				public void actionPerformed(ActionEvent e)
-				{
-					if (getSelected(e).equals(radioButtonCaptions[1]))
+			addRadioButtonBox(settings, "Enforce Worker Parity", radioButtonCaptions, defaultSelected,
+					new CustomActionListener()
 					{
-						EcSettings.workerParity = true;
-						EcSettings.overDrone = false;
-					} else if (getSelected(e).equals(radioButtonCaptions[2]))
-					{
-						EcSettings.workerParity = false;
-						EcSettings.overDrone = true;
-					} else 
-					{
-						EcSettings.workerParity = false;
-						EcSettings.overDrone = false;
-					}
-				}
-			});
+						public void actionPerformed(ActionEvent e)
+						{
+							if (getSelected(e).equals(radioButtonCaptions[1]))
+							{
+								destination[destination.length - 1].settings.workerParity = true;
+								destination[destination.length - 1].settings.overDrone = false;
+							}
+							else if (getSelected(e).equals(radioButtonCaptions[2]))
+							{
+								destination[destination.length - 1].settings.workerParity = false;
+								destination[destination.length - 1].settings.overDrone = true;
+							}
+							else
+							{
+								destination[destination.length - 1].settings.workerParity = false;
+								destination[destination.length - 1].settings.overDrone = false;
+							}
+						}
+
+						@Override
+						void reverse(Object o)
+						{
+							//TODO: Code this up
+						}
+					});
 			gridy++;
 		}
-		addCheck(settings, "Use Extractor Trick", new ActionListener()
+		addCheck(settings, "Use Extractor Trick", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				EcSettings.useExtractorTrick = getTrue(e);
+				destination[destination.length - 1].settings.useExtractorTrick = getTrue(e);
 			}
-		}).setSelected(EcSettings.useExtractorTrick);
-		gridy++;
-		addCheck(settings, "Pull/Push workers from/to gas", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				EcSettings.pullWorkersFromGas = getTrue(e);
-			}
-		}).setSelected(EcSettings.useExtractorTrick);
-		gridy++;
-		addCheck(settings, "Always pull/push 3 workers together", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				EcSettings.pullThreeWorkersOnly = getTrue(e);
-			}
-		}).setSelected(EcSettings.pullThreeWorkersOnly);
-		gridy++;
-		addInput(settings, "Minimum Pool Supply", new ActionListener() {
-			
+
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				EcSettings.minimumPoolSupply = getDigit(e);
-				
+			void reverse(Object o)
+			{
+				JCheckBox c = (JCheckBox) o;
+				c.setSelected(destination[destination.length - 1].settings.useExtractorTrick);
+			}
+		}).setSelected(destination[destination.length - 1].settings.useExtractorTrick);
+		gridy++;
+		addCheck(settings, "Pull/Push workers from/to gas", new CustomActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[destination.length - 1].settings.pullWorkersFromGas = getTrue(e);
+			}
+			@Override
+			void reverse(Object o)
+			{
+				JCheckBox c = (JCheckBox) o;
+				c.setSelected(destination[destination.length - 1].settings.pullWorkersFromGas);
+			}
+		}).setSelected(destination[destination.length - 1].settings.useExtractorTrick);
+		gridy++;
+		addCheck(settings, "Always pull/push 3 workers together", new CustomActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[destination.length - 1].settings.pullThreeWorkersOnly = getTrue(e);
+			}
+			@Override
+			void reverse(Object o)
+			{
+				JCheckBox c = (JCheckBox) o;
+				c.setSelected(destination[destination.length - 1].settings.pullThreeWorkersOnly);
+			}
+		}).setSelected(destination[destination.length - 1].settings.pullThreeWorkersOnly);
+		gridy++;
+		addInput(settings, "Minimum Pool Supply", new CustomActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[destination.length - 1].settings.minimumPoolSupply = getDigit(e);
+			}
+			@Override
+			void reverse(Object o)
+			{
+				JTextField c = (JTextField) o;
+				c.setText(Integer.toString(destination[destination.length - 1].settings.minimumPoolSupply));
 			}
 		}).setText("2");
 		gridy++;
-		addInput(settings, "Minimum Extractor Supply", new ActionListener() {
-			
+		addInput(settings, "Minimum Extractor Supply", new CustomActionListener()
+		{
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				EcSettings.minimumExtractorSupply = getDigit(e);
-				
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[destination.length - 1].settings.minimumExtractorSupply = getDigit(e);
+			}
+			@Override
+			void reverse(Object o)
+			{
+				JTextField c = (JTextField) o;
+				c.setText(Integer.toString(destination[destination.length - 1].settings.minimumExtractorSupply));
 			}
 		}).setText("2");
 		gridy++;
-		addInput(settings, "Minimum Hatchery Supply", new ActionListener() {
-			
+		addInput(settings, "Minimum Hatchery Supply", new CustomActionListener()
+		{
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				EcSettings.minimumHatcherySupply = getDigit(e);
-				
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[destination.length - 1].settings.minimumHatcherySupply = getDigit(e);
+
+			}
+			@Override
+			void reverse(Object o)
+			{
+				JTextField c = (JTextField) o;
+				c.setText(Integer.toString(destination[destination.length - 1].settings.minimumHatcherySupply));
 			}
 		}).setText("2");
 	}
@@ -356,7 +549,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 						int threadIndex = 0;
 						stats.append(EcEvolver.evaluations / 1000 + "K games played.");
 						stats.append("\n" + ec.CHROMOSOME_LENGTH + " maximum length of build order.");
-						stats.append("\nStagnation Limit: "+ec.stagnationLimit);
+						stats.append("\nStagnation Limit: " + ec.stagnationLimit);
 						stats.append("\n" + (int) permsPerSecond + " games played/second.");
 						stats.append("\nMutation Rate: " + ec.BASE_MUTATION_RATE / ec.CHROMOSOME_LENGTH);
 						for (Double d : ec.bestScores)
@@ -388,7 +581,8 @@ public class EcSwingX extends JXPanel implements EcReportable
 		sb.append("Hello! Welcome to the Evolution Chamber.");
 		sb.append("\nTo start, enter in some units you would like to have.");
 		sb.append("\nWhen you have decided what you would like, hit Start.");
-		sb.append("\n\nPlease report any issues or new features you would like at: \nhttp://code.google.com/p/evolutionchamber/issues/list");
+		sb
+				.append("\n\nPlease report any issues or new features you would like at: \nhttp://code.google.com/p/evolutionchamber/issues/list");
 		sb.append("\n\nHow to use:");
 		sb.append("\nEnter in what you would like to see as your end state. Hit Go. Be patient.");
 		sb.append("\nThe build order will compute, and it can take several minutes to potentially hours.");
@@ -414,7 +608,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 		outputText.setText(sb.toString());
 	}
 
-	private void addInputContainer(final int i, final JPanel component)
+	private void addInputContainer(final int i, final JPanel components)
 	{
 		// addInput(component, "", new ActionListener()
 		// {
@@ -430,472 +624,800 @@ public class EcSwingX extends JXPanel implements EcReportable
 		// ec.CHROMOSOME_LENGTH = getDigit(e);
 		// }
 		// }).setText("120");
-		addInput(component, "Drones", new ActionListener()
+		addInput(components, "Drones", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].drones = getDigit(e);
 			}
+
+			@Override
+			void reverse(Object o)
+			{
+				JTextField c = (JTextField) o;
+				c.setText(Integer.toString(destination[i].drones));
+			}
 		});
-		addInput(component, "Deadline", new ActionListener()
+		addInput(components, "Deadline", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].targetSeconds = getDigit(e);
 			}
+			void reverse(Object o)
+			{
+				JTextField c = (JTextField) o;
+				c.setText(Integer.toString(destination[i].targetSeconds));
+			}
 		}).setText(
 				Integer.toString(destination[i].targetSeconds / 60) + ":"
 						+ Integer.toString(destination[i].targetSeconds % 60));
 		gridy++;
-		addInput(component, "Overlords", new ActionListener()
+		addInput(components, "Overlords", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].overlords = getDigit(e);
 			}
+			void reverse(Object o)
+			{
+				JTextField c = (JTextField) o;
+				c.setText(Integer.toString(destination[i].overlords));
+			}
 		});
-		addInput(component, "Overseers", new ActionListener()
+		addInput(components, "Overseers", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].overseers = getDigit(e);
 			}
+			void reverse(Object o)
+			{
+				JTextField c = (JTextField) o;
+				c.setText(Integer.toString(destination[i].overseers));
+			}
 		});
 		gridy++;
 		if (i == 4) // only put this option on the Final waypoint.
 		{
-			addInput(component, "Scout with _ drone", new ActionListener()
+			addInput(components, "Scout Timing", new CustomActionListener()
 			{
 				public void actionPerformed(ActionEvent e)
 				{
-					destination[4].scoutDrone = getDigit(e);
+					destination[destination.length-1].scoutDrone = getDigit(e);
+				}
+				void reverse(Object o)
+				{
+					JTextField c = (JTextField) o;
+					c.setText(Integer.toString(destination[destination.length-1].scoutDrone));
 				}
 			});
 		}
-		gridy++;
-		addCheck(component, "Pneumatized Carapace", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination[i].pneumatizedCarapace = getTrue(e);
-			}
-		});
-		addCheck(component, "Ventral Sacs", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination[i].ventralSacs = getTrue(e);
-			}
-		});
-		gridy++;
-		addInput(component, "Queens", new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				destination[i].queens = getDigit(e);
-			}
-		});
-		addCheck(component, "Burrow", new ActionListener()
+		addCheck(components, "Burrow", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].burrow = getTrue(e);
 			}
+			void reverse(Object o)
+			{
+				JCheckBox c = (JCheckBox) o;
+				c.setSelected(destination[i].burrow);
+			}
 		});
 		gridy++;
-		addInput(component, "Zerglings", new ActionListener()
+		addInput(components, "Queens", new CustomActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].queens = getDigit(e);
+			}
+			void reverse(Object o)
+			{
+				JTextField c = (JTextField) o;
+				c.setText(Integer.toString(destination[i].queens));
+			}
+		});
+		addCheck(components, "Pneumatized Carapace", new CustomActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].pneumatizedCarapace = getTrue(e);
+			}
+			void reverse(Object o)
+			{
+				JCheckBox c = (JCheckBox) o;
+				c.setSelected(destination[i].pneumatizedCarapace);
+			}
+		});
+		gridy++;
+		addInput(components, "Zerglings", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].zerglings = getDigit(e);
 			}
+			void reverse(Object o)
+			{
+				JTextField c = (JTextField) o;
+				c.setText(Integer.toString(destination[i].zerglings));
+			}
+		});
+		addCheck(components, "Ventral Sacs", new CustomActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				destination[i].ventralSacs = getTrue(e);
+			}
+			void reverse(Object o)
+			{
+				JCheckBox c = (JCheckBox) o;
+				c.setSelected(destination[i].ventralSacs);
+			}
 		});
 		gridy++;
-		addCheck(component, "Metabolic Boost", new ActionListener()
+		addCheck(components, "Metabolic Boost", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].metabolicBoost = getTrue(e);
 			}
+			void reverse(Object o)
+			{
+				JCheckBox c = (JCheckBox) o;
+				c.setSelected(destination[i].metabolicBoost);
+			}
 		});
-		addCheck(component, "Adrenal Glands", new ActionListener()
+		addCheck(components, "Adrenal Glands", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].adrenalGlands = getTrue(e);
 			}
+			void reverse(Object o)
+			{
+				JCheckBox c = (JCheckBox) o;
+				c.setSelected(destination[i].adrenalGlands);
+			}
 		});
 		gridy++;
-		addInput(component, "Banelings", new ActionListener()
+		addInput(components, "Banelings", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].banelings = getDigit(e);
 			}
+			void reverse(Object o)
+			{
+				JTextField c = (JTextField) o;
+				c.setText(Integer.toString(destination[i].banelings));
+			}
 		});
-		addCheck(component, "Centrifugal Hooks", new ActionListener()
+		addCheck(components, "Centrifugal Hooks", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].centrifugalHooks = getTrue(e);
 			}
+			void reverse(Object o)
+			{
+				JCheckBox c = (JCheckBox) o;
+				c.setSelected(destination[i].centrifugalHooks);
+			}
 		});
 		gridy++;
-		addInput(component, "Roaches", new ActionListener()
+		addInput(components, "Roaches", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].roaches = getDigit(e);
 
 			}
+			void reverse(Object o)
+			{
+				JTextField c = (JTextField) o;
+				c.setText(Integer.toString(destination[i].roaches));
+			}
 		});
 		gridy++;
-		addCheck(component, "Glial Reconstitution", new ActionListener()
+		addCheck(components, "Glial Reconstitution", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].glialReconstitution = getTrue(e);
 			}
+			void reverse(Object o)
+			{
+				JCheckBox c = (JCheckBox) o;
+				c.setSelected(destination[i].glialReconstitution);
+			}
 		});
-		addCheck(component, "Tunneling Claws", new ActionListener()
+		addCheck(components, "Tunneling Claws", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].tunnelingClaws = getTrue(e);
 			}
+			void reverse(Object o)
+			{
+				JCheckBox c = (JCheckBox) o;
+				c.setSelected(destination[i].tunnelingClaws);
+			}
 		});
 		gridy++;
-		addInput(component, "Hydralisks", new ActionListener()
+		addInput(components, "Hydralisks", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].hydralisks = getDigit(e);
 			}
+			void reverse(Object o)
+			{
+				JTextField c = (JTextField) o;
+				c.setText(Integer.toString(destination[i].hydralisks));
+			}
 		});
-		addCheck(component, "Grooved Spines", new ActionListener()
+		addCheck(components, "Grooved Spines", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].groovedSpines = getTrue(e);
 			}
+			void reverse(Object o)
+			{
+				JCheckBox c = (JCheckBox) o;
+				c.setSelected(destination[i].groovedSpines);
+			}
 		});
 		gridy++;
-		addInput(component, "Infestors", new ActionListener()
+		addInput(components, "Infestors", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].infestors = getDigit(e);
 			}
+			void reverse(Object o)
+			{
+				JTextField c = (JTextField) o;
+				c.setText(Integer.toString(destination[i].infestors));
+			}
 		});
 		gridy++;
-		addCheck(component, "Neural Parasite", new ActionListener()
+		addCheck(components, "Neural Parasite", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].neuralParasite = getTrue(e);
 			}
+			void reverse(Object o)
+			{
+				JCheckBox c = (JCheckBox) o;
+				c.setSelected(destination[i].neuralParasite);
+			}
 		});
-		addCheck(component, "Pathogen Glands", new ActionListener()
+		addCheck(components, "Pathogen Glands", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].pathogenGlands = getTrue(e);
 			}
+			void reverse(Object o)
+			{
+				JCheckBox c = (JCheckBox) o;
+				c.setSelected(destination[i].pathogenGlands);
+			}
 		});
 		gridy++;
-		addInput(component, "Mutalisks", new ActionListener()
+		addInput(components, "Mutalisks", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].mutalisks = getDigit(e);
 			}
+			void reverse(Object o)
+			{
+				JTextField c = (JTextField) o;
+				c.setText(Integer.toString(destination[i].mutalisks));
+			}
 		});
 		gridy++;
-		addInput(component, "Ultralisks", new ActionListener()
+		addInput(components, "Ultralisks", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].ultralisks = getDigit(e);
 			}
+			void reverse(Object o)
+			{
+				JTextField c = (JTextField) o;
+				c.setText(Integer.toString(destination[i].ultralisks));
+			}
 		});
-		addCheck(component, "Chitinous Plating", new ActionListener()
+		addCheck(components, "Chitinous Plating", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].chitinousPlating = getTrue(e);
 			}
+			void reverse(Object o)
+			{
+				JCheckBox c = (JCheckBox) o;
+				c.setSelected(destination[i].chitinousPlating);
+			}
 		});
 		gridy++;
-		addInput(component, "Corruptors", new ActionListener()
+		addInput(components, "Corruptors", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].corruptors = getDigit(e);
 			}
+			void reverse(Object o)
+			{
+				JTextField c = (JTextField) o;
+				c.setText(Integer.toString(destination[i].corruptors));
+			}
 		});
-		addInput(component, "Broodlords", new ActionListener()
+		addInput(components, "Broodlords", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].broodlords = getDigit(e);
 			}
+			void reverse(Object o)
+			{
+				JTextField c = (JTextField) o;
+				c.setText(Integer.toString(destination[i].broodlords));
+			}
 		});
 		gridy++;
-		addCheck(component, "Melee +1", new ActionListener()
+		addCheck(components, "Melee +1", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].melee1 = getTrue(e);
 			}
+			void reverse(Object o)
+			{
+				JCheckBox c = (JCheckBox) o;
+				c.setSelected(destination[i].melee1);
+			}
 		});
-		addCheck(component, "+2", new ActionListener()
+		addCheck(components, "+2", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].melee2 = getTrue(e);
 			}
+			void reverse(Object o)
+			{
+				JCheckBox c = (JCheckBox) o;
+				c.setSelected(destination[i].melee2);
+			}
 		});
-		addCheck(component, "+3", new ActionListener()
+		addCheck(components, "+3", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].melee3 = getTrue(e);
 			}
+			void reverse(Object o)
+			{
+				JCheckBox c = (JCheckBox) o;
+				c.setSelected(destination[i].melee3);
+			}
 		});
 		gridy++;
-		addCheck(component, "Missile +1", new ActionListener()
+		addCheck(components, "Missile +1", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].missile1 = getTrue(e);
 			}
+			void reverse(Object o)
+			{
+				JCheckBox c = (JCheckBox) o;
+				c.setSelected(destination[i].missile1);
+			}
 		});
-		addCheck(component, "+2", new ActionListener()
+		addCheck(components, "+2", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].missile2 = getTrue(e);
 			}
+			void reverse(Object o)
+			{
+				JCheckBox c = (JCheckBox) o;
+				c.setSelected(destination[i].missile2);
+			}
 		});
-		addCheck(component, "+3", new ActionListener()
+		addCheck(components, "+3", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].missile3 = getTrue(e);
 			}
+			void reverse(Object o)
+			{
+				JCheckBox c = (JCheckBox) o;
+				c.setSelected(destination[i].missile3);
+			}
 		});
 		gridy++;
-		addCheck(component, "Carapace +1", new ActionListener()
+		addCheck(components, "Carapace +1", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].armor1 = getTrue(e);
 			}
+			void reverse(Object o)
+			{
+				JCheckBox c = (JCheckBox) o;
+				c.setSelected(destination[i].armor1);
+			}
 		});
-		addCheck(component, "+2", new ActionListener()
+		addCheck(components, "+2", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].armor2 = getTrue(e);
 			}
+			void reverse(Object o)
+			{
+				JCheckBox c = (JCheckBox) o;
+				c.setSelected(destination[i].armor2);
+			}
 		});
-		addCheck(component, "+3", new ActionListener()
+		addCheck(components, "+3", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].armor3 = getTrue(e);
 			}
+			void reverse(Object o)
+			{
+				JCheckBox c = (JCheckBox) o;
+				c.setSelected(destination[i].armor3);
+			}
 		});
 		gridy++;
-		addCheck(component, "Flyer Attack +1", new ActionListener()
+		addCheck(components, "Flyer Attack +1", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].flyerAttack1 = getTrue(e);
 			}
+			void reverse(Object o)
+			{
+				JCheckBox c = (JCheckBox) o;
+				c.setSelected(destination[i].flyerAttack1);
+			}
 		});
-		addCheck(component, "+2", new ActionListener()
+		addCheck(components, "+2", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].flyerAttack2 = getTrue(e);
 			}
+			void reverse(Object o)
+			{
+				JCheckBox c = (JCheckBox) o;
+				c.setSelected(destination[i].flyerAttack2);
+			}
 		});
-		addCheck(component, "+3", new ActionListener()
+		addCheck(components, "+3", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].flyerAttack3 = getTrue(e);
 			}
+			void reverse(Object o)
+			{
+				JCheckBox c = (JCheckBox) o;
+				c.setSelected(destination[i].flyerAttack3);
+			}
 		});
 		gridy++;
-		addCheck(component, "Flyer Armor +1", new ActionListener()
+		addCheck(components, "Flyer Armor +1", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].flyerArmor1 = getTrue(e);
 			}
+			void reverse(Object o)
+			{
+				JCheckBox c = (JCheckBox) o;
+				c.setSelected(destination[i].flyerArmor1);
+			}
 		});
-		addCheck(component, "+2", new ActionListener()
+		addCheck(components, "+2", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].flyerArmor2 = getTrue(e);
 			}
+			void reverse(Object o)
+			{
+				JCheckBox c = (JCheckBox) o;
+				c.setSelected(destination[i].flyerArmor2);
+			}
 		});
-		addCheck(component, "+3", new ActionListener()
+		addCheck(components, "+3", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].flyerArmor3 = getTrue(e);
 			}
+			void reverse(Object o)
+			{
+				JCheckBox c = (JCheckBox) o;
+				c.setSelected(destination[i].flyerArmor3);
+			}
 		});
 		gridy++;
-		addInput(component, "Bases", new ActionListener()
+		addInput(components, "Bases", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].requiredBases = getDigit(e);
 			}
+			void reverse(Object o)
+			{
+				JTextField c = (JTextField) o;
+				c.setText(Integer.toString(destination[i].requiredBases));
+			}
 		});
-		addInput(component, "Lairs", new ActionListener()
+		addInput(components, "Lairs", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].lairs = getDigit(e);
 			}
+			void reverse(Object o)
+			{
+				JTextField c = (JTextField) o;
+				c.setText(Integer.toString(destination[i].lairs));
+			}
 		});
 		gridy++;
-		addInput(component, "Hives", new ActionListener()
+		addInput(components, "Hives", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].hives = getDigit(e);
 			}
+			void reverse(Object o)
+			{
+				JTextField c = (JTextField) o;
+				c.setText(Integer.toString(destination[i].hives));
+			}
 		});
-		addInput(component, "Gas Extractors", new ActionListener()
+		addInput(components, "Gas Extractors", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].gasExtractors = getDigit(e);
 			}
+			void reverse(Object o)
+			{
+				JTextField c = (JTextField) o;
+				c.setText(Integer.toString(destination[i].gasExtractors));
+			}
 		});
 		gridy++;
-		addInput(component, "Evolution Chambers", new ActionListener()
+		addInput(components, "Evo Chambers", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].evolutionChambers = getDigit(e);
 			}
+			void reverse(Object o)
+			{
+				JTextField c = (JTextField) o;
+				c.setText(Integer.toString(destination[i].evolutionChambers));
+			}
 		});
 		gridy++;
-		addInput(component, "Spine Crawlers", new ActionListener()
+		addInput(components, "Spine Crawlers", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].spineCrawlers = getDigit(e);
 			}
+			void reverse(Object o)
+			{
+				JTextField c = (JTextField) o;
+				c.setText(Integer.toString(destination[i].spineCrawlers));
+			}
 		});
-		addInput(component, "Spore Crawlers", new ActionListener()
+		addInput(components, "Spore Crawlers", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].sporeCrawlers = getDigit(e);
 			}
+			void reverse(Object o)
+			{
+				JTextField c = (JTextField) o;
+				c.setText(Integer.toString(destination[i].sporeCrawlers));
+			}
 		});
 		gridy++;
-		addInput(component, "Spawning Pools", new ActionListener()
+		addInput(components, "Spawning Pools", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].spawningPools = getDigit(e);
 			}
+			void reverse(Object o)
+			{
+				JTextField c = (JTextField) o;
+				c.setText(Integer.toString(destination[i].spawningPools));
+			}
 		});
-		addInput(component, "Baneling Nests", new ActionListener()
+		addInput(components, "Baneling Nests", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].banelingNest = getDigit(e);
 			}
+			void reverse(Object o)
+			{
+				JTextField c = (JTextField) o;
+				c.setText(Integer.toString(destination[i].banelingNest));
+			}
 		});
 		gridy++;
-		addInput(component, "Roach Warrens", new ActionListener()
+		addInput(components, "Roach Warrens", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].roachWarrens = getDigit(e);
 			}
+			void reverse(Object o)
+			{
+				JTextField c = (JTextField) o;
+				c.setText(Integer.toString(destination[i].roachWarrens));
+			}
 		});
-		addInput(component, "Hydralisk Dens", new ActionListener()
+		addInput(components, "Hydralisk Dens", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].hydraliskDen = getDigit(e);
 			}
+			void reverse(Object o)
+			{
+				JTextField c = (JTextField) o;
+				c.setText(Integer.toString(destination[i].hydraliskDen));
+			}
 		});
 		gridy++;
-		addInput(component, "Infestation Pits", new ActionListener()
+		addInput(components, "Infestation Pits", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].infestationPit = getDigit(e);
 			}
+			void reverse(Object o)
+			{
+				JTextField c = (JTextField) o;
+				c.setText(Integer.toString(destination[i].infestationPit));
+			}
 		});
-		addInput(component, "Spires", new ActionListener()
+		addInput(components, "Spires", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].spire = getDigit(e);
 			}
+			void reverse(Object o)
+			{
+				JTextField c = (JTextField) o;
+				c.setText(Integer.toString(destination[i].spire));
+			}
 		});
 		gridy++;
-		addInput(component, "Nydus Networks", new ActionListener()
+		addInput(components, "Nydus Networks", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].nydusNetwork = getDigit(e);
 			}
+			void reverse(Object o)
+			{
+				JTextField c = (JTextField) o;
+				c.setText(Integer.toString(destination[i].nydusNetwork));
+			}
 		});
-		addInput(component, "Nydus Worms", new ActionListener()
+		addInput(components, "Nydus Worms", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].nydusWorm = getDigit(e);
 			}
+			void reverse(Object o)
+			{
+				JTextField c = (JTextField) o;
+				c.setText(Integer.toString(destination[i].nydusWorm));
+			}
 		});
 		gridy++;
-		addInput(component, "Ultralisk Caverns", new ActionListener()
+		addInput(components, "Ultralisk Caverns", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].ultraliskCavern = getDigit(e);
 			}
+			void reverse(Object o)
+			{
+				JTextField c = (JTextField) o;
+				c.setText(Integer.toString(destination[i].ultraliskCavern));
+			}
 		});
-		addInput(component, "Greater Spires", new ActionListener()
+		addInput(components, "Greater Spires", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].greaterSpire = getDigit(e);
 			}
+			void reverse(Object o)
+			{
+				JTextField c = (JTextField) o;
+				c.setText(Integer.toString(destination[i].greaterSpire));
+			}
 		});
 		gridy++;
-		inputControls.add(addButton(component, "Reset all fields", 4, new ActionListener()
+		inputControls.add(addButton(components, "Reset all fields", 4, new ActionListener()
 		{
-			public void actionPerformed (ActionEvent e)
+			public void actionPerformed(ActionEvent e)
 			{
-				for (int i = 0; i < component.getComponentCount(); i++) {
-					if (component.getComponent(i) instanceof JTextField)
+				for (int i = 0; i < components.getComponentCount(); i++)
+				{
+					Component component = components.getComponent(i);
+					if (component instanceof JTextField)
 					{
-						if (((JTextField) component.getComponent(i)).getText().indexOf(":") == -1) // is not a "Deadline" field
-							((JTextField) component.getComponent(i)).setText("0");
-					} 
-					else if (component.getComponent(i) instanceof JCheckBox) 
+						JTextField textField = (JTextField) component;
+						if (textField.getText().indexOf(":") == -1) // is
+						{
+							// not
+							// a
+							// "Deadline"
+							// field
+							textField.setText("0");
+							textField.getActionListeners()[0].actionPerformed(new ActionEvent(textField, 0, ""));
+						}
+					}
+					else if (component instanceof JCheckBox)
 					{
-						((JCheckBox) component.getComponent(i)).setSelected(false);
+						JCheckBox checkBox = (JCheckBox) component;
+						checkBox.setSelected(false);
+						checkBox.getActionListeners()[0].actionPerformed(new ActionEvent(checkBox, 0, ""));
 					}
 				}
 			}
 		}));
+	}
+
+	private void readDestinations()
+	{
+		for (int i = 0; i < inputControls.size(); i++)
+		{
+			JComponent component = inputControls.get(i);
+			if (component instanceof JTextField)
+			{
+				ActionListener actionListener = ((JTextField) component).getActionListeners()[0];
+				if (actionListener instanceof CustomActionListener)
+					((CustomActionListener)actionListener).reverse(component);
+			}
+			else if (component instanceof JCheckBox)
+			{
+				ActionListener actionListener = ((JCheckBox) component).getActionListeners()[0];
+				if (actionListener instanceof CustomActionListener)
+					((CustomActionListener)actionListener).reverse(component);
+			}
+		}
 	}
 	
 	private void addOutputButtons(JPanel component)
@@ -916,8 +1438,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 				clipboard.setContents(new StringSelection(outputText.getText()), null);
 			}
 		});
-		
-		
+
 		switchDetailedButton = new JButton("Detailed format");
 		isDetailedBuildOrder = true;
 		gridBagConstraints.weightx = 0.25;
@@ -933,7 +1454,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 				isSimpleBuildOrder = false;
 			}
 		});
-		
+
 		switchSimpleButton = new JButton("Simple format");
 		isSimpleBuildOrder = false;
 		gridBagConstraints.weightx = 0.25;
@@ -949,7 +1470,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 				isDetailedBuildOrder = false;
 			}
 		});
-		
+
 		switchYabotButton = new JButton("YABOT format");
 		isYabotBuildOrder = false;
 		gridBagConstraints.weightx = 0.25;
@@ -962,19 +1483,23 @@ public class EcSwingX extends JXPanel implements EcReportable
 				outputText.setTabSize(14);
 				isYabotBuildOrder = true;
 				isSimpleBuildOrder = false;
-				isDetailedBuildOrder = false;		
+				isDetailedBuildOrder = false;
 			}
 		});
 	}
-	
+
 	private void addControlParts(JPanel component)
 	{
-		addInput(component, "Processors", new ActionListener()
+		addInput(component, "Processors", new CustomActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				ec.setThreads(getDigit(e));
 				((JTextField) e.getSource()).setText(Integer.toString(ec.getThreads()));
+			}
+			void reverse(Object o)
+			{
+				((JTextField) o).setText(Integer.toString(ec.getThreads()));
 			}
 		}).setText(Integer.toString(ec.getThreads()));
 		stopButton = addButton(component, "Stop", new ActionListener()
@@ -985,10 +1510,12 @@ public class EcSwingX extends JXPanel implements EcReportable
 				ec.stop();
 				goButton.setEnabled(true);
 				stopButton.setEnabled(false);
+				historyList.setEnabled(true);
 				timeStarted = 0;
 				for (JComponent j : inputControls)
 					j.setEnabled(true);
 				lastUpdate = 0;
+				refreshHistory();
 			}
 		});
 		stopButton.setEnabled(false);
@@ -1003,10 +1530,11 @@ public class EcSwingX extends JXPanel implements EcReportable
 				for (JComponent j : inputControls)
 					j.setEnabled(false);
 				restartChamber();
-				tabPane.setSelectedIndex(5);
+				tabPane.setSelectedIndex(6);
 				timeStarted = new Date().getTime();
 				goButton.setEnabled(false);
 				stopButton.setEnabled(true);
+				historyList.setEnabled(false);
 
 				EcEvolver.evaluations = 0;
 				EcEvolver.cachehits = 0;
@@ -1031,7 +1559,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 		button.addActionListener(actionListener);
 		return button;
 	}
-	
+
 	private JLabel addLabel(JPanel container, String string)
 	{
 		final JLabel label = new JLabel();
@@ -1046,10 +1574,10 @@ public class EcSwingX extends JXPanel implements EcReportable
 		gridBagConstraints.gridy = gridy;
 		gridBagConstraints.insets = new Insets(1, 1, 1, 1);
 		container.add(label, gridBagConstraints);
-		
+
 		return label;
 	}
-	
+
 	private JButton addButton(JPanel container, String string, int gridwidth, ActionListener actionListener)
 	{
 		final JButton button = new JButton();
@@ -1106,14 +1634,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 			ec.stop();
 		try
 		{
-			EcState finalDestination = (EcState) destination[destination.length - 1].clone();
-			for (int i = 0; i < destination.length - 1; i++)
-			{
-				if (destination[i].getSumStuff() > 1)
-					finalDestination.waypoints.add((EcState) destination[i].clone());
-
-			}
-
+			EcState finalDestination = collapseWaypoints();
 			ec.setDestination(finalDestination);
 			ec.go();
 		}
@@ -1126,21 +1647,50 @@ public class EcSwingX extends JXPanel implements EcReportable
 			e.printStackTrace();
 		}
 	}
-	
-	private JPanel addRadioButtonBox (JPanel container, String title, String[] captions, int defaultSelected, final ActionListener a) 
+
+	private EcState collapseWaypoints() throws CloneNotSupportedException
+	{
+		EcState finalDestination = (EcState) destination[destination.length - 1].clone();
+		for (int i = 0; i < destination.length - 1; i++)
+		{
+			if (destination[i].getSumStuff() > 1)
+				finalDestination.waypoints.add((EcState) destination[i].clone());
+
+		}
+		return finalDestination;
+	}
+
+	private void expandWaypoints(EcState s)
+	{
+		try
+		{
+			destination[destination.length - 1] = (EcState) s.clone();
+			for (int i = 0; i < s.waypoints.size(); i++)
+			{
+				destination[i] = (EcState) s.waypoints.get(i).clone();
+			}
+		}
+		catch (CloneNotSupportedException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	private JPanel addRadioButtonBox(JPanel container, String title, String[] captions, int defaultSelected,
+			final CustomActionListener a)
 	{
 		GridBagConstraints gridBagConstraints = new GridBagConstraints();
 		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
 		gridBagConstraints.gridy = gridy;
 		gridBagConstraints.gridwidth = 2;
 		gridBagConstraints.insets = new Insets(1, 1, 1, 1);
-		
+
 		JRadioButton[] buttons = new JRadioButton[captions.length];
 		ButtonGroup group = new ButtonGroup();
 		JPanel radioButtonBox = new JPanel();
 		radioButtonBox.setBorder(BorderFactory.createTitledBorder(title));
-		
-		for (int i = 0; i < buttons.length; i++) 
+
+		for (int i = 0; i < buttons.length; i++)
 		{
 			buttons[i] = new JRadioButton(captions[i]);
 			buttons[i].addActionListener(a);
@@ -1153,8 +1703,9 @@ public class EcSwingX extends JXPanel implements EcReportable
 		container.add(radioButtonBox, gridBagConstraints);
 		return radioButtonBox;
 	}
-	
-	protected String getSelected(ActionEvent e) {
+
+	protected String getSelected(ActionEvent e)
+	{
 		JRadioButton radioButton = (JRadioButton) e.getSource();
 		return radioButton.getText();
 	}
@@ -1166,7 +1717,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 		return tf.isSelected();
 	}
 
-	private JTextField addInput(JPanel container, String name, final ActionListener a)
+	private JTextField addInput(JPanel container, String name, final CustomActionListener a)
 	{
 		GridBagConstraints gridBagConstraints;
 
@@ -1190,9 +1741,9 @@ public class EcSwingX extends JXPanel implements EcReportable
 		gridBagConstraints.gridy = gridy;
 		gridBagConstraints.insets = new Insets(1, 1, 1, 1);
 		container.add(textField, gridBagConstraints);
+		textField.addActionListener(a);
 		textField.addFocusListener(new FocusListener()
 		{
-
 			@Override
 			public void focusLost(FocusEvent e)
 			{
@@ -1209,7 +1760,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 		return textField;
 	}
 
-	private JCheckBox addCheck(JPanel container, String name, final ActionListener a)
+	private JCheckBox addCheck(JPanel container, String name, final CustomActionListener a)
 	{
 		GridBagConstraints gridBagConstraints;
 
@@ -1226,6 +1777,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 		gridBagConstraints.gridy = gridy;
 		gridBagConstraints.insets = new Insets(1, 1, 1, 1);
 		container.add(checkBox, gridBagConstraints);
+		checkBox.addActionListener(a);
 		checkBox.addChangeListener(new ChangeListener()
 		{
 			@Override
@@ -1282,31 +1834,38 @@ public class EcSwingX extends JXPanel implements EcReportable
 	}
 
 	@Override
-	public void bestScore(final EcState finalState, int intValue, final String detailedText, final String simpleText, final String yabotText)
+	public void bestScore(final EcState finalState, int intValue, final String detailedText, final String simpleText,
+			final String yabotText)
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			@Override
 			public void run()
 			{
-				simpleBuildOrder = simpleText;
-				detailedBuildOrder = detailedText;
-				yabotBuildOrder = yabotText;
-				if (isSimpleBuildOrder) 
-				{
-					outputText.setText(simpleText);
-				} 
-				else if (isYabotBuildOrder)
-				{
-					outputText.setText(yabotBuildOrder);
-				}
-				else
-				{
-					outputText.setText(detailedText);
-				}
+				receiveBuildOrders(detailedText, simpleText, yabotText);
 				lastUpdate = new Date().getTime();
 			}
+
 		});
+	}
+
+	private void receiveBuildOrders(final String detailedText, final String simpleText, final String yabotText)
+	{
+		simpleBuildOrder = simpleText;
+		detailedBuildOrder = detailedText;
+		yabotBuildOrder = yabotText;
+		if (isSimpleBuildOrder)
+		{
+			outputText.setText(simpleText);
+		}
+		else if (isYabotBuildOrder)
+		{
+			outputText.setText(yabotBuildOrder);
+		}
+		else
+		{
+			outputText.setText(detailedText);
+		}
 	}
 
 	@Override

@@ -32,7 +32,7 @@ public class EcActionBuildExtractor extends EcAction implements Serializable
 				if (e.debug)
 					e.obtained(s, " Extractor+1");
 				s.gasExtractors += 1;
-				if (EcSettings.pullWorkersFromGas == false)
+				if (s.settings.pullWorkersFromGas == false)
 				{
 					s.dronesOnMinerals -= 3;
 					s.dronesOnGas += 3;
@@ -47,7 +47,7 @@ public class EcActionBuildExtractor extends EcAction implements Serializable
 	{
 		if (s.gasExtractors + s.extractorsBuilding >= s.extractors())
 			return true;
-		if(s.supplyUsed < EcSettings.minimumExtractorSupply)
+		if(s.supplyUsed < s.settings.minimumExtractorSupply)
 			return true;
 		return false;
 	}
@@ -66,7 +66,7 @@ public class EcActionBuildExtractor extends EcAction implements Serializable
 	public List<EcAction> requirements(EcState destination)
 	{
 		ArrayList<EcAction> l = new ArrayList<EcAction>();
-		if (EcSettings.pullWorkersFromGas)
+		if (destination.settings.pullWorkersFromGas)
 		{
 			l.add(new EcActionMineGas());
 			l.add(new EcActionMineMineral());

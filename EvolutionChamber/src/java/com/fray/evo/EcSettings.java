@@ -1,23 +1,25 @@
 package com.fray.evo;
 
+import java.io.Serializable;
+
 import com.fray.evo.fitness.*;
 
-public class EcSettings
+public class EcSettings implements Serializable
 {
-	public static boolean workerParity = false;
-	public static boolean overDrone = false;
-	public static boolean useExtractorTrick = true;
-	public static boolean pullWorkersFromGas = true;
-	public static boolean pullThreeWorkersOnly = false;
-	public static EcFitnessType fitnessType = EcFitnessType.STANDARD;
-	public static int minimumPoolSupply = 2;
-	public static int minimumExtractorSupply = 2;
-	public static int minimumHatcherySupply = 2;
+	public boolean workerParity = false;
+	public boolean overDrone = false;
+	public boolean useExtractorTrick = true;
+	public boolean pullWorkersFromGas = true;
+	public boolean pullThreeWorkersOnly = false;
+	public EcFitnessType fitnessType = EcFitnessType.STANDARD;
+	public int minimumPoolSupply = 2;
+	public int minimumExtractorSupply = 2;
+	public int minimumHatcherySupply = 2;
 
 	
-	private static EcFitness ff;
+	private transient EcFitness ff;
 	
-	public static EcFitness getFitnessFunction() {
+	public EcFitness getFitnessFunction() {
 		
 		if(ff != null)
 			return ff;
