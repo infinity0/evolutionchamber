@@ -8,10 +8,10 @@ import sc2.asset.SC2AssetType;
 */
 public class SC2RequiresAsset implements SC2Requires {
 
-	final protected SC2AssetType type;
-	final protected int req;
+	final public SC2AssetType type;
+	final public int req;
 	/** whether we want a number < {@link #req}, or else >. */
-	final protected boolean less;
+	final public boolean less;
 
 	public SC2RequiresAsset(SC2AssetType type, int req, boolean less) {
 		this.type = type;

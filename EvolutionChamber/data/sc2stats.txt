@@ -160,17 +160,17 @@ Chitinous Plating       | build : 150 150 110 : Ultralisk Cavern
 
 Larva           | u: 0 0 0 |
 Cocoon          | u: 0 0 0 |
-Drone           | u: 1 1 0 | morph :  50   0  17 : Larva     :                 : Cocoon
-Overlord        | u: 0 A 8 | morph : 100   0  25 : Larva     :                 : Cocoon     | prov_f : 8
-Zergling        | u: h 1 0 | morph :  50   0  24 : Larva     : Spawning Pool   : Cocoon : 1 2
+Drone           | u: 1 1 0 | morph :  50   0  17 : Larva     :                  : Cocoon
+Overlord        | u: 0 A 8 | morph : 100   0  25 : Larva     :                  : Cocoon     | prov_f : 8
+Zergling        | u: h 1 0 | morph :  50   0  24 : Larva     : Spawning Pool    : Cocoon : 1 2
 Queen           | u: 2 9 0 | build : 150   0  50 : Hatchery
-Roach           | u: 2 9 0 | morph :  75  25  27 : Larva     : Roach Warren    : Cocoon
-Baneling        | u: h 9 0 | morph :  25  25  20 : Zergling  : Baneling Nest   : Cocoon
-Overseer        | u: 0 9 0 | morph :  50 100  17 : Overlord  : Lair            : Cocoon     | prov_f : 8
-Hydralisk       | u: 2 9 0 | morph : 100  50  33 : Larva     : Hydralisk Den   : Cocoon
-Infestor        | u: 2 9 0 | morph : 100 150  50 : Larva     : Infestation Pit : Cocoon
-Mutalisk        | u: 2 A 0 | morph : 100 100  33 : Larva     : Spire           : Cocoon
-Corruptor       | u: 2 A 0 | morph : 150 100  40 : Larva     : Spire           : Cocoon
-Ultralisk       | u: 6 9 0 | morph : 300 200  70 : Larva     : Ultralisk Den   : Cocoon
-Brood Lord      | u: 4 A 0 | morph : 150 150  34 : Corruptor : Greater Spire   : Cocoon
+Roach           | u: 2 9 0 | morph :  75  25  27 : Larva     : Roach Warren     : Cocoon
+Baneling        | u: h 9 0 | morph :  25  25  20 : Zergling  : Baneling Nest    : Cocoon
+Overseer        | u: 0 9 0 | morph :  50 100  17 : Overlord  : Lair             : Cocoon     | prov_f : 8
+Hydralisk       | u: 2 9 0 | morph : 100  50  33 : Larva     : Hydralisk Den    : Cocoon
+Infestor        | u: 2 9 0 | morph : 100 150  50 : Larva     : Infestation Pit  : Cocoon
+Mutalisk        | u: 2 A 0 | morph : 100 100  33 : Larva     : Spire            : Cocoon
+Corruptor       | u: 2 A 0 | morph : 150 100  40 : Larva     : Spire            : Cocoon
+Ultralisk       | u: 6 9 0 | morph : 300 200  70 : Larva     : Ultralisk Cavern : Cocoon
+Brood Lord      | u: 4 A 0 | morph : 150 150  34 : Corruptor : Greater Spire    : Cocoon
 

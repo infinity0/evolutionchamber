@@ -1,7 +1,10 @@
 package sc2.action;
 
+import sc2.SC2World;
 import sc2.asset.SC2AssetType;
 import sc2.require.SC2Requires;
+import sc2.require.SC2RequiresAsset;
+import static sc2.asset.SC2AssetType.Guard;
 import static sc2.action.SC2AssetAction.Action;
 import static sc2.ArgUtils.non_null;
 import static sc2.ArgUtils.non_null_copy;
@@ -10,8 +13,8 @@ import java.util.List;
 import java.util.Arrays;
 
 /**
-** Represents meta-data for {@link sc2.asset.SC2AssetAction}, such as resource
-** cost and requirements.
+** Represents meta-data for {@link SC2AssetAction}, such as resource cost and
+** requirements.
 */
 public class SC2AssetActionSchema {
 
@@ -62,6 +65,28 @@ public class SC2AssetActionSchema {
 	public SC2AssetActionSchema(Action act, SC2AssetType[] src, SC2Requires[] req,
 	  int cost_m, int cost_v, double cost_t) {
 		this(act, src, req, cost_m, cost_v, cost_t, null, 1, 1);
+	}
+
+	/** Set reference cycles after construction. */
+	public void cycles(SC2World world) {
+		// sources
+		for (int i=0; i<src.length; ++i) {
+			// TODO allow this only for morph actions
+			SC2AssetType osrc = src[i];
+			if (osrc instanceof Guard) {
+				src[i] = world.getAssetType(osrc.name);
+			}
+		}
+		// requires
+		for (int i=0; i<req.length; ++i) {
+			SC2Requires oreq = req[i];
+			if (oreq instanceof SC2RequiresAsset) {
+				SC2RequiresAsset areq = (SC2RequiresAsset)oreq;
+				if (areq.type instanceof Guard) {
+					req[i] = new SC2RequiresAsset(world.getAssetType(areq.type.name), areq.req, areq.less);
+				}
+			}
+		}
 	}
 
 	public List<SC2AssetType> src() { return Arrays.asList(src); }

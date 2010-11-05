@@ -8,7 +8,7 @@ import sc2.asset.SC2AssetType;
 */
 public class SC2RequiresTech implements SC2Requires {
 
-	final protected SC2AssetType type;
+	final public SC2AssetType type;
 
 	public SC2RequiresTech(SC2AssetType type) {
 		this.type = type;

@@ -3,6 +3,7 @@ package sc2;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
+import java.util.List;
 
 /**
 ** Misc utilities for processing arguments.
@@ -30,6 +31,20 @@ final public class ArgUtils {
 
 	public static <E extends Enum<E>> E sEnumFromChar(Class<E> enumType, char c) {
 		return Enum.valueOf(enumType, new String(new char[]{c}));
+	}
+
+	/**
+	** Useful for dealing with e.g. split() methods that return a list with an
+	** empty string, instead of an empty list.
+	**
+	** FAIAP stands for "For All Intents And Purposes".
+	*/
+	public static boolean isFAIAPEmpty(List<String> item) {
+		switch (item.size()) {
+		case 0: return true;
+		case 1: return item.get(0).length() == 0;
+		default: return false;
+		}
 	}
 
 }

@@ -8,8 +8,8 @@ import static sc2.ArgUtils.non_null;
 */
 abstract public class SC2AssetAction extends SC2Action {
 
-	final protected SC2AssetType type;
-	final protected SC2AssetActionSchema schema;
+	final public SC2AssetType type;
+	final public SC2AssetActionSchema schema;
 
 	public SC2AssetAction(SC2AssetType type, SC2AssetActionSchema schema) {
 		super(non_null("action scheme", schema).cost_t);
