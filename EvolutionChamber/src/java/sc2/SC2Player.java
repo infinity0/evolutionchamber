@@ -54,6 +54,11 @@ public class SC2Player {
 		// TODO populate assets with 6 workers, 1 cc
 	}
 
+	public String timestamp() {
+		int h = time / 60, m = time % 60;
+		return ((h<10)?"0":"") + h + ((m<10)?":0":":") + m;
+	}
+
 	/**
 	** Advance by 1 game second.
 	*/

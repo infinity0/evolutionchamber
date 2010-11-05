@@ -91,16 +91,16 @@ public class SC2IOFactory {
 				parseUnitStats(stats);
 
 			} else {
+				// asset actions
 				List<String> args = copyOf(cmpts);
 				parseAssetActionSchema(Action.fromString(head), args);
 			}
 		}
-		// TODO
 
 		SC2AssetType type = curr_builder.build();
 		if (type.group() != curr_group) {
 			throw new IllegalStateException("mismatched asset group for " + type.name +
-			  ": expected " + curr_group + " but got " + type.group());
+			  ": expected " + curr_group.name + " but got " + type.group().name);
 		}
 		curr_builder = null;
 		return type;

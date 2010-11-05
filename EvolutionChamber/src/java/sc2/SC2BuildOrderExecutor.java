@@ -1,14 +1,9 @@
 package sc2;
 
-import sc2.asset.SC2AssetType;
 import sc2.action.SC2Action;
 import sc2.action.SC2ActionException;
-import sc2.io.serial.SC2WorldReader;
-import static sc2.SC2World.Race;
-import static sc2.asset.SC2AssetType.Group;
 
 import java.util.Arrays;
-import java.io.IOException;
 
 /**
 ** Executes a build order.
@@ -18,7 +13,12 @@ public class SC2BuildOrderExecutor {
 	final protected SC2Player play;
 
 	public SC2BuildOrderExecutor(SC2Player play) {
+		System.out.println("executor started for " + play);
 		this.play = play;
+	}
+
+	public int executeAll(SC2Action ... build_order) {
+		return executeAll(Arrays.asList(build_order));
 	}
 
 	public int executeAll(Iterable<SC2Action> build_order) {
@@ -33,6 +33,7 @@ public class SC2BuildOrderExecutor {
 		while (true) {
 			try {
 				action.launch(play);
+				System.out.println("[" + play.timestamp() + "] " + action);
 				return true;
 
 			} catch (SC2ActionException e) {
@@ -45,10 +46,6 @@ public class SC2BuildOrderExecutor {
 				}
 			}
 		}
-	}
-
-	public static void main(String[] args) throws Throwable {
-		SC2World world = SC2WorldReader.read("../data/sc2stats.txt");
 	}
 
 }
