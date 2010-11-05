@@ -39,19 +39,19 @@
 
 Nexus               | cstr_p : 400   0 100                        | prov_f: 10
 Pylon               | cstr_p : 100   0  25                        | prov_f: 8
-Assimilator         | cstr_p :  75   0  30                        |
+Assimilator         | cstr_p :  75   0  30
 Gateway             | cstr_p : 150   0  65 :: Nexus               | morph : 0 0 10 : Warp Gate : Warpgate
-Forge               | cstr_p : 150   0  45                        |
-Photon Cannon       | cstr_p : 150   0  40 :: Forge               |
-Cybernetics Core    | cstr_p : 150   0  50 :: Gateway             |
-Warp Gate           | morph  :   0   0  10 : Gateway : Warpgate   |
-Twilight Council    | cstr_p : 150 100  50 :: Cybernetics Core    |
-Robotics Facility   | cstr_p : 200 100  65 :: Cybernetics Core    |
-Stargate            | cstr_p : 150 150  60 :: Cybernetics Core    |
-Templar Archives    | cstr_p : 150 200  50 :: Twilight Council    |
-Dark Shrine         | cstr_p : 100 250 100 :: Twilight Council    |
-Robotics Bay        | cstr_p : 200 200  65 :: Robotics Facility   |
-Fleet Beacon        | cstr_p : 300 200  60 :: Stargate            |
+Forge               | cstr_p : 150   0  45
+Photon Cannon       | cstr_p : 150   0  40 :: Forge
+Cybernetics Core    | cstr_p : 150   0  50 :: Gateway
+Warp Gate           | morph  :   0   0  10 : Gateway : Warpgate
+Twilight Council    | cstr_p : 150 100  50 :: Cybernetics Core
+Robotics Facility   | cstr_p : 200 100  65 :: Cybernetics Core
+Stargate            | cstr_p : 150 150  60 :: Cybernetics Core
+Templar Archives    | cstr_p : 150 200  50 :: Twilight Council
+Dark Shrine         | cstr_p : 100 250 100 :: Twilight Council
+Robotics Bay        | cstr_p : 200 200  65 :: Robotics Facility
+Fleet Beacon        | cstr_p : 300 200  60 :: Stargate
 
 [ Protoss Tech ]
 

@@ -222,9 +222,9 @@ public class SC2AssetType {
 
 		public Builder struct() {
 			if (mods == null) {
-				mods.add(Modifier.STRUCTURE);
-			} else {
 				mods = EnumSet.of(Modifier.STRUCTURE);
+			} else {
+				mods.add(Modifier.STRUCTURE);
 			}
 			return this;
 		}

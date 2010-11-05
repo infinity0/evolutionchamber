@@ -70,6 +70,7 @@ public class SC2IOFactory {
 		Iterator<String> parts = SEP_ASSET.split(s).iterator();
 		String name = parts.next();
 		curr_builder = SC2AssetType.initAssetType(name, curr_race);
+		if (curr_group == Group.S) { curr_builder.struct(); }
 
 		while (parts.hasNext()) {
 			String part = parts.next();
@@ -97,6 +98,10 @@ public class SC2IOFactory {
 		// TODO
 
 		SC2AssetType type = curr_builder.build();
+		if (type.group() != curr_group) {
+			throw new IllegalStateException("mismatched asset group for " + type.name +
+			  ": expected " + curr_group + " but got " + type.group());
+		}
 		curr_builder = null;
 		return type;
 	}
