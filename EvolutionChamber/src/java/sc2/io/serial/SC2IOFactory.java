@@ -7,6 +7,7 @@ import sc2.require.SC2Requires;
 import sc2.require.SC2RequiresAsset;
 import sc2.require.SC2RequiresTech;
 import static sc2.SC2World.Race;
+import static sc2.SC2World.Macro;
 import static sc2.asset.SC2AssetType.Group;
 import static sc2.asset.SC2AssetType.Builder;
 import static sc2.action.SC2AssetAction.Action;
@@ -85,6 +86,10 @@ public class SC2IOFactory {
 				String str = SEP_STATS.split(cmpts.next()).iterator().next();
 				curr_builder.provide(parseInt(str));
 
+			} else if (head.equals("macro")) {
+				// metadata on bases
+				// TODO
+
 			} else if (head.equals("u")) {
 				// unit stats
 				List<String> stats = copyOf(SEP_STATS.split(cmpts.next()));
@@ -125,7 +130,7 @@ public class SC2IOFactory {
 		SC2Requires[] req = (args.size() > 2)? makeRequires(copyOf(SEP_ITEMS.split(args.get(2)))): null;
 
 		if (args.size() > 3) {
-			// don't getAssetTypeOrGuard() to since morph-prepare assets can't be set with cycles()
+			// don't getAssetTypeOrGuard() here, since morph-prepare assets can't be set with cycles()
 			SC2AssetType prep = (args.get(3).length() == 0)? null: world.getAssetType(args.get(3));
 			int num_src = 1, num_dst = 1;
 			if (args.size() > 4) {
@@ -174,6 +179,7 @@ public class SC2IOFactory {
 		}
 
 		SC2AssetType type = getAssetTypeOrGuard(item);
+		// a Guard is assumed to be part of a RequiresAsset rather than Tech
 		switch (type.group()) {
 		case T:
 			return new SC2RequiresTech(type);

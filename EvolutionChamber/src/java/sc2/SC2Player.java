@@ -23,7 +23,7 @@ import java.util.ArrayList;
 public class SC2Player {
 
 	/** database of game statistics */
-	final public SC2World star;
+	final public SC2World world;
 	/** player's race */
 	final public Race race;
 
@@ -45,9 +45,9 @@ public class SC2Player {
 	/** game ticks, currently measured in seconds */
 	protected int time;
 
-	public SC2Player(SC2World star, Race race) {
-		if (star == null || race == null) { throw new NullPointerException(); }
-		this.star = star;
+	public SC2Player(SC2World world, Race race) {
+		if (world == null || race == null) { throw new NullPointerException(); }
+		this.world = world;
 		this.race = race;
 		this.res_m = 50;
 		this.res_v = 0;

@@ -23,6 +23,7 @@ public class SC2Main {
 		  new SC2Build(world.getAssetType("Probe")),
 		  new SC2Build(world.getAssetType("Probe"))
 		);
+		sc2.asset.SC2Base.main(args);
 	}
 
 }

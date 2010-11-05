@@ -1,7 +1,5 @@
 package sc2.asset;
 
-import sc2.action.SC2Action;
-import sc2.action.SC2ActionException;
 import sc2.SC2Player;
 
 /**

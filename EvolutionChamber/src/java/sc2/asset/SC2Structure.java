@@ -1,7 +1,5 @@
 package sc2.asset;
 
-import sc2.action.SC2Action;
-import sc2.action.SC2ActionException;
 import sc2.SC2Player;
 
 /**
@@ -21,7 +19,7 @@ public class SC2Structure extends SC2Asset {
 			advance(1.5);
 			chrono_eta--;
 		} else {
-			advance();
+			advance(1.0);
 		}
 	}
 

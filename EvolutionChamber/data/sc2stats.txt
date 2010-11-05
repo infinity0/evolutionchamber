@@ -2,13 +2,14 @@
 #
 #      ASSET :: NAME | PART | ...
 #       NAME :: <string>
+#     COST_T :: <double>
 #
 #       PART :: ACTION : COST_M COST_V COST_T : [SOURCE] : [REQUIRE] : [MORPH_PREP] : [MORPH_NUM]
 #            || "prov_f" : PROV_F
+#            || "macro" : M_ROLE
 #            || "u" : COST_F CARGO_SIZE CARGO_SPACE
 #
 #     ACTION :: "build" || "morph" || "warpin" || "cstr_p" || "cstr_t"
-#
 #     SOURCE :: NAME , ...
 #    REQUIRE :: REQ , ...
 #        REQ :: [ ">" <int> || "<" <int> ] NAME
@@ -16,8 +17,10 @@
 #  MORPH_NUM :: NUM_SRC NUM_DST
 #
 #     COST_F :: "h" || <float>
-#     COST_T :: <double>
 # CARGO_SIZE :: "A" || <int>
+#
+#     M_ROLE :: "worker" || "command" || "supply"
+#
 #          * :: <int>
 #
 # Meta-syntax:
@@ -25,6 +28,7 @@
 #   ...     list (of arbitrary size)
 #    ||     exclusive or, i.e. one of
 #    []     optional
+#    ()     logical grouping
 #    ""     literal string
 #   <T>     primitive data type
 #
@@ -37,8 +41,8 @@
 
 [ Protoss Structures ]
 
-Nexus               | cstr_p : 400   0 100                        | prov_f: 10
-Pylon               | cstr_p : 100   0  25                        | prov_f: 8
+Nexus               | cstr_p : 400   0 100                        | macro: command   | prov_f: 10
+Pylon               | cstr_p : 100   0  25                        | macro: supply    | prov_f: 8
 Assimilator         | cstr_p :  75   0  30
 Gateway             | cstr_p : 150   0  65 :: Nexus               | morph : 0 0 10 : Warp Gate : Warpgate
 Forge               | cstr_p : 150   0  45
@@ -84,7 +88,7 @@ Air Armor Level 3           | build : 300 300 220 : Cybernetics Core : Air Armor
 
 [ Protoss Units ]
 
-Probe           | u: 1 1 0 | build :  50   0  17 : Nexus:
+Probe           | u: 1 1 0 | build :  50   0  17 : Nexus:                        | macro: worker
 Zealot          | u: 2 2 0 | build : 100   0  38 : Gateway                       | warpin : 100   0  28 : Warp Gate
 Sentry          | u: 2 2 0 | build :  50 100  42 : Gateway : Cybernetics Core    | warpin :  50 100  32 : Warp Gate
 Stalker         | u: 2 2 0 | build : 125  50  42 : Gateway : Cybernetics Core    | warpin :  50 100  32 : Warp Gate
@@ -104,7 +108,7 @@ Archon          | u: 4 4 0 | morph :   0   0  12 : High Templar, Dark Templar ::
 
 [ Zerg Structures ]
 
-Hatchery          | morph : 300   0 100 : Drone                     | prov_f : 2
+Hatchery          | morph : 300   0 100 : Drone                     | macro: command     | prov_f: 2
 Extractor         | morph :  25   0  30 : Drone
 Spawning Pool     | morph : 200   0  65 : Drone : Hatchery
 Evolution Chamber | morph :  75   0  35 : Drone : Hatchery
@@ -112,13 +116,13 @@ Spine Crawler     | morph : 100   0  50 : Drone : Spawning Pool
 Roach Warren      | morph : 150   0  55 : Drone : Spawning Pool
 Baneling Nest     | morph : 100  50  60 : Drone : Spawning Pool
 Spore Crawler     | morph :  75   0  30 : Drone : Evolution Chamber
-Lair              | morph : 150 100  80 : Hatchery : Spawning Pool
+Lair              | morph : 150 100  80 : Hatchery : Spawning Pool  | macro: command     | prov_f: 2
 Hydralisk Den     | morph : 100 100  40 : Drone : Lair
 Infestation Pit   | morph : 100 100  50 : Drone : Lair
 Spire             | morph : 200 200 100 : Drone : Lair
 Nydus Network     | morph : 200 200  50 : Drone : Lair                  # consider cargo capacity?
 Nydus Worm        | build : 100 100  20 : Nydus Network                 # build/warpin?
-Hive              | morph : 200 150 100 : Lair  : Infestation Pit
+Hive              | morph : 200 150 100 : Lair  : Infestation Pit   | macro: command     | prov_f: 2
 Greater Spire     | morph : 100 150 100 : Spire : Hive
 Ultralisk Cavern  | morph : 150 200 65  : Drone : Hive
 
@@ -160,17 +164,18 @@ Chitinous Plating       | build : 150 150 110 : Ultralisk Cavern
 
 Larva           | u: 0 0 0 |
 Cocoon          | u: 0 0 0 |
-Drone           | u: 1 1 0 | morph :  50   0  17 : Larva     :                  : Cocoon
-Overlord        | u: 0 A 8 | morph : 100   0  25 : Larva     :                  : Cocoon     | prov_f : 8
+Drone           | u: 1 1 0 | morph :  50   0  17 : Larva     :                  : Cocoon        | macro: worker
+Overlord        | u: 0 A 8 | morph : 100   0  25 : Larva     :                  : Cocoon        | macro: supply      | prov_f : 8
 Zergling        | u: h 1 0 | morph :  50   0  24 : Larva     : Spawning Pool    : Cocoon : 1 2
 Queen           | u: 2 9 0 | build : 150   0  50 : Hatchery
 Roach           | u: 2 9 0 | morph :  75  25  27 : Larva     : Roach Warren     : Cocoon
 Baneling        | u: h 9 0 | morph :  25  25  20 : Zergling  : Baneling Nest    : Cocoon
-Overseer        | u: 0 9 0 | morph :  50 100  17 : Overlord  : Lair             : Cocoon     | prov_f : 8
+Overseer        | u: 0 9 0 | morph :  50 100  17 : Overlord  : Lair             : Cocoon        | macro: supply      | prov_f : 8
 Hydralisk       | u: 2 9 0 | morph : 100  50  33 : Larva     : Hydralisk Den    : Cocoon
 Infestor        | u: 2 9 0 | morph : 100 150  50 : Larva     : Infestation Pit  : Cocoon
 Mutalisk        | u: 2 A 0 | morph : 100 100  33 : Larva     : Spire            : Cocoon
 Corruptor       | u: 2 A 0 | morph : 150 100  40 : Larva     : Spire            : Cocoon
 Ultralisk       | u: 6 9 0 | morph : 300 200  70 : Larva     : Ultralisk Cavern : Cocoon
 Brood Lord      | u: 4 A 0 | morph : 150 150  34 : Corruptor : Greater Spire    : Cocoon
+
 

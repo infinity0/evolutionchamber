@@ -48,4 +48,6 @@ public class SC2World {
 		}
 	}
 
+	public enum Macro { WORKER, COMMAND, SUPPLY }
+
 }
