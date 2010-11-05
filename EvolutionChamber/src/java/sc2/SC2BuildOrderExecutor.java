@@ -48,10 +48,6 @@ public class SC2BuildOrderExecutor {
 	}
 
 	public static void main(String[] args) throws Throwable {
-		System.out.println("Hello World!");
-		System.out.println("crashing ... ");
-		System.out.println("done! program will exit");
-
 		SC2World world = SC2WorldReader.read("../data/sc2stats.txt");
 	}
 

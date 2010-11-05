@@ -53,11 +53,13 @@ public class SC2IOFactory {
 		Iterator<String> it = SEP_STATS.split(s.trim()).iterator();
 		curr_race = enumFromFirstChar(Race.class, it.next());
 		curr_group = enumFromFirstChar(Group.class, it.next());
+		System.out.println("entering section: " + curr_race.name + " " + curr_group.name);
 	}
 
 	public void addAssetType(String s) {
 		SC2AssetType newtype = makeAssetType(s);
 		world.stat.put(newtype.name, newtype);
+		System.out.println("loaded asset type " + newtype.name);
 	}
 
 	public SC2AssetType makeAssetType(String s) {
@@ -67,7 +69,6 @@ public class SC2IOFactory {
 
 		Iterator<String> parts = SEP_ASSET.split(s).iterator();
 		String name = parts.next();
-		System.out.println(name);
 		curr_builder = SC2AssetType.initAssetType(name, curr_race);
 
 		while (parts.hasNext()) {
@@ -82,17 +83,14 @@ public class SC2IOFactory {
 				// provide supply
 				String str = SEP_STATS.split(cmpts.next()).iterator().next();
 				curr_builder.provide(parseInt(str));
-				System.out.println("    provides " + str + " supply");
 
 			} else if (head.equals("u")) {
 				// unit stats
 				List<String> stats = copyOf(SEP_STATS.split(cmpts.next()));
 				parseUnitStats(stats);
-				System.out.println("    unit stats " + stats);
 
 			} else {
 				List<String> args = copyOf(cmpts);
-				System.out.println("    " + head + " " + args);
 				parseAssetActionSchema(Action.fromString(head), args);
 			}
 		}
@@ -196,6 +194,7 @@ public class SC2IOFactory {
 		for (SC2AssetType type: world.stat.values()) {
 			type.cycles(world);
 		}
+		System.out.println("set reference cycles successfully");
 	}
 
 	final public static Splitter SEP_ASSET = Splitter.on('|').trimResults().omitEmptyStrings();
