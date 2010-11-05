@@ -1,8 +1,11 @@
 package sc2;
 
+import sc2.annot.Immutable;
+
 /**
 ** Represents an asset's health or shield stats.
 */
+@Immutable
 public class SC2HealthSchema {
 
 	final public int max;

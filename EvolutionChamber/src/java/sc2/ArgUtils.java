@@ -25,6 +25,10 @@ final public class ArgUtils {
 		return (set == null)? Collections.<T>emptySet(): Collections.<T>unmodifiableSet(set);
 	}
 
+	public static <E extends Enum<E>> E enumFromUncased(Class<E> enumType, String s) {
+		return Enum.valueOf(enumType, s.toUpperCase());
+	}
+
 	public static <E extends Enum<E>> E enumFromFirstChar(Class<E> enumType, String s) {
 		return s.length() == 0? Enum.valueOf(enumType, "\0"): Enum.valueOf(enumType, s.substring(0,1));
 	}

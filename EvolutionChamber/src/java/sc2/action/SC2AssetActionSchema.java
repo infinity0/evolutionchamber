@@ -1,5 +1,8 @@
 package sc2.action;
 
+import sc2.annot.Idempotent;
+import sc2.annot.PostImmutable;
+
 import sc2.SC2World;
 import sc2.asset.SC2AssetType;
 import sc2.require.SC2Requires;
@@ -16,6 +19,7 @@ import java.util.Arrays;
 ** Represents meta-data for {@link SC2AssetAction}, such as resource cost and
 ** requirements.
 */
+@PostImmutable(post="cycles")
 public class SC2AssetActionSchema {
 
 	final public Action act;
@@ -68,6 +72,7 @@ public class SC2AssetActionSchema {
 	}
 
 	/** Set reference cycles after construction. */
+	@Idempotent
 	public void cycles(SC2World world) {
 		// sources
 		for (int i=0; i<src.length; ++i) {

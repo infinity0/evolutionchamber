@@ -1,8 +1,11 @@
 package sc2;
 
+import sc2.annot.Immutable;
+
 /**
 ** Represents an asset's energy stats.
 */
+@Immutable
 public class SC2EnergySchema {
 
 	final public int max;

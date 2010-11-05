@@ -1,5 +1,8 @@
 package sc2.asset;
 
+import sc2.annot.Idempotent;
+import sc2.annot.PostImmutable;
+
 import sc2.SC2World;
 import sc2.SC2Attack;
 import sc2.SC2HealthSchema;
@@ -21,6 +24,7 @@ import java.util.NoSuchElementException;
 /**
 ** Represents an asset type.
 */
+@PostImmutable(post="cycles")
 public class SC2AssetType {
 
 	final public String name;
@@ -58,6 +62,7 @@ public class SC2AssetType {
 	}
 
 	/** Set reference cycles after construction. */
+	@Idempotent
 	public void cycles(SC2World world) {
 		for (SC2AssetActionSchema a: actions) { a.cycles(world); }
 	}

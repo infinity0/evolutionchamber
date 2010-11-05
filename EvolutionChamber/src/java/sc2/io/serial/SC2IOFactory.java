@@ -1,13 +1,14 @@
 package sc2.io.serial;
 
 import sc2.SC2World;
+import sc2.SC2Macro;
 import sc2.asset.SC2AssetType;
 import sc2.action.SC2AssetActionSchema;
 import sc2.require.SC2Requires;
 import sc2.require.SC2RequiresAsset;
 import sc2.require.SC2RequiresTech;
 import static sc2.SC2World.Race;
-import static sc2.SC2World.Macro;
+import static sc2.SC2Macro.Macro;
 import static sc2.asset.SC2AssetType.Group;
 import static sc2.asset.SC2AssetType.Builder;
 import static sc2.action.SC2AssetAction.Action;
@@ -197,14 +198,9 @@ public class SC2IOFactory {
 		}
 	}
 
-	/**
-	** Some morphs happen in cycles, so we can't create the types "in order".
-	*/
 	public void cycles() {
 		resetAll();
-		for (SC2AssetType type: world.stat.values()) {
-			type.cycles(world);
-		}
+		world.cycles();
 		System.out.println("set reference cycles successfully");
 	}
 

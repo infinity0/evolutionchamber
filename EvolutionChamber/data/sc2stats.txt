@@ -37,6 +37,10 @@
 # - Food cost for a unit includes previous morph forms. This means we don't
 #   need to define -1 food cost for structures, when we lose a drone.
 #
+# - An asset must not refer to (require, be built from, etc.) an asset listed
+#   below it. The only exceptions allowed are assets with morph cycles (e.g.
+#   Viking, Gateway) and count requirements (e.g. Mothership).
+#
 
 
 [ Protoss Structures ]

@@ -1,11 +1,14 @@
 package sc2.require;
 
+import sc2.annot.Immutable;
+
 import sc2.asset.SC2Asset;
 import sc2.SC2Player;
 
 /**
-** Represents a requirement.
+** Represents a requirement. Implementations must be immutable.
 */
+@Immutable
 public interface SC2Requires {
 
 	/**
