@@ -23,6 +23,8 @@ public class EcActionUpgradeMissile1 extends EcActionUpgrade
 	{
 		if (s.evolutionChambers == 0)
 			return true;
+		if (s.missile1 == true)
+			return true;
 		return false;
 	}
 

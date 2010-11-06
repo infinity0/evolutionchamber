@@ -27,6 +27,8 @@ public class EcActionUpgradeMissile3 extends EcActionUpgrade
 			return true;
 		if (s.missile2 == false)
 			return true;
+		if (s.missile3 == true)
+			return true;
 		return false;
 	}
 

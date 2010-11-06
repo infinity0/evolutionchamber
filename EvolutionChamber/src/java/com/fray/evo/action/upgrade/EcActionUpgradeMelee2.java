@@ -27,6 +27,8 @@ public class EcActionUpgradeMelee2 extends EcActionUpgrade
 			return true;
 		if (s.melee1 == false)
 			return true;
+		if (s.melee2 == true)
+			return true;
 		return false;
 	}
 

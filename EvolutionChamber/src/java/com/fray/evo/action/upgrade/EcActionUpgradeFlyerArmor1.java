@@ -22,6 +22,8 @@ public class EcActionUpgradeFlyerArmor1 extends EcActionUpgrade
 	{
 		if (s.spire == 0)
 			return true;
+		if (s.flyerArmor1 == true)
+			return true;
 		return false;
 	}
 

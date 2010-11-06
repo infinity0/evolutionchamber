@@ -23,6 +23,8 @@ public class EcActionUpgradeMelee1 extends EcActionUpgrade
 	{
 		if (s.evolutionChambers == 0)
 			return true;
+		if (s.melee1 == true)
+			return true;
 		return false;
 	}
 

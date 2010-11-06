@@ -23,6 +23,8 @@ public class EcActionUpgradeCarapace1 extends EcActionUpgrade
 	{
 		if (s.evolutionChambers == 0)
 			return true;
+		if (s.armor1 == true)
+			return true;
 		return false;
 	}
 

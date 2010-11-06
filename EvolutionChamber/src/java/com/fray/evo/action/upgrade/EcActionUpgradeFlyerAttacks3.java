@@ -27,6 +27,8 @@ public class EcActionUpgradeFlyerAttacks3 extends EcActionUpgrade
 			return true;
 		if (s.flyerAttack2 == false)
 			return true;
+		if (s.flyerAttack3 == true)
+			return true;
 		return false;
 	}
 

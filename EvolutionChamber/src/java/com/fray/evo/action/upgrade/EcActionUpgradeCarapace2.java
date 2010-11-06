@@ -27,6 +27,8 @@ public class EcActionUpgradeCarapace2 extends EcActionUpgrade
 			return true;
 		if (s.armor1 == false)
 			return true;
+		if (s.armor2 == true)
+			return true;
 		return false;
 	}
 

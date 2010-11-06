@@ -22,6 +22,8 @@ public class EcActionUpgradeFlyerAttacks1 extends EcActionUpgrade
 	{
 		if (s.spire == 0)
 			return true;
+		if (s.flyerAttack1 == true)
+			return true;
 		return false;
 	}
 
