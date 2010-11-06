@@ -22,7 +22,7 @@ public class SC2Main {
 		System.out.println("-- starting test build");
 		SC2Player play = new SC2Player(world, Race.P);
 		SC2BuildOrderExecutor exec = new SC2BuildOrderExecutor(play);
-		play.initAssets(1, 6, 50, 0);
+		play.initAssets(new int[]{6}, 50, 0);
 		System.out.println(play.getDesc());
 
 		exec.executeAll(

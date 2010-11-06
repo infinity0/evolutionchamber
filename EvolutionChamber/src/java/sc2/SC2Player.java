@@ -73,21 +73,28 @@ public class SC2Player {
 		  assets.values(), research).toString();
 	}
 
-	public void initAssets(int num_bases, int num_workers, double res_m, double res_v) {
+	/**
+	** @param base_workers Number of workers at each base.
+	*/
+	public void initAssets(int[] base_workers, double res_m, double res_v) {
 		this.res_m = res_m;
 		this.res_v = res_v;
 
 		SC2AssetType type_b = world.macro.get(race).command();
-		for (int i=0; i<num_bases; ++i) {
-			addAsset(new SC2Base(this, type_b));
-			this.max_f += type_b.prov_f;
-		}
 		SC2AssetType type_w = world.macro.get(race).worker();
-		for (int i=0; i<num_workers; ++i) {
-			addAsset(new SC2Worker(this, type_w));
-			this.res_f += type_w.cost_f;
+
+		for (int i=0; i<base_workers.length; ++i) {
+			SC2Base curr_base = new SC2Base(this, type_b);
+			addAsset(curr_base);
+			this.max_f += type_b.prov_f;
+
+			for (int j=0; j<base_workers[i]; ++j) {
+				SC2Worker curr_worker = new SC2Worker(this, type_w);
+				addAsset(curr_worker);
+				this.res_f += type_w.cost_f;
+				curr_worker.setGatherM(curr_base);
+			}
 		}
-		// TODO order the worker to mine minerals
 	}
 
 	/**

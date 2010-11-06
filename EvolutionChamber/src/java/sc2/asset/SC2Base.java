@@ -4,6 +4,7 @@ import sc2.SC2Player;
 
 import java.util.Set;
 import java.util.HashSet;
+import java.util.Formatter;
 
 /**
 ** Represents a base structure, eg. Nexus, Orbital Command, Hive.
@@ -40,7 +41,32 @@ public class SC2Base extends SC2Structure {
 		return v;
 	}
 
-	// TODO
+	public void remGatherer(SC2Worker work) {
+		work_m.remove(work);
+		work_v.remove(work);
+	}
+
+	public void addGathererM(SC2Worker work) {
+		work_m.add(work);
+	}
+
+	public void addGathererV(SC2Worker work) {
+		work_v.add(work);
+	}
+
+	public double estIncomeM() {
+		return gold? estIncomeG(work_m.size(), patch_m): estIncomeM(work_m.size(), patch_m);
+	}
+
+	public double estIncomeV() {
+		return estIncomeV(work_v.size(), getPatchV());
+	}
+
+	public String getDesc() {
+		return new Formatter().format(
+		  "%s @ %6.2f%s+:%d %6.2fv+:%d",
+		  super.toString(), estIncomeM(), gold?"g":"m", patch_m, estIncomeV(), getPatchV()).toString();
+	}
 
 	public static double estIncomeM(int workers, int patch_m) {
 		return estIncome(workers, patch_m, RATE_M);
@@ -55,6 +81,7 @@ public class SC2Base extends SC2Structure {
 	}
 
 	public static double estIncome(int workers, int patches, double[] rate) {
+		if (patches == 0) { return 0; }
 		int max = rate.length;
 
 		// minimum number of workers per patch

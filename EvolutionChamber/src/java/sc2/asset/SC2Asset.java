@@ -49,10 +49,6 @@ public class SC2Asset {
 		this(play, type, type.stat_ep.init);
 	}
 
-	@Override public String toString() {
-		return type.name + " " + name;
-	}
-
 	/**
 	** Give a name for the asset. This only affects output notifications, not logic.
 	*/
@@ -203,6 +199,10 @@ public class SC2Asset {
 
 	protected void regenEnergy() {
 		energy = type.stat_ep.regen(energy);
+	}
+
+	@Override public String toString() {
+		return type.name + " " + name;
 	}
 
 	/** max queue size. TODO for BO-optimisation we should set this to 0 */

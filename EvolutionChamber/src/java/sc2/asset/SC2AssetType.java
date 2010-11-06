@@ -56,10 +56,6 @@ public class SC2AssetType {
 	/** cargo capacity. */
 	final public int cg_cap;
 
-	@Override public String toString() {
-		return "<" + name + ">";
-	}
-
 	public Group group() {
 		return (this instanceof Guard)? Group.G: (cost_f != null)? Group.U:
 		  (mods.contains(Modifier.STRUCTURE))? Group.S: Group.T;
@@ -100,6 +96,10 @@ public class SC2AssetType {
 			if (s.act == act) { all[i++] = s; }
 		}
 		return Arrays.copyOf(all, i);
+	}
+
+	@Override public String toString() {
+		return "<" + name + ">";
 	}
 
 	/**
