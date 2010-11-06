@@ -317,7 +317,11 @@ public class EcEvolver extends FitnessFunction
 	{
 		log.println("@" + s.timestamp() + "\tMining: \t" + string.trim());
 	}
-	
+
+	public void scout(EcBuildOrder s, String string)
+	{
+		log.println("@" + s.timestamp() + "\tScout: \t" + string.trim());
+	}
 	public EcState getDestination()
 	{
 		return destination;

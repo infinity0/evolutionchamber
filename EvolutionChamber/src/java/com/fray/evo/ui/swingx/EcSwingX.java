@@ -643,6 +643,9 @@ public class EcSwingX extends JXPanel implements EcReportable
 			public void actionPerformed(ActionEvent e)
 			{
 				destination[i].targetSeconds = getDigit(e);
+				((JTextField)e.getSource()).setText(
+						Integer.toString(destination[i].targetSeconds / 60) + ":"
+								+ Integer.toString(destination[i].targetSeconds % 60));
 			}
 			void reverse(Object o)
 			{

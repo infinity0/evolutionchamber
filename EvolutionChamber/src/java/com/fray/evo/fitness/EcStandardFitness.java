@@ -127,6 +127,11 @@ public class EcStandardFitness implements EcFitness {
 
 		if (state.isSatisfied(c))
 		{
+			score = augmentScore(score, c.drones, state.drones, 50, .58, false);
+			score = augmentScore(score, (int) c.minerals, (int) state.minerals, .011, .011, false);
+			score = augmentScore(score, (int) c.gas, (int) state.gas, .015, .015, false);
+			score = Math.max(score, 0);
+			
 			c.preTimeScore = score;
 			score *= ((double) c.targetSeconds / (double) c.seconds) * ((double) c.targetSeconds / (double) c.seconds);
 			c.timeBonus = score - c.preTimeScore;
@@ -134,10 +139,6 @@ public class EcStandardFitness implements EcFitness {
 			//System.out.println(String.format("PreTimeScore: %.2f",c.preTimeScore));
 			//System.out.println(String.format("Time Bonus: %.2f",c.timeBonus));
 			
-			score = augmentScore(score, c.drones, state.drones, 50, .58, false);
-			score = augmentScore(score, (int) c.minerals, (int) state.minerals, .011, .011, false);
-			score = augmentScore(score, (int) c.gas, (int) state.gas, .015, .015, false);
-			score = Math.max(score, 0);
 		}
 		else
 		{
@@ -149,7 +150,6 @@ public class EcStandardFitness implements EcFitness {
 		}
 		// score = Math.max(score - candidate.invalidActions -
 		// candidate.actionLength - candidate.waits, 0);
-		score = Math.max(score, 0);
 		return score;
 	}
 

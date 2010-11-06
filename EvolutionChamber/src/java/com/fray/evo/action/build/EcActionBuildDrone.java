@@ -33,11 +33,11 @@ public class EcActionBuildDrone extends EcAction implements Serializable
 			@Override
 			public void run()
 			{
-				if (s.droneIsScouting == false && s.drones >= e.getDestination().scoutDrone)
+				if (s.droneIsScouting == false && s.drones >= e.getDestination().scoutDrone && e.getDestination().scoutDrone != 0)
 				{
 					s.droneIsScouting = true; 
 					if (e.debug)
-						e.mining(s," +1 Scouting Drone");
+						e.scout(s," +1 Scouting Drone");
 				}
 				else
 				{
