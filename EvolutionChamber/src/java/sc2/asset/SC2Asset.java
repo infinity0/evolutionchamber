@@ -49,7 +49,7 @@ public class SC2Asset {
 		this(play, type, type.stat_ep.init);
 	}
 
-	public String toString() {
+	@Override public String toString() {
 		return type.name + " " + name;
 	}
 

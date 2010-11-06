@@ -4,16 +4,19 @@ import sc2.action.SC2Action;
 import sc2.action.SC2ActionException;
 import sc2.asset.SC2Asset;
 import sc2.asset.SC2AssetType;
+import sc2.asset.SC2Base;
+import sc2.asset.SC2Worker;
 import static sc2.SC2World.Race;
 
-import com.google.common.collect.Multimap;
-import com.google.common.collect.HashMultimap;
+import com.google.common.collect.SetMultimap;
+import com.google.common.collect.LinkedHashMultimap;
 
 import java.util.Iterator;
 import java.util.Set;
 import java.util.List;
 import java.util.HashSet;
 import java.util.ArrayList;
+import java.util.Formatter;
 
 /**
 ** Represents a game state, from the point of view of one player.
@@ -26,9 +29,11 @@ public class SC2Player {
 	final public SC2World world;
 	/** player's race */
 	final public Race race;
+	/** player's name */
+	final public String name;
 
 	/** current assets, stored by type */
-	final protected HashMultimap<SC2AssetType, SC2Asset> assets = HashMultimap.create();
+	final protected SetMultimap<SC2AssetType, SC2Asset> assets = LinkedHashMultimap.create();
 	/** completed research */
 	final protected Set<SC2AssetType> research = new HashSet<SC2AssetType>();
 	/** ongoing actions that don't belong to asset queues */
@@ -45,18 +50,44 @@ public class SC2Player {
 	/** game ticks, currently measured in seconds */
 	protected int time;
 
-	public SC2Player(SC2World world, Race race) {
+	public SC2Player(SC2World world, Race race, String name) {
 		if (world == null || race == null) { throw new NullPointerException(); }
 		this.world = world;
 		this.race = race;
-		this.res_m = 50;
-		this.res_v = 0;
-		// TODO populate assets with 6 workers, 1 cc
+		this.name = name;
+	}
+
+	public SC2Player(SC2World world, Race race) {
+		this(world, race, "Anonymous");
 	}
 
 	public String timestamp() {
 		int h = time / 60, m = time % 60;
 		return ((h<10)?"0":"") + h + ((m<10)?":0":":") + m;
+	}
+
+	public String getDesc() {
+		return new Formatter().format(
+		  "SC2Player %s [%s] @ %s @ %4.0fm %4.0fv %3.0f/%3df\nasset: %s\n tech: %s\n",
+		  name, race, timestamp(), res_m, res_v, res_f, max_f,
+		  assets.values(), research).toString();
+	}
+
+	public void initAssets(int num_bases, int num_workers, double res_m, double res_v) {
+		this.res_m = res_m;
+		this.res_v = res_v;
+
+		SC2AssetType type_b = world.macro.get(race).command();
+		for (int i=0; i<num_bases; ++i) {
+			addAsset(new SC2Base(this, type_b));
+			this.max_f += type_b.prov_f;
+		}
+		SC2AssetType type_w = world.macro.get(race).worker();
+		for (int i=0; i<num_workers; ++i) {
+			addAsset(new SC2Worker(this, type_w));
+			this.res_f += type_w.cost_f;
+		}
+		// TODO order the worker to mine minerals
 	}
 
 	/**
@@ -82,7 +113,8 @@ public class SC2Player {
 	}
 
 	public void addAsset(SC2Asset asset) {
-		// TODO
+		asset.setName("#" + assets.get(asset.type).size());
+		assets.put(asset.type, asset);
 	}
 
 	public Set<SC2Asset> getAssets(SC2AssetType type) {

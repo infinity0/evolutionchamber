@@ -56,6 +56,10 @@ public class SC2AssetType {
 	/** cargo capacity. */
 	final public int cg_cap;
 
+	@Override public String toString() {
+		return "<" + name + ">";
+	}
+
 	public Group group() {
 		return (this instanceof Guard)? Group.G: (cost_f != null)? Group.U:
 		  (mods.contains(Modifier.STRUCTURE))? Group.S: Group.T;

@@ -69,7 +69,7 @@ public class SC2IOFactory {
 		Iterator<String> it = SEP_STATS.split(s.trim()).iterator();
 		curr_race = enumFromFirstChar(Race.class, it.next());
 		curr_group = enumFromFirstChar(Group.class, it.next());
-		System.out.println("entering section: " + curr_race.name + " " + curr_group.name);
+		System.out.println("entered section: " + curr_race.name + " " + curr_group.name);
 	}
 
 	public void addAssetType(String s) {
@@ -223,7 +223,6 @@ public class SC2IOFactory {
 
 	protected void setRaceMacroInfo() {
 		for (Map.Entry<Race, EnumMap<Macro, List<SC2AssetType>>> en: macro_state.entrySet()) {
-			System.out.println("making macro descriptor: " + en);
 			Race race = en.getKey();
 			EnumMap<Macro, List<SC2AssetType>> desc = en.getValue();
 
@@ -232,6 +231,7 @@ public class SC2IOFactory {
 			  desc.get(Macro.WORKER).toArray(new SC2AssetType[desc.get(Macro.WORKER).size()]),
 			  desc.get(Macro.SUPPLY).toArray(new SC2AssetType[desc.get(Macro.SUPPLY).size()])
 			));
+			System.out.println("loaded macro descriptor: " + en);
 		}
 	}
 
