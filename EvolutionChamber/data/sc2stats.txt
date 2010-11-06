@@ -112,6 +112,9 @@ Archon          | u: 4 4 0 | morph :   0   0  12 : High Templar, Dark Templar ::
 
 [ Zerg Structures ]
 
+# TODO nydus network has 1020 cargo capacity, 255 max units
+# TODO nydus work - warpin is better but need to support non-5s warp times
+
 Hatchery          | morph : 300   0 100 : Drone                     | macro: command     | prov_f: 2
 Extractor         | morph :  25   0  30 : Drone
 Spawning Pool     | morph : 200   0  65 : Drone : Hatchery
@@ -124,8 +127,8 @@ Lair              | morph : 150 100  80 : Hatchery : Spawning Pool  | macro: com
 Hydralisk Den     | morph : 100 100  40 : Drone : Lair
 Infestation Pit   | morph : 100 100  50 : Drone : Lair
 Spire             | morph : 200 200 100 : Drone : Lair
-Nydus Network     | morph : 200 200  50 : Drone : Lair                  # consider cargo capacity?
-Nydus Worm        | build : 100 100  20 : Nydus Network                 # build/warpin?
+Nydus Network     | morph : 200 200  50 : Drone : Lair
+Nydus Worm        | build : 100 100  20 : Nydus Network
 Hive              | morph : 200 150 100 : Lair  : Infestation Pit   | macro: command     | prov_f: 2
 Greater Spire     | morph : 100 150 100 : Spire : Hive
 Ultralisk Cavern  | morph : 150 200 65  : Drone : Hive

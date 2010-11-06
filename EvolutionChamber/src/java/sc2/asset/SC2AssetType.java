@@ -10,8 +10,8 @@ import sc2.SC2EnergySchema;
 import sc2.action.SC2AssetAction;
 import sc2.action.SC2AssetActionSchema;
 import static sc2.SC2World.Race;
-import static sc2.ArgUtils.non_null;
-import static sc2.ArgUtils.non_null_copy;
+import static sc2.ArgUtils.nonNull;
+import static sc2.ArgUtils.nullSafeCopy;
 import static sc2.ArgUtils.non_null_immute_set;
 
 import java.util.EnumSet;
@@ -70,8 +70,8 @@ public class SC2AssetType {
 	/**
 	** Return the food cost, or 0 if this asset type does not use supply
 	*/
-	public float supply() {
-		return cost_f == null? 0: (float)cost_f;
+	public float cost_f() {
+		return cost_f == null? 0f: cost_f;
 	}
 
 	/**
@@ -110,8 +110,8 @@ public class SC2AssetType {
 		int prov_f, Float cost_f, int cg_size, int cg_cap
 	) {
 		this(true,
-		  non_null("name", name), non_null("race", race),
-		  non_null_copy(actions, new SC2AssetActionSchema[0]),
+		  nonNull(name, "name"), nonNull(race, "race"),
+		  nullSafeCopy(actions, new SC2AssetActionSchema[0]),
 		  stat_hp, stat_sp, (stat_ep == null)? SC2EnergySchema.NONE: stat_ep,
 		  speed, range, sight,
 		  non_null_immute_set(mods), atk_g, atk_a,

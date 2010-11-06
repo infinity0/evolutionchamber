@@ -12,17 +12,28 @@ final public class ArgUtils {
 
 	private ArgUtils() { }
 
-	public static <T> T non_null(String desc, T o) {
-		if (o == null) { throw new IllegalArgumentException(desc + " must not be null"); }
+	public static IllegalArgumentException ia(String msg) { return new IllegalArgumentException(msg); }
+
+	public static <T> T nonNull(T o, String desc) {
+		if (o == null) { throw ia(desc + " must not be null"); }
 		return o;
 	}
 
-	public static <T> T[] non_null_copy(T[] a, T[] d) {
+	public static <T> T[] nullSafeCopy(T[] a, T[] d) {
 		return (a == null)? d: Arrays.copyOf(a, a.length);
 	}
 
 	public static <T> Set<T> non_null_immute_set(Set<T> set) {
 		return (set == null)? Collections.<T>emptySet(): Collections.<T>unmodifiableSet(set);
+	}
+
+	public static <T> T[] copyOf(T[] a) {
+		return Arrays.copyOf(a, a.length);
+	}
+
+	public static <T> T[] nonEmpty(T[] arr, String desc) {
+		if (nonNull(arr, desc).length == 0) { throw ia(desc + "[] must have at least one element in"); }
+		return arr;
 	}
 
 	public static <E extends Enum<E>> E enumFromUncased(Class<E> enumType, String s) {

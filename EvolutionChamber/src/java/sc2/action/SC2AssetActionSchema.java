@@ -9,8 +9,8 @@ import sc2.require.SC2Requires;
 import sc2.require.SC2RequiresAsset;
 import static sc2.asset.SC2AssetType.Guard;
 import static sc2.action.SC2AssetAction.Action;
-import static sc2.ArgUtils.non_null;
-import static sc2.ArgUtils.non_null_copy;
+import static sc2.ArgUtils.nonNull;
+import static sc2.ArgUtils.nullSafeCopy;
 
 import java.util.List;
 import java.util.Arrays;
@@ -55,9 +55,9 @@ public class SC2AssetActionSchema {
 	public SC2AssetActionSchema(Action act, SC2AssetType[] src, SC2Requires[] req,
 	  int cost_m, int cost_v, double cost_t,
 	  SC2AssetType pre, int num_src, int num_dst) {
-		this.act = non_null("action", act);
-		this.src = non_null_copy(src, new SC2AssetType[0]);
-		this.req = non_null_copy(req, new SC2Requires[0]);
+		this.act = nonNull(act, "action");
+		this.src = nullSafeCopy(src, new SC2AssetType[0]);
+		this.req = nullSafeCopy(req, new SC2Requires[0]);
 		this.cost_m = cost_m;
 		this.cost_v = cost_v;
 		this.cost_t = cost_t;
