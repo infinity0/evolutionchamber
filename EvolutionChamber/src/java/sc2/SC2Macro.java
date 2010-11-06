@@ -7,8 +7,6 @@ import static sc2.SC2World.Race;
 import static sc2.ArgUtils.nonEmpty;
 import static sc2.ArgUtils.copyOf;
 
-import java.util.EnumMap;
-
 /**
 ** Holds macro control information for a race.
 */
@@ -34,10 +32,6 @@ public class SC2Macro {
 	public SC2AssetType worker() { return worker[0]; }
 	/** Return the default supply type */
 	public SC2AssetType supply() { return supply[0]; }
-
-	public SC2Macro(Race race, EnumMap<Macro, SC2AssetType[]> data) {
-		this(race, data.get(Macro.COMMAND), data.get(Macro.WORKER), data.get(Macro.SUPPLY));
-	}
 
 	public enum Macro { COMMAND, WORKER, SUPPLY; }
 

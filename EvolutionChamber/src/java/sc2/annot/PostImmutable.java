@@ -10,8 +10,8 @@ import java.lang.annotation.*;
 public @interface PostImmutable {
 
 	/**
-	** The post-initialisation method. should either be idempotent or throw
-	** an error on subsequent runs.
+	** The post-initialisation method. It should either be strictly idempotent
+	** or throw an error on subsequent runs.
 	**
 	** TODO better representation than just String, maybe add Class[] for
 	** method signatures too...

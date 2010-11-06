@@ -37,7 +37,7 @@ public class SC2WorldReader {
 			}
 		}
 
-		factory.cycles();
+		factory.postprocess();
 		return world;
 	}
 

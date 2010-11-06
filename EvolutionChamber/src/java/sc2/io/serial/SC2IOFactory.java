@@ -14,14 +14,18 @@ import static sc2.asset.SC2AssetType.Builder;
 import static sc2.action.SC2AssetAction.Action;
 import static sc2.ArgUtils.isFAIAPEmpty;
 import static sc2.ArgUtils.enumFromFirstChar;
+import static sc2.ArgUtils.enumFromUncased;
 
 import com.google.common.base.Splitter;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import static com.google.common.collect.ImmutableList.copyOf;
 
+import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.NoSuchElementException;
 import static java.lang.Integer.parseInt;
@@ -41,8 +45,18 @@ public class SC2IOFactory {
 	protected Group curr_group;
 	protected Builder curr_builder;
 
+	final protected EnumMap<Race, EnumMap<Macro, List<SC2AssetType>>> macro_state;
+
 	public SC2IOFactory(SC2World world) {
 		this.world = world;
+		this.macro_state = new EnumMap<Race, EnumMap<Macro, List<SC2AssetType>>>(Race.class);
+		for (Race race: Race.values()) {
+			EnumMap<Macro, List<SC2AssetType>> desc = new EnumMap<Macro, List<SC2AssetType>>(Macro.class);
+			for (Macro control: Macro.values()) {
+				desc.put(control, new ArrayList<SC2AssetType>());
+			}
+			macro_state.put(race, desc);
+		}
 	}
 
 	protected void resetAll() {
@@ -68,6 +82,7 @@ public class SC2IOFactory {
 		if (curr_race == null || curr_group == null) {
 			throw new IllegalStateException("current race/group not set");
 		}
+		Macro curr_macro = null;
 
 		Iterator<String> parts = SEP_ASSET.split(s).iterator();
 		String name = parts.next();
@@ -89,7 +104,7 @@ public class SC2IOFactory {
 
 			} else if (head.equals("macro")) {
 				// metadata on bases
-				// TODO
+				curr_macro = enumFromUncased(Macro.class, cmpts.next());
 
 			} else if (head.equals("u")) {
 				// unit stats
@@ -104,10 +119,18 @@ public class SC2IOFactory {
 		}
 
 		SC2AssetType type = curr_builder.build();
+
+		// sanity checks
 		if (type.group() != curr_group) {
 			throw new IllegalStateException("mismatched asset group for " + type.name +
 			  ": expected " + curr_group.name + " but got " + type.group().name);
 		}
+
+		// post-processing on the type itself
+		if (curr_macro != null) {
+			macro_state.get(curr_race).get(curr_macro).add(type);
+		}
+
 		curr_builder = null;
 		return type;
 	}
@@ -198,8 +221,23 @@ public class SC2IOFactory {
 		}
 	}
 
-	public void cycles() {
+	protected void setRaceMacroInfo() {
+		for (Map.Entry<Race, EnumMap<Macro, List<SC2AssetType>>> en: macro_state.entrySet()) {
+			System.out.println("making macro descriptor: " + en);
+			Race race = en.getKey();
+			EnumMap<Macro, List<SC2AssetType>> desc = en.getValue();
+
+			world.macro.put(race, new SC2Macro(race,
+			  desc.get(Macro.COMMAND).toArray(new SC2AssetType[desc.get(Macro.COMMAND).size()]),
+			  desc.get(Macro.WORKER).toArray(new SC2AssetType[desc.get(Macro.WORKER).size()]),
+			  desc.get(Macro.SUPPLY).toArray(new SC2AssetType[desc.get(Macro.SUPPLY).size()])
+			));
+		}
+	}
+
+	public void postprocess() {
 		resetAll();
+		setRaceMacroInfo();
 		world.cycles();
 		System.out.println("set reference cycles successfully");
 	}
