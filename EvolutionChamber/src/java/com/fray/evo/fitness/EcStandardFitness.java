@@ -102,6 +102,18 @@ public class EcStandardFitness implements EcFitness {
 		// score += Math.max(a - b, 0) * mulb;
 		return score;
 	}
+	private double augmentSlowDropoffScore(double score, int a, int b, double mula, double mulb, boolean waypoint)
+	{
+		score += Math.max(Math.min(a, b), 0) * mula;
+		if (!waypoint)
+			for (int i = 0; i < Math.max(a - b, 0); i++)
+			{
+				mulb *= .97;
+				score += mulb;
+			}
+		// score += Math.max(a - b, 0) * mulb;
+		return score;
+	}
 
 	@Override
 	public double score(EcState candidate, EcState metric) {
@@ -142,10 +154,12 @@ public class EcStandardFitness implements EcFitness {
 		}
 		else
 		{
-
-			score = augmentScore(score, c.drones, state.drones, 50, .50, false);
-//			score = augmentScore(score, (int) c.minerals, (int) state.minerals, .0010, .0010, false);
-//			score = augmentScore(score, (int) c.gas, (int) state.gas, .0015, .0015, false);
+			double xtraDroneScore = .6;
+			if (metric.settings.overDrone || metric.settings.workerParity)
+				xtraDroneScore = 2;
+			score = augmentScore(score, c.drones, state.drones, 50, xtraDroneScore, false);
+			score = augmentScore(score, (int) c.minerals, (int) state.minerals, .001, .001, false);
+			score = augmentScore(score, (int) c.gas, (int) state.gas, .0012, .0012, false);
 			score = Math.max(score- candidate.invalidActions, 0);
 		}
 		// score = Math.max(score - candidate.invalidActions -

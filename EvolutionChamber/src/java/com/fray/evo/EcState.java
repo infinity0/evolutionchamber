@@ -508,7 +508,7 @@ public class EcState implements Serializable
 
 	public int getParityDrones(EcState s)
 	{
-		int optimalDrones = Math.min((s.bases() * 16) + (s.gasExtractors * 3), maxOverDrones);
+		int optimalDrones = Math.min((Math.min(s.bases() * 16,3)) + (s.gasExtractors * 3), maxOverDrones);
 		int parityDrones = Math.min(s.getOverDrones(s), optimalDrones);
 
 		return parityDrones;
@@ -524,7 +524,7 @@ public class EcState implements Serializable
 		int productionTime = 0;
 
 		// Calculate raw hatchery production time
-		for (int i = 0; i < hatcheryTimes.size(); i++)
+		for (int i = 0; i < Math.min(hatcheryTimes.size(),4); i++)
 		{
 			productionTime += seconds - hatcheryTimes.get(i); // TODO: Change to
 																// constant
