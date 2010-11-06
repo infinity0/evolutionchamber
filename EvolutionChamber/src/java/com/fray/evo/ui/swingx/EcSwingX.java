@@ -586,8 +586,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 		sb.append("\n\nHow to use:");
 		sb.append("\nEnter in what you would like to see as your end state. Hit Go. Be patient.");
 		sb.append("\nThe build order will compute, and it can take several minutes to potentially hours.");
-		sb.append("\nAll build orders are automatically saved when you exit or hit stop, so, if you put in");
-		sb.append("\nthe same build order, you will get the same result.");
+		sb.append("\nAll build orders are saved and may be viewed later.");
 		sb.append("\n\nRemember that this is evolutionary science, so don't be surprised if things seem wonky!");
 		sb.append("\n\nHow to use waypoints:");
 		sb.append("\nTo use waypoints, enter first what you would like at the end of the build.");
@@ -602,7 +601,11 @@ public class EcSwingX extends JXPanel implements EcReportable
 		sb.append("\nmulander (Auto-updater)");
 		sb.append("\nUtena (Genetics)");
 		sb.append("\nBumblebees (Features)");
-		sb.append("\nAbout 27 other people, who's names I need to compile (Testing)");
+		sb.append("\nQwerty10010 (Docs)");
+		sb.append("\nAbydos1 (Terran/Protoss)");
+		sb.append("\nInfinity0 (Terran/Protoss)");
+		sb.append("\nAbout 10,493 other people, who's names I need to compile. (Testing)");
+		sb.append("\n\nSpecial thanks to Incinerate. Those who know why, know why. ;-)");
 		simpleBuildOrder = sb.toString();
 		detailedBuildOrder = sb.toString();
 		outputText.setText(sb.toString());

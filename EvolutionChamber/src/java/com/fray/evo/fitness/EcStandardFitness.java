@@ -144,8 +144,8 @@ public class EcStandardFitness implements EcFitness {
 		{
 
 			score = augmentScore(score, c.drones, state.drones, 50, .50, false);
-			score = augmentScore(score, (int) c.minerals, (int) state.minerals, .0010, .0010, false);
-			score = augmentScore(score, (int) c.gas, (int) state.gas, .0015, .0015, false);
+//			score = augmentScore(score, (int) c.minerals, (int) state.minerals, .0010, .0010, false);
+//			score = augmentScore(score, (int) c.gas, (int) state.gas, .0015, .0015, false);
 			score = Math.max(score- candidate.invalidActions, 0);
 		}
 		// score = Math.max(score - candidate.invalidActions -
