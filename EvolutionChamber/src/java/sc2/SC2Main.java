@@ -25,6 +25,11 @@ public class SC2Main {
 		play.initAssets(new int[]{6}, 50, 0);
 		System.out.println(play.getDesc());
 
+		/*play.advance();
+		play.advance();
+		play.advance();
+		System.out.println(play.getDesc());*/
+
 		exec.executeAll(
 		  new SC2Build(world.getAssetType("Probe")),
 		  new SC2Build(world.getAssetType("Probe")),

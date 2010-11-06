@@ -9,7 +9,7 @@ import sc2.SC2Player;
 public class SC2Worker extends SC2Asset {
 
 	/** current activity */
-	protected Activity act;
+	protected Activity act = Activity.IDLE;
 
 	/** current base, if {@code act} is {@code gath_m | gath_v}. */
 	protected SC2Base base;
@@ -19,7 +19,6 @@ public class SC2Worker extends SC2Asset {
 
 	public SC2Worker(SC2Player play, SC2AssetType type) {
 		super(play, type);
-		this.act = Activity.IDLE;
 	}
 
 	public void setIdle() {

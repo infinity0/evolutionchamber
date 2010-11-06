@@ -68,6 +68,13 @@ public class SC2Base extends SC2Structure {
 		  super.toString(), estIncomeM(), gold?"g":"m", patch_m, estIncomeV(), getPatchV()).toString();
 	}
 
+	@Override protected void advance(double rate) {
+		super.advance(rate);
+		// add income to player state, at a normal rate
+		play.res_m += estIncomeM();
+		play.res_v += estIncomeV();
+	}
+
 	public static double estIncomeM(int workers, int patch_m) {
 		return estIncome(workers, patch_m, RATE_M);
 	}

@@ -5,7 +5,9 @@ package sc2.require;
 */
 public class SC2RequireException extends Exception {
 
-	/** whether the requirement can be met later */
+	/**
+	** @see #maybeSatisfiableByWaiting()
+	*/
 	final public boolean later;
 
 	public SC2RequireException(String message, boolean later) {
@@ -13,7 +15,20 @@ public class SC2RequireException extends Exception {
 		this.later = later;
 	}
 
-	public boolean canSatisfyByWaiting() {
+	/**
+	** A *hint* on whether the requirement can be met later, just by waiting.
+	**
+	** It's always safe to leave this as false, since it's only regarded as a
+	** hint. To predict it perfectly, would be infeasible, since you must take
+	** into account the consequences of all implemented actions.
+	**
+	** (To work around this, the genetic algorithm automatically inserts wait
+	** actions during the mutation. However, if this field is set to true, it
+	** will help speed up optimisation.)
+	**
+	** TODO actually implement an explicit wait action.
+	*/
+	public boolean maybeSatisfiableByWaiting() {
 		return later;
 	}
 

@@ -27,16 +27,18 @@ public class SC2ActionException extends Exception {
 	}
 
 	/**
-	** Whether the action *may* work later, just by waiting.
+	** A *hint* on whether the action may execute successfully later, with no
+	** intermediate actions.
 	**
-	** This essentially causes {@link sc2.SC2BuildOrderExecutor} to block on
-	** the action until it succeeds, or fails definitively (ie. the {@link
-	** #pleaseTryLater()} call returns {@code false}).
+	** It's always safe to leave this as false, since it's only regarded as a
+	** hint. To predict it perfectly, would be infeasible, since you must take
+	** into account the consequences of all implemented actions.
 	**
-	** This should be set te {@code true} as much as possible without causing
-	** the game to block indefinitely. Delaying the build is preferable to
-	** dropping a to-be-valid action, because it's unlilkely that the genetic
-	** algorithm will generate such an action at the exact optimal time.
+	** (To work around this, the genetic algorithm automatically inserts wait
+	** actions during the mutation. However, if this field is set to true, it
+	** will help speed up optimisation.)
+	**
+	** TODO actually implement an explicit wait action.
 	*/
 	public boolean pleaseTryLater() {
 		return later;

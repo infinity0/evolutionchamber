@@ -37,7 +37,7 @@ public class SC2Player {
 	/** completed research */
 	final protected Set<SC2AssetType> research = new HashSet<SC2AssetType>();
 	/** ongoing actions that don't belong to asset queues */
-	final protected List<SC2Action> ongoing = new ArrayList<SC2Action>();
+	final protected Set<SC2Action> ongoing = new HashSet<SC2Action>();
 
 	/** mineral resources. representing as a double allows for better averaging. */
 	public double res_m;
@@ -117,6 +117,7 @@ public class SC2Player {
 	public void addAction(SC2Action action) throws SC2ActionException {
 		// TODO
 		action.init();
+		ongoing.add(action);
 	}
 
 	public void addAsset(SC2Asset asset) {
