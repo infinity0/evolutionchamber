@@ -22,6 +22,7 @@ public abstract class EcActionBuildUnit extends EcActionBuild implements Seriali
 	{
 		s.minerals -= minerals;
 		s.gas -= gas;
+		s.supplyUsed += supply;
 		if (consumeLarva)
 			s.consumeLarva(e);
 		preExecute(s);
