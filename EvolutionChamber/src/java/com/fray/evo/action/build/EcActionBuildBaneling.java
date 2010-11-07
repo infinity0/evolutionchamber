@@ -9,24 +9,21 @@ import com.fray.evo.EcEvolver;
 import com.fray.evo.EcState;
 import com.fray.evo.action.EcAction;
 
-public class EcActionBuildBaneling extends EcAction implements Serializable
+public class EcActionBuildBaneling extends EcActionBuildUnit implements Serializable
 {
-	@Override
-	public void execute(final EcBuildOrder s, final EcEvolver e)
+	public EcActionBuildBaneling()
 	{
-		s.minerals -= 25;
-		s.gas -= 25;
+		super(25,25,0,20,"Baneling",false);
+	}
+
+	public void postExecute(final EcBuildOrder s, EcEvolver e)
+	{
+		s.banelings += 1;
+	}
+	
+	public void preExecute(final EcBuildOrder s)
+	{
 		s.zerglings -= 1;
-		s.addFutureAction(20, new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				if (e.debug)
-					e.obtained(s, " Baneling+1");
-				s.banelings += 1;
-			}
-		});
 	}
 
 	@Override
@@ -40,13 +37,9 @@ public class EcActionBuildBaneling extends EcAction implements Serializable
 	@Override
 	public boolean isPossible(EcBuildOrder s)
 	{
-		if (s.minerals < 25)
-			return false;
-		if (s.gas < 25)
-			return false;
 		if (s.zerglings < 1)
 			return false;
-		return true;
+		return isPossibleResources(s);
 	}
 
 	@Override

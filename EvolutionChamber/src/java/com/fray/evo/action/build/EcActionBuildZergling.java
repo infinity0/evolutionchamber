@@ -9,24 +9,25 @@ import com.fray.evo.EcEvolver;
 import com.fray.evo.EcState;
 import com.fray.evo.action.EcAction;
 
-public class EcActionBuildZergling extends EcAction implements Serializable
+public class EcActionBuildZergling extends EcActionBuildUnit implements Serializable
 {
-	@Override
-	public void execute(final EcBuildOrder s, final EcEvolver e)
+	public EcActionBuildZergling()
 	{
-		s.minerals -= 50;
-		s.consumeLarva(e);
-		s.supplyUsed += 1;
-		s.addFutureAction(24, new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				if (e.debug)
-					e.obtained(s," Zergling+2");
-				s.zerglings += 2;
-			}
-		});
+		super(50, 0, 1, 24, "Zergling", true);
+	}
+
+	@Override
+	protected void postExecute(EcBuildOrder s, EcEvolver e)
+	{
+		s.zerglings += 2;
+
+	}
+
+	@Override
+	protected void obtainOne(EcBuildOrder s, EcEvolver e)
+	{
+		if (e.debug)
+			e.obtained(s, " " + name + "+2");
 	}
 
 	@Override
@@ -37,18 +38,6 @@ public class EcActionBuildZergling extends EcAction implements Serializable
 		if (s.minerals >= 50 && !s.hasSupply(1))
 			return true;
 		return false;
-	}
-
-	@Override
-	public boolean isPossible(EcBuildOrder s)
-	{
-		if (s.minerals < 50)
-			return false;
-		if (s.larva < 1)
-			return false;
-		if (!s.hasSupply(1))
-			return false;
-		return true;
 	}
 
 	@Override

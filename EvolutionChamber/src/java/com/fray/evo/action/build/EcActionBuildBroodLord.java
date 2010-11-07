@@ -9,39 +9,28 @@ import com.fray.evo.EcEvolver;
 import com.fray.evo.EcState;
 import com.fray.evo.action.EcAction;
 
-public class EcActionBuildBroodLord extends EcAction implements Serializable
+public class EcActionBuildBroodLord extends EcActionBuildUnit implements Serializable
 {
-	@Override
-	public void execute(final EcBuildOrder s, final EcEvolver e)
+	public EcActionBuildBroodLord()
 	{
-		s.minerals -= 150;
-		s.gas -= 150;
-		s.corruptors -= 1;
-		s.supplyUsed += 2;
-		s.addFutureAction(34, new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				if (e.debug)
-					e.obtained(s," Brood Lord+1");
-				s.broodlords += 1;
-			}
-		});
+		super(150, 150, 2, 34, "Brood Lord", false);
 	}
 
+	protected void preExecute(final EcBuildOrder s)
+	{
+		s.corruptors -= 1;
+	}
+
+	protected void postExecute(final EcBuildOrder s, final EcEvolver e)
+	{
+		s.broodlords += 1;
+	}
 	@Override
 	public boolean isPossible(EcBuildOrder s)
 	{
-		if (s.minerals < 150)
-			return false;
-		if (s.gas < 150)
-			return false;
 		if (s.corruptors < 1)
 			return false;
-		if (!s.hasSupply(2))
-			return false;
-		return true;
+		return isPossibleResources(s);
 	}
 
 	@Override

@@ -9,44 +9,26 @@ import com.fray.evo.EcEvolver;
 import com.fray.evo.EcState;
 import com.fray.evo.action.EcAction;
 
-public class EcActionBuildSpineCrawler extends EcAction implements Serializable
+public class EcActionBuildSpineCrawler extends EcActionBuildBuilding implements Serializable
 {
 
-	@Override
-	public void execute(final EcBuildOrder s, final EcEvolver e)
+	public EcActionBuildSpineCrawler()
 	{
-		s.minerals -= 100;
-		s.drones -= 1;
-		s.dronesOnMinerals -= 1;
-		s.supplyUsed -= 1;
-		s.addFutureAction(50, new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				if (e.debug)
-					e.obtained(s, " Spine Crawler+1");
-				s.spineCrawlers += 1;
-			}
-		});
+		super(100,0,50,"Spine Crawler");
 	}
 
+	@Override
+	protected void postExecute(EcBuildOrder s, EcEvolver e)
+	{
+		s.spineCrawlers += 1;
+	}
+	
 	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{
 		if (s.spawningPools == 0)
 			return true;
 		return false;
-	}
-
-	@Override
-	public boolean isPossible(EcBuildOrder s)
-	{
-		if (s.minerals < 100)
-			return false;
-		if (s.drones < 1)
-			return false;
-		return true;
 	}
 
 	@Override

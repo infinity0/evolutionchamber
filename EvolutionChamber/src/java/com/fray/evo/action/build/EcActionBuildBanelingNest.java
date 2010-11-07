@@ -9,28 +9,18 @@ import com.fray.evo.EcEvolver;
 import com.fray.evo.EcState;
 import com.fray.evo.action.EcAction;
 
-public class EcActionBuildBanelingNest extends EcAction implements Serializable
+public class EcActionBuildBanelingNest extends EcActionBuildBuilding implements Serializable
 {
-	@Override
-	public void execute(final EcBuildOrder s, final EcEvolver e)
+	public EcActionBuildBanelingNest()
 	{
-		s.minerals -= 100;
-		s.gas -= 50;
-		s.drones -= 1;
-		s.dronesOnMinerals -= 1;
-		s.supplyUsed -= 1;
-		s.addFutureAction(60, new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				if (e.debug)
-					e.obtained(s, " Baneling Nest+1");
-				s.banelingNest += 1;
-			}
-		});
+		super(100,50,60,"Baneling Nest");
 	}
 
+	protected void postExecute(final EcBuildOrder s, final EcEvolver e)
+	{
+		s.banelingNest += 1;
+	}
+	
 	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{
@@ -39,18 +29,6 @@ public class EcActionBuildBanelingNest extends EcAction implements Serializable
 		if (s.banelingNest == 1)
 			return true;
 		return false;
-	}
-
-	@Override
-	public boolean isPossible(EcBuildOrder s)
-	{
-		if (s.minerals < 100)
-			return false;
-		if (s.gas < 50)
-			return false;
-		if (s.drones < 1)
-			return false;
-		return true;
 	}
 
 	@Override

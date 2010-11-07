@@ -9,26 +9,17 @@ import com.fray.evo.EcEvolver;
 import com.fray.evo.EcState;
 import com.fray.evo.action.EcAction;
 
-public class EcActionBuildEvolutionChamber extends EcAction implements Serializable
+public class EcActionBuildEvolutionChamber extends EcActionBuildBuilding implements Serializable
 {
+	public EcActionBuildEvolutionChamber()
+	{
+		super(75, 0, 35, "Evolution Chamber");
+	}
 
 	@Override
-	public void execute(final EcBuildOrder s, final EcEvolver e)
+	protected void postExecute(EcBuildOrder s, EcEvolver e)
 	{
-		s.minerals -= 75;
-		s.drones -= 1;
-		s.dronesOnMinerals -= 1;
-		s.supplyUsed -= 1;
-		s.addFutureAction(35, new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				if (e.debug)
-					e.obtained(s," Evolution Chamber+1");
-				s.evolutionChambers += 1;
-			}
-		});
+		s.evolutionChambers += 1;
 	}
 
 	@Override
@@ -37,16 +28,6 @@ public class EcActionBuildEvolutionChamber extends EcAction implements Serializa
 		if (s.evolutionChambers == 3)
 			return true;
 		return super.isInvalid(s);
-	}
-
-	@Override
-	public boolean isPossible(EcBuildOrder s)
-	{
-		if (s.minerals < 75)
-			return false;
-		if (s.drones < 1)
-			return false;
-		return true;
 	}
 
 	@Override

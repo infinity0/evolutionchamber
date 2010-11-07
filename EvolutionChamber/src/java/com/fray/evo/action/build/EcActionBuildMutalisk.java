@@ -9,30 +9,17 @@ import com.fray.evo.EcEvolver;
 import com.fray.evo.EcState;
 import com.fray.evo.action.EcAction;
 
-public class EcActionBuildMutalisk extends EcAction implements Serializable
+public class EcActionBuildMutalisk extends EcActionBuildUnit implements Serializable
 {
-	private static final int	time		= 33;
-	private static final int	supply		= 2;
-	private static final int	gas			= 100;
-	private static final int	minerals	= 100;
+	public EcActionBuildMutalisk()
+	{
+		super(100, 100, 2, 33, "Mutalisk", true);
+	}
 
 	@Override
-	public void execute(final EcBuildOrder s, final EcEvolver e)
+	protected void postExecute(EcBuildOrder s, EcEvolver e)
 	{
-		s.minerals -= minerals;
-		s.gas -= gas;
-		s.consumeLarva(e);
-		s.supplyUsed += supply;
-		s.addFutureAction(time, new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				if (e.debug)
-					e.obtained(s, " Mutalisk+1");
-				s.mutalisks += 1;
-			}
-		});
+		s.mutalisks += 1;
 	}
 
 	@Override
@@ -41,20 +28,6 @@ public class EcActionBuildMutalisk extends EcAction implements Serializable
 		if (s.spire == 0 && s.evolvingSpires == 0 && s.greaterSpire == 0)
 			return true;
 		return false;
-	}
-
-	@Override
-	public boolean isPossible(EcBuildOrder s)
-	{
-		if (s.minerals < minerals)
-			return false;
-		if (s.gas < gas)
-			return false;
-		if (s.larva < 1)
-			return false;
-		if (!s.hasSupply(supply))
-			return false;
-		return true;
 	}
 
 	@Override

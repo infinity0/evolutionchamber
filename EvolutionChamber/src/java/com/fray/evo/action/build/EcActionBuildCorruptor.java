@@ -9,52 +9,24 @@ import com.fray.evo.EcEvolver;
 import com.fray.evo.EcState;
 import com.fray.evo.action.EcAction;
 
-public class EcActionBuildCorruptor extends EcAction implements Serializable
-{
-	private static final int	time		= 40;
-	private static final int	supply		= 2;
-	private static final int	gas			= 100;
-	private static final int	minerals	= 150;
-
-	@Override
-	public void execute(final EcBuildOrder s, final EcEvolver e)
+public class EcActionBuildCorruptor extends EcActionBuildUnit implements Serializable
+{	
+	public EcActionBuildCorruptor()
 	{
-		s.minerals -= minerals;
-		s.gas -= gas;
-		s.consumeLarva(e);
-		s.supplyUsed += supply;
-		s.addFutureAction(time, new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				if (e.debug)
-					e.obtained(s, " Corruptor+1");
-				s.corruptors += 1;
-			}
-		});
+		super(150, 100, 2, 40, "Corruptor", true);
 	}
 
+	protected void postExecute(final EcBuildOrder s, final EcEvolver e)
+	{
+		s.corruptors += 1;
+	}
+	
 	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{
 		if (s.spire == 0 && s.greaterSpire == 0 && s.evolvingSpires == 0)
 			return true;
 		return false;
-	}
-
-	@Override
-	public boolean isPossible(EcBuildOrder s)
-	{
-		if (s.minerals < minerals)
-			return false;
-		if (s.gas < gas)
-			return false;
-		if (s.larva < 1)
-			return false;
-		if (!s.hasSupply(supply))
-			return false;
-		return true;
 	}
 
 	@Override

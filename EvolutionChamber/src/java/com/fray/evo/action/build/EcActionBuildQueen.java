@@ -9,67 +9,66 @@ import com.fray.evo.EcEvolver;
 import com.fray.evo.EcState;
 import com.fray.evo.action.EcAction;
 
-public class EcActionBuildQueen extends EcAction implements Serializable
+public class EcActionBuildQueen extends EcActionBuildUnit implements Serializable
 {
-	@Override
-	public void execute(final EcBuildOrder s, final EcEvolver e)
+	public EcActionBuildQueen()
 	{
-		s.supplyUsed += 2;
-		s.minerals -= 150;
-		s.consumeHatch(50);
-		s.addFutureAction(50, new Runnable()
-		{
-
-			@Override
-			public void run()
-			{
-				if (e.debug)
-					e.obtained(s, " Queen+1");
-				s.queens += 1;
-				if (s.hatcheriesSpawningLarva < s.bases())
-				{
-					s.hatcheriesSpawningLarva++;
-					s.addFutureAction(45, new Runnable()
-					{
-						@Override
-						public void run()
-						{
-							if (e.debug && s.larva < s.bases() * 19)
-								e.obtained(s, " Larva+" + (Math.min(s.bases()*19,s.larva+4) - s.larva));
-							s.larva = Math.min(s.bases()*19,s.larva+4);
-							s.addFutureAction(45, this);
-						}
-					});
-				}
-				else
-					s.addFutureAction(5, new Runnable()
-					{
-						@Override
-						public void run()
-						{
-							if (s.hatcheriesSpawningLarva < s.bases())
-							{
-								s.hatcheriesSpawningLarva++;
-								s.addFutureAction(45, new Runnable()
-								{
-									@Override
-									public void run()
-									{
-										if (e.debug && s.larva < s.bases() * 19)
-											e.obtained(s, " Larva+" + (Math.min(s.bases()*19,s.larva+4) - s.larva));
-										s.larva = Math.min(s.bases()*19,s.larva+4);
-										s.addFutureAction(45, this);
-									}
-								});
-							}
-							else
-								s.addFutureAction(5, this);
-						}
-					});
-			}
-		});
+		super(150, 0, 2, 50, "Queen", false);
+		// TODO Auto-generated constructor stub
 	}
 
+	@Override
+	protected void preExecute(EcBuildOrder s)
+	{
+		s.consumeHatch(50);
+	}
+	
+	@Override
+	protected void postExecute(final EcBuildOrder s, final EcEvolver e)
+	{
+		s.queens += 1;
+		if (s.hatcheriesSpawningLarva < s.bases())
+		{
+			s.hatcheriesSpawningLarva++;
+			s.addFutureAction(45, new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					if (e.debug && s.larva < s.bases() * 19)
+						e.obtained(s, " Larva+" + (Math.min(s.bases()*19,s.larva+4) - s.larva));
+					s.larva = Math.min(s.bases()*19,s.larva+4);
+					s.addFutureAction(45, this);
+				}
+			});
+		}
+		else
+			s.addFutureAction(5, new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					if (s.hatcheriesSpawningLarva < s.bases())
+					{
+						s.hatcheriesSpawningLarva++;
+						s.addFutureAction(45, new Runnable()
+						{
+							@Override
+							public void run()
+							{
+								if (e.debug && s.larva < s.bases() * 19)
+									e.obtained(s, " Larva+" + (Math.min(s.bases()*19,s.larva+4) - s.larva));
+								s.larva = Math.min(s.bases()*19,s.larva+4);
+								s.addFutureAction(45, this);
+							}
+						});
+					}
+					else
+						s.addFutureAction(5, this);
+				}
+			});
+	}
+	
 	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{
@@ -78,16 +77,6 @@ public class EcActionBuildQueen extends EcAction implements Serializable
 		if (s.hatcheries + s.lairs + s.hives == 0)
 			return true;
 		return false;
-	}
-
-	@Override
-	public boolean isPossible(EcBuildOrder s)
-	{
-		if (s.minerals < 150)
-			return false;
-		if (s.hasSupply(2) == false)
-			return false;
-		return true;
 	}
 
 	@Override

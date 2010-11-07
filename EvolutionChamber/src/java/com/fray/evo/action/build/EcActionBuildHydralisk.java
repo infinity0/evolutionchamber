@@ -9,26 +9,17 @@ import com.fray.evo.EcEvolver;
 import com.fray.evo.EcState;
 import com.fray.evo.action.EcAction;
 
-public class EcActionBuildHydralisk extends EcAction implements Serializable
+public class EcActionBuildHydralisk extends EcActionBuildUnit implements Serializable
 {
+	public EcActionBuildHydralisk()
+	{
+		super(100, 50, 2, 33, "Hydralisk", true);
+	}
 
 	@Override
-	public void execute(final EcBuildOrder s, final EcEvolver e)
+	protected void postExecute(EcBuildOrder s, EcEvolver e)
 	{
-		s.minerals -= 100;
-		s.gas -= 50;
-		s.consumeLarva(e);
-		s.supplyUsed += 2;
-		s.addFutureAction(33, new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				if (e.debug)
-					e.obtained(s," Hydralisk+1");
-				s.hydralisks += 1;
-			}
-		});
+		s.hydralisks += 1;
 	}
 
 	@Override
@@ -40,25 +31,11 @@ public class EcActionBuildHydralisk extends EcAction implements Serializable
 	}
 
 	@Override
-	public boolean isPossible(EcBuildOrder s)
-	{
-		if (s.minerals < 100)
-			return false;
-		if (s.gas < 50)
-			return false;
-		if (s.larva < 1)
-			return false;
-		if (!s.hasSupply(2))
-			return false;
-		return true;
-	}
-
-	@Override
 	public List<EcAction> requirements(EcState destination)
 	{
 		ArrayList<EcAction> l = new ArrayList<EcAction>();
 		l.add(new EcActionBuildHydraliskDen());
-		destination.hydraliskDen = Math.max(destination.hydraliskDen,1);
+		destination.hydraliskDen = Math.max(destination.hydraliskDen, 1);
 		return l;
 	}
 }

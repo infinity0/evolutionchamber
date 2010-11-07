@@ -181,7 +181,10 @@ public class EvolutionChamber
 					BASE_MUTATION_RATE = 1;
 				IChromosome fittestChromosome = population.getFittestChromosome();
 				if (killThreads)
+				{
+					threads.remove(thread);
 					thread.interrupt();
+				}
 				double fitnessValue = fittestChromosome.getFitnessValue();
 				if (fitnessValue > bestScores[threadIndex])
 				{
@@ -339,6 +342,7 @@ public class EvolutionChamber
 		{
 			e.printStackTrace();
 		}
+		threads.remove(t1);
 		t1.interrupt();
 	}
 

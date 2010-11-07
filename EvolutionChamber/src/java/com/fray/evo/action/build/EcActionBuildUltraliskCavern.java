@@ -9,42 +9,17 @@ import com.fray.evo.EcEvolver;
 import com.fray.evo.EcState;
 import com.fray.evo.action.EcAction;
 
-public class EcActionBuildUltraliskCavern extends EcAction implements Serializable
+public class EcActionBuildUltraliskCavern extends EcActionBuildBuilding implements Serializable
 {
-	private static final int	time		= 65;
-	private static final int	minerals	= 150;
-	private static final int	gas			= 200;
-
-	@Override
-	public void execute(final EcBuildOrder s, final EcEvolver e)
+	public EcActionBuildUltraliskCavern()
 	{
-		s.minerals -= minerals;
-		s.gas -= gas;
-		s.drones -= 1;
-		s.dronesOnMinerals -= 1;
-		s.supplyUsed -= 1;
-		s.addFutureAction(time, new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				if (e.debug)
-					e.obtained(s, " Ultralisk Cavern+1");
-				s.ultraliskCavern += 1;
-			}
-		});
+		super(150, 200, 65, "Ultralisk Cavern");
 	}
 
 	@Override
-	public boolean isPossible(EcBuildOrder s)
+	protected void postExecute(EcBuildOrder s, EcEvolver e)
 	{
-		if (s.minerals < minerals)
-			return false;
-		if (s.gas < gas)
-			return false;
-		if (s.drones < 1)
-			return false;
-		return true;
+		s.ultraliskCavern += 1;
 	}
 
 	@Override
@@ -62,7 +37,7 @@ public class EcActionBuildUltraliskCavern extends EcAction implements Serializab
 	{
 		ArrayList<EcAction> l = new ArrayList<EcAction>();
 		l.add(new EcActionBuildHive());
-		destination.hives = Math.max(destination.hives,1);
+		destination.hives = Math.max(destination.hives, 1);
 		return l;
 	}
 }

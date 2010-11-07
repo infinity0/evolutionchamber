@@ -9,41 +9,19 @@ import com.fray.evo.EcEvolver;
 import com.fray.evo.EcState;
 import com.fray.evo.action.EcAction;
 
-public class EcActionBuildSpire extends EcAction implements Serializable
+public class EcActionBuildSpire extends EcActionBuildBuilding implements Serializable
 {
-
-	@Override
-	public void execute(final EcBuildOrder s, final EcEvolver e)
+	public EcActionBuildSpire()
 	{
-		s.minerals -= 200;
-		s.gas -= 200;
-		s.drones -= 1;
-		s.dronesOnMinerals -= 1;
-		s.supplyUsed -= 1;
-		s.addFutureAction(100, new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				if (e.debug)
-					e.obtained(s, " Spire+1");
-				s.spire += 1;
-			}
-		});
+		super(200, 200, 100, "Spire");
 	}
 
 	@Override
-	public boolean isPossible(EcBuildOrder s)
+	protected void postExecute(EcBuildOrder s, EcEvolver e)
 	{
-		if (s.minerals < 200)
-			return false;
-		if (s.gas < 200)
-			return false;
-		if (s.drones < 1)
-			return false;
-		return true;
+		s.spire += 1;
 	}
-
+	
 	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{

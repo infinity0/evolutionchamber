@@ -67,7 +67,7 @@ import com.fray.evo.util.EcAutoUpdate;
 
 public class EcSwingX extends JXPanel implements EcReportable
 {
-	public static String		EC_VERSION		= "0018";
+	public static String		EC_VERSION		= "0020";
 	private JTextArea			outputText;
 	private JLabel				status1;
 	private JLabel				status2;
@@ -293,6 +293,9 @@ public class EcSwingX extends JXPanel implements EcReportable
 			source.targetSeconds = destination.targetSeconds;
 			source2.targetSeconds = destination.targetSeconds;
 			source3.targetSeconds = destination.targetSeconds;
+			source.settings = destination.settings;
+			source2.settings = destination.settings;
+			source3.settings = destination.settings;
 			EcBuildOrder result = evolver.doEvaluate(source);
 			String detailedText = new String(baos.toByteArray());
 			String simpleText = evolver.doSimpleEvaluate(source2);
@@ -1671,6 +1674,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 		try
 		{
 			destination[destination.length - 1] = (EcState) s.clone();
+			destination[destination.length - 1].waypoints.clear();
 			for (int i = 0; i < s.waypoints.size(); i++)
 			{
 				destination[i] = (EcState) s.waypoints.get(i).clone();

@@ -9,39 +9,34 @@ import com.fray.evo.EcEvolver;
 import com.fray.evo.EcState;
 import com.fray.evo.action.EcAction;
 
-public class EcActionBuildGreaterSpire extends EcAction implements Serializable
+public class EcActionBuildGreaterSpire extends EcActionBuildBuilding implements Serializable
 {
-
-	@Override
-	public void execute(final EcBuildOrder s, final EcEvolver e)
+	public EcActionBuildGreaterSpire()
 	{
-		s.minerals -= 100;
-		s.gas -= 150;
-		s.spire -= 1;
-		s.evolvingSpires += 1;
-		s.addFutureAction(100, new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				if (e.debug)
-					e.obtained(s," Greater Spire+1");
-				s.greaterSpire += 1;
-				s.evolvingSpires -= 1;
-			}
-		});
+		super(100, 150, 100, "Greater Spire");
+		takesDrone = false;
 	}
 
 	@Override
+	protected void preExecute(EcBuildOrder s)
+	{
+		s.evolvingSpires += 1;
+		s.spire -= 1;
+	}
+	
+	@Override
+	protected void postExecute(EcBuildOrder s, EcEvolver e)
+	{
+		s.greaterSpire += 1;
+		s.evolvingSpires -= 1;
+	}
+	
+	@Override
 	public boolean isPossible(EcBuildOrder s)
 	{
-		if (s.minerals < 100)
-			return false;
-		if (s.gas < 150)
-			return false;
 		if (s.spire < 1)
 			return false;
-		return true;
+		return super.isPossible(s);
 	}
 
 	@Override
@@ -51,7 +46,7 @@ public class EcActionBuildGreaterSpire extends EcAction implements Serializable
 			return true;
 		if (s.spire == 0)
 			return true;
-		if (s.greaterSpire == 2)
+		if (s.greaterSpire == 1)
 			return true;
 		return super.isInvalid(s);
 	}

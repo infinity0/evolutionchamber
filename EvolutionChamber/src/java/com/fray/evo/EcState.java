@@ -349,12 +349,7 @@ public class EcState implements Serializable
 
 		if (waypoints.size() > 0)
 		{
-			EcState state = defaultDestination();
-			for (EcState s : waypoints)
-			{
-				state.union(s);
-			}
-			state.union(this);
+			EcState state = getMergedState();
 			return state.isSatisfied(candidate);
 		}
 
@@ -544,12 +539,7 @@ public class EcState implements Serializable
 	{
 		if (waypoints.size() > 0)
 		{
-			EcState state = defaultDestination();
-			for (EcState s : waypoints)
-			{
-				state.union(s);
-			}
-			state.union(this);
+			EcState state = getMergedState();
 			return state.getSumStuff();
 		}
 
@@ -617,6 +607,17 @@ public class EcState implements Serializable
 		for (EcState s : waypoints)
 			i += s.getSumStuff();
 		return i;
+	}
+
+	public EcState getMergedState()
+	{
+		EcState state = defaultDestination();
+		for (EcState s : waypoints)
+		{
+			state.union(s);
+		}
+		state.union(this);
+		return state;
 	}
 
 	public String timestamp()

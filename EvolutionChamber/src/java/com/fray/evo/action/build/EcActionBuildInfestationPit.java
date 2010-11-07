@@ -9,44 +9,19 @@ import com.fray.evo.EcEvolver;
 import com.fray.evo.EcState;
 import com.fray.evo.action.EcAction;
 
-public class EcActionBuildInfestationPit extends EcAction implements Serializable
+public class EcActionBuildInfestationPit extends EcActionBuildBuilding implements Serializable
 {
-	private static final int	time		= 50;
-	private static final int	minerals	= 100;
-	private static final int	gas			= 100;
-
-	@Override
-	public void execute(final EcBuildOrder s, final EcEvolver e)
+	public EcActionBuildInfestationPit()
 	{
-		s.minerals -= minerals;
-		s.gas -= gas;
-		s.drones -= 1;
-		s.dronesOnMinerals -= 1;
-		s.supplyUsed -= 1;
-		s.addFutureAction(time, new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				if (e.debug)
-					e.obtained(s, " Infestation Pit+1");
-				s.infestationPit += 1;
-			}
-		});
+		super(100, 100, 50, "Infestation Pit");
 	}
 
 	@Override
-	public boolean isPossible(EcBuildOrder s)
+	protected void postExecute(EcBuildOrder s, EcEvolver e)
 	{
-		if (s.minerals < minerals)
-			return false;
-		if (s.gas < gas)
-			return false;
-		if (s.drones < 1)
-			return false;
-		return true;
+		s.infestationPit += 1;
 	}
-
+	
 	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{

@@ -9,25 +9,17 @@ import com.fray.evo.EcEvolver;
 import com.fray.evo.EcState;
 import com.fray.evo.action.EcAction;
 
-public class EcActionBuildRoach extends EcAction implements Serializable
+public class EcActionBuildRoach extends EcActionBuildUnit implements Serializable
 {
-	@Override
-	public void execute(final EcBuildOrder s, final EcEvolver e)
+	public EcActionBuildRoach()
 	{
-		s.minerals -= 75;
-		s.gas -= 25;
-		s.consumeLarva(e);
-		s.supplyUsed += 2;
-		s.addFutureAction(27, new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				if (e.debug)
-					e.obtained(s," Roach+1");
-				s.roaches += 1;
-			}
-		});
+		super(75, 25, 2, 27, "Roach", true);
+	}
+
+	@Override
+	protected void postExecute(EcBuildOrder s, EcEvolver e)
+	{
+		s.roaches += 1;
 	}
 
 	@Override
@@ -39,26 +31,12 @@ public class EcActionBuildRoach extends EcAction implements Serializable
 	}
 
 	@Override
-	public boolean isPossible(EcBuildOrder s)
-	{
-		if (s.minerals < 75)
-			return false;
-		if (s.gas < 25)
-			return false;
-		if (s.larva < 1)
-			return false;
-		if (!s.hasSupply(2))
-			return false;
-		return true;
-	}
-
-	@Override
 	public List<EcAction> requirements(EcState destination)
 	{
 		ArrayList<EcAction> l = new ArrayList<EcAction>();
 		l.add(new EcActionBuildRoachWarren());
 		l.add(new EcActionBuildExtractor());
-		destination.roachWarrens = Math.max(destination.roachWarrens,1);
+		destination.roachWarrens = Math.max(destination.roachWarrens, 1);
 		return l;
 	}
 }

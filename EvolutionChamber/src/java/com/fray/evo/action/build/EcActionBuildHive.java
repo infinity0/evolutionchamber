@@ -9,39 +9,34 @@ import com.fray.evo.EcEvolver;
 import com.fray.evo.EcState;
 import com.fray.evo.action.EcAction;
 
-public class EcActionBuildHive extends EcAction implements Serializable
+public class EcActionBuildHive extends EcActionBuildBuilding implements Serializable
 {
+	public EcActionBuildHive()
+	{
+		super(200, 150, 100, "Hive");
+		takesDrone = false;
+	}
 
 	@Override
-	public void execute(final EcBuildOrder s, final EcEvolver e)
+	protected void preExecute(EcBuildOrder s)
 	{
-		s.minerals -= 200;
-		s.gas -= 150;
 		s.lairs -= 1;
 		s.evolvingLairs += 1;
-		s.addFutureAction(100, new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				if (e.debug)
-					e.obtained(s," Hives+1");
-				s.hives += 1;
-				s.evolvingLairs -= 1;
-			}
-		});
+	}
+
+	@Override
+	protected void postExecute(EcBuildOrder s, EcEvolver e)
+	{
+		s.hives += 1;
+		s.evolvingLairs -= 1;
 	}
 
 	@Override
 	public boolean isPossible(EcBuildOrder s)
 	{
-		if (s.minerals < 200)
-			return false;
-		if (s.gas < 150)
-			return false;
 		if (s.lairs < 1)
 			return false;
-		return true;
+		return super.isPossible(s);
 	}
 
 	@Override
@@ -61,5 +56,4 @@ public class EcActionBuildHive extends EcAction implements Serializable
 		l.add(new EcActionBuildInfestationPit());
 		return l;
 	}
-
 }

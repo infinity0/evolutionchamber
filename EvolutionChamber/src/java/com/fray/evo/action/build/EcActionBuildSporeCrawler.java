@@ -9,26 +9,18 @@ import com.fray.evo.EcEvolver;
 import com.fray.evo.EcState;
 import com.fray.evo.action.EcAction;
 
-public class EcActionBuildSporeCrawler extends EcAction implements Serializable
+public class EcActionBuildSporeCrawler extends EcActionBuildBuilding implements Serializable
 {
 
-	@Override
-	public void execute(final EcBuildOrder s, final EcEvolver e)
+	public EcActionBuildSporeCrawler()
 	{
-		s.minerals -= 75;
-		s.drones -= 1;
-		s.dronesOnMinerals -= 1;
-		s.supplyUsed -= 1;
-		s.addFutureAction(50, new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				if (e.debug)
-					e.obtained(s, " Spore Crawler+1");
-				s.sporeCrawlers += 1;
-			}
-		});
+		super(75, 0, 50, "Spore Crawler");
+	}
+
+	@Override
+	protected void postExecute(EcBuildOrder s, EcEvolver e)
+	{
+		s.sporeCrawlers += 1;
 	}
 
 	@Override
@@ -37,16 +29,6 @@ public class EcActionBuildSporeCrawler extends EcAction implements Serializable
 		if (s.evolutionChambers == 0)
 			return true;
 		return false;
-	}
-
-	@Override
-	public boolean isPossible(EcBuildOrder s)
-	{
-		if (s.minerals < 75)
-			return false;
-		if (s.drones < 1)
-			return false;
-		return true;
 	}
 
 	@Override

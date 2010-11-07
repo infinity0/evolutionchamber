@@ -245,6 +245,8 @@ public class EcEvolver extends FitnessFunction
 					{
 						if (debug)
 						{
+							log.print("-------Goal-------");
+							log.println(destination.getMergedState().toUnitsOnlyString());
 							log.println("Failed to have the required " + s.getOverDrones(s) + " drones.");
 							log.println(s.toCompleteString());
 						}
@@ -253,6 +255,8 @@ public class EcEvolver extends FitnessFunction
 					{
 						if (debug)
 						{
+							log.print("-------Goal-------");
+							log.println(destination.getMergedState().toUnitsOnlyString());
 							log.println("Failed to meet waypoint. " + a);
 							log.println(s.toCompleteString());
 						}
@@ -281,7 +285,7 @@ public class EcEvolver extends FitnessFunction
 						log.println("Number of actions in build order: " + (i - s.invalidActions));
 
 						log.print("-------Goal-------");
-						log.println(destination.toUnitsOnlyString());
+						log.println(destination.getMergedState().toUnitsOnlyString());
 						log.println("---Final Output---");
 						log.println(s.toCompleteString());
 						log.println("------------------");

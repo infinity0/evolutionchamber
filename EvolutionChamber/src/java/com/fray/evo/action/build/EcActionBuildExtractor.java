@@ -6,40 +6,36 @@ import java.util.List;
 
 import com.fray.evo.EcBuildOrder;
 import com.fray.evo.EcEvolver;
-import com.fray.evo.EcSettings;
 import com.fray.evo.EcState;
 import com.fray.evo.action.EcAction;
 import com.fray.evo.action.EcActionMineGas;
 import com.fray.evo.action.EcActionMineMineral;
 
-public class EcActionBuildExtractor extends EcAction implements Serializable
+public class EcActionBuildExtractor extends EcActionBuildBuilding implements Serializable
 {
-	@Override
-	public void execute(final EcBuildOrder s, final EcEvolver e)
+	public EcActionBuildExtractor()
 	{
-		s.minerals -= 25;
-		s.drones -= 1;
-		s.dronesOnMinerals -= 1;
-		s.supplyUsed -= 1;
+		super(25, 0, 30, "Extractor");
+	}
+
+	@Override
+	protected void preExecute(EcBuildOrder s)
+	{
 		s.extractorsBuilding++;
-		s.addFutureAction(30, new Runnable()
+	}
+
+	@Override
+	protected void postExecute(EcBuildOrder s, EcEvolver e)
+	{
+		if (s.extractorsBuilding == 0)
+			throw new RuntimeException("wtf?");
+		s.gasExtractors += 1;
+		if (s.settings.pullWorkersFromGas == false)
 		{
-			@Override
-			public void run()
-			{
-				if (s.extractorsBuilding == 0)
-					return;
-				if (e.debug)
-					e.obtained(s, " Extractor+1");
-				s.gasExtractors += 1;
-				if (s.settings.pullWorkersFromGas == false)
-				{
-					s.dronesOnMinerals -= 3;
-					s.dronesOnGas += 3;
-				}
-				s.extractorsBuilding--;
-			}
-		});
+			s.dronesOnMinerals -= 3;
+			s.dronesOnGas += 3;
+		}
+		s.extractorsBuilding--;
 	}
 
 	@Override
@@ -47,19 +43,9 @@ public class EcActionBuildExtractor extends EcAction implements Serializable
 	{
 		if (s.gasExtractors + s.extractorsBuilding >= s.extractors())
 			return true;
-		if(s.supplyUsed < s.settings.minimumExtractorSupply)
+		if (s.supplyUsed < s.settings.minimumExtractorSupply)
 			return true;
 		return false;
-	}
-
-	@Override
-	public boolean isPossible(EcBuildOrder s)
-	{
-		if (s.minerals < 25)
-			return false;
-		if (s.drones < 1)
-			return false;
-		return true;
 	}
 
 	@Override

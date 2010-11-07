@@ -9,43 +9,18 @@ import com.fray.evo.EcEvolver;
 import com.fray.evo.EcState;
 import com.fray.evo.action.EcAction;
 
-public class EcActionBuildNydusNetwork extends EcAction implements Serializable
+public class EcActionBuildNydusNetwork extends EcActionBuildBuilding implements Serializable
 {
-	private static final int	time		= 50;
-	private static final int	minerals	= 150;
-	private static final int	gas			= 200;
-
-	@Override
-	public void execute(final EcBuildOrder s, final EcEvolver e)
+	public EcActionBuildNydusNetwork()
 	{
-		s.minerals -= minerals;
-		s.gas -= gas;
-		s.drones -= 1;
-		s.dronesOnMinerals -= 1;
-		s.supplyUsed -= 1;
-		s.addFutureAction(time, new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				if (e.debug)
-					e.obtained(s, " Nydus Network+1");
-				s.nydusNetwork += 1;
-			}
-		});
+		super(150, 200, 50, "Nydus Network");
 	}
 
-	@Override
-	public boolean isPossible(EcBuildOrder s)
-	{
-		if (s.minerals < minerals)
-			return false;
-		if (s.gas < gas)
-			return false;
-		if (s.drones < 1)
-			return false;
-		return true;
-	}
+@Override
+protected void postExecute(EcBuildOrder s, EcEvolver e)
+{
+	s.nydusNetwork += 1;
+}
 
 	@Override
 	public boolean isInvalid(EcBuildOrder s)

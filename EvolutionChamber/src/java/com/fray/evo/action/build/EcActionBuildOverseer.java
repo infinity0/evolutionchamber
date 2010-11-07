@@ -9,24 +9,18 @@ import com.fray.evo.EcEvolver;
 import com.fray.evo.EcState;
 import com.fray.evo.action.EcAction;
 
-public class EcActionBuildOverseer extends EcAction implements Serializable
+public class EcActionBuildOverseer extends EcActionBuildUnit implements Serializable
 {
-	@Override
-	public void execute(final EcBuildOrder s, final EcEvolver e)
+	public EcActionBuildOverseer()
 	{
-		s.minerals -= 50;
-		s.gas -= 100;
-		s.addFutureAction(17, new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				if (e.debug)
-					e.obtained(s," Overseer+1");
-				s.overlords -= 1;
-				s.overseers += 1;
-			}
-		});
+		super(50, 100, 0, 17, "Overseer", false);
+	}
+
+	@Override
+	protected void postExecute(EcBuildOrder s, EcEvolver e)
+	{
+		s.overlords -= 1;
+		s.overseers += 1;
 	}
 
 	@Override
@@ -40,13 +34,9 @@ public class EcActionBuildOverseer extends EcAction implements Serializable
 	@Override
 	public boolean isPossible(EcBuildOrder s)
 	{
-		if (s.minerals < 50)
-			return false;
-		if (s.gas < 100)
-			return false;
 		if (s.overlords < 1)
 			return false;
-		return true;
+		return super.isPossible(s);
 	}
 
 	@Override

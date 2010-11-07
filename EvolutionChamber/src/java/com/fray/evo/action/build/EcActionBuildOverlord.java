@@ -9,33 +9,17 @@ import com.fray.evo.EcEvolver;
 import com.fray.evo.EcState;
 import com.fray.evo.action.EcAction;
 
-public class EcActionBuildOverlord extends EcAction implements Serializable
+public class EcActionBuildOverlord extends EcActionBuildUnit implements Serializable
 {
-	@Override
-	public void execute(final EcBuildOrder s, final EcEvolver e)
+	public EcActionBuildOverlord()
 	{
-		s.minerals -= 100;
-		s.consumeLarva(e);
-		s.addFutureAction(25, new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				if (e.debug)
-					e.obtained(s," Overlord+1");
-				s.overlords += 1;
-			}
-		});
+		super(100, 0, 0, 25, "Overlord", true);
 	}
 
 	@Override
-	public boolean isPossible(EcBuildOrder s)
+	protected void postExecute(EcBuildOrder s, EcEvolver e)
 	{
-		if (s.minerals < 100)
-			return false;
-		if (s.larva < 1)
-			return false;
-		return true;
+		s.overlords += 1;
 	}
 
 	@Override

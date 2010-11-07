@@ -9,35 +9,29 @@ import com.fray.evo.EcEvolver;
 import com.fray.evo.EcState;
 import com.fray.evo.action.EcAction;
 
-public class EcActionBuildDrone extends EcAction implements Serializable
+public class EcActionBuildDrone extends EcActionBuildUnit implements Serializable
 {
-	@Override
-	public void execute(final EcBuildOrder s, final EcEvolver e)
+	public EcActionBuildDrone()
 	{
-		s.minerals -= 50;
-		s.consumeLarva(e);
-		s.supplyUsed += 1;
-		s.addFutureAction(17, new Runnable()
+		super(50, 0, 1, 17, "Drone", true);
+	}
+
+	@Override
+	protected void postExecute(final EcBuildOrder s, final EcEvolver e)
+	{
+		s.drones += 1;
+		s.dronesGoingOnMinerals += 1;
+		s.addFutureAction(2, new Runnable()
 		{
 			@Override
 			public void run()
 			{
-				if (e.debug)
-					e.obtained(s," Drone+1");
-				s.drones += 1;
-				s.dronesGoingOnMinerals += 1;
-			}
-		});
-		s.addFutureAction(19, new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				if (s.droneIsScouting == false && s.drones >= e.getDestination().scoutDrone && e.getDestination().scoutDrone != 0)
+				if (s.droneIsScouting == false && s.drones >= e.getDestination().scoutDrone
+						&& e.getDestination().scoutDrone != 0)
 				{
-					s.droneIsScouting = true; 
+					s.droneIsScouting = true;
 					if (e.debug)
-						e.scout(s," +1 Scouting Drone");
+						e.scout(s, " +1 Scouting Drone");
 				}
 				else
 				{
@@ -55,19 +49,7 @@ public class EcActionBuildDrone extends EcAction implements Serializable
 			return true;
 		return super.isInvalid(s);
 	}
-	
-	@Override
-	public boolean isPossible(EcBuildOrder s)
-	{
-		if (s.minerals < 50)
-			return false;
-		if (s.larva < 1)
-			return false;
-		if (!s.hasSupply(1))
-			return false;
-		return true;
-	}
-	
+
 	@Override
 	public List<EcAction> requirements(EcState destination)
 	{

@@ -9,50 +9,25 @@ import com.fray.evo.EcEvolver;
 import com.fray.evo.EcState;
 import com.fray.evo.action.EcAction;
 
-public class EcActionBuildHydraliskDen extends EcAction implements Serializable
+public class EcActionBuildHydraliskDen extends EcActionBuildBuilding implements Serializable
 {
-	private static final int	time		= 40;
-	private static final int	minerals	= 100;
-	private static final int	gas			= 100;
-
-	@Override
-	public void execute(final EcBuildOrder s, final EcEvolver e)
+	public EcActionBuildHydraliskDen()
 	{
-		s.minerals -= minerals;
-		s.gas -= gas;
-		s.drones -= 1;
-		s.dronesOnMinerals -= 1;
-		s.supplyUsed -= 1;
-		s.addFutureAction(time, new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				if (e.debug)
-					e.obtained(s, " Hydralisk Den+1");
-				s.hydraliskDen += 1;
-			}
-		});
+		super(100, 100, 40, "Hydralisk Den");
 	}
 
 	@Override
-	public boolean isPossible(EcBuildOrder s)
-	{
-		if (s.minerals < minerals)
-			return false;
-		if (s.gas < gas)
-			return false;
-		if (s.drones < 1)
-			return false;
-		return true;
+	protected void postExecute(EcBuildOrder s, EcEvolver e)
+	{	
+		s.hydraliskDen += 1;
 	}
-
+	
 	@Override
 	public boolean isInvalid(EcBuildOrder s)
 	{
 		if (s.lairs == 0 && s.evolvingLairs == 0 && s.hives == 0 && s.evolvingHives == 0)
 			return true;
-		if (s.hydraliskDen == 2)
+		if (s.hydraliskDen == 1)
 			return true;
 		return super.isInvalid(s);
 	}
