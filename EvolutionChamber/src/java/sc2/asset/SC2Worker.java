@@ -11,8 +11,8 @@ public class SC2Worker extends SC2Asset {
 	/** current activity */
 	protected Activity act = Activity.IDLE;
 
-	/** current base, if {@code act} is {@code gath_m | gath_v}. */
-	protected SC2Base base;
+	/** current command structure, if {@code act} is {@code gath_m | gath_v}. */
+	protected SC2Command command;
 
 	/** current action, if {@code act} is {@code morph | cstr_p | cstr_t}. */
 	protected SC2Action action;
@@ -27,22 +27,22 @@ public class SC2Worker extends SC2Asset {
 			// TODO support this. an action needs to do this on cancel()
 			throw new UnsupportedOperationException("cannot idle a worker currently on activity " + act);
 		}
-		assert base != null;
-		base.remGatherer(this);
+		assert command != null;
+		command.remGatherer(this);
 		this.act = Activity.IDLE;
 	}
 
-	public void setGatherM(SC2Base base) {
+	public void setGatherM(SC2Command command) {
 		setIdle();
-		this.base = base;
-		base.addGathererM(this);
+		this.command = command;
+		command.addGathererM(this);
 		this.act = Activity.GATH_M;
 	}
 
-	public void setGatherV(SC2Base base) {
+	public void setGatherV(SC2Command command) {
 		setIdle();
-		this.base = base;
-		base.addGathererV(this);
+		this.command = command;
+		command.addGathererV(this);
 		this.act = Activity.GATH_V;
 	}
 

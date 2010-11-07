@@ -9,7 +9,7 @@ public class SC2CostException extends SC2RequireException {
 	final public double need_v;
 
 	public SC2CostException(double need_m, double need_v) {
-		super("Not enough resources; need " + need_m + " minerals and " + need_v + " gas.", true);
+		super("not enough resources; need " + (int)need_m + "m " + (int)need_v + "v.", true);
 		assert need_m > 0 || need_v > 0;
 		this.need_m = need_m;
 		this.need_v = need_v;

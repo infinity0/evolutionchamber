@@ -34,16 +34,16 @@ public class SC2Build extends SC2AssetAction {
 		try {
 			checkRequirements();
 		} catch (SC2RequireException e) {
-			throw new SC2ActionException(this, "build requirements not satisfied", e);
+			throw new SC2ActionException(this, "build requirements not satisfied: " + e.getMessage(), e);
 		}
 
 		try {
 			SC2Asset source = getSourceAsset();
 			source.pushBuild(this);
 		} catch (SC2AssetException e) {
-			throw new SC2ActionException(this, "could not find suitable source asset", e);
+			throw new SC2ActionException(this, e.getMessage(), e);
 		} catch (SC2RequireException e) {
-			throw new SC2ActionException(this, "general execution error", e);
+			throw new SC2ActionException(this, "general execution error: " + e.getMessage(), e);
 		}
 	}
 
@@ -51,22 +51,23 @@ public class SC2Build extends SC2AssetAction {
 		try {
 			deductResources();
 		} catch (SC2CostException e) {
-			throw new SC2ActionException(this, "not enough resources", e);
+			throw new SC2ActionException(this, e.getMessage(), e);
 		}
 	}
 
 	@Override public boolean advance(double rate) {
 		if (!begun) {
-			boolean checks = true;
-			// TODO check supply the first time this is advanced
-			if (!checks) { return false; }
+			float cost_f = type.cost_f();
+			// check supply the first time this is advanced
+			if (play.res_f + cost_f > play.max_f) { return false; }
+			play.res_f += cost_f;
 			begun = true;
 		}
 		return super.advance(rate);
 	}
 
 	@Override public void complete() {
-		// TODO add an asset
+		play.addAsset(play.world.createAsset(play, type));
 	}
 
 }

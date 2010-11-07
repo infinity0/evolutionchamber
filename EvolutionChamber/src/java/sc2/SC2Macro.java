@@ -7,6 +7,9 @@ import static sc2.SC2World.Race;
 import static sc2.ArgUtils.nonEmpty;
 import static sc2.ArgUtils.copyOf;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
 ** Holds macro control information for a race.
 */
@@ -32,6 +35,10 @@ public class SC2Macro {
 	public SC2AssetType worker() { return worker[0]; }
 	/** Return the default supply type */
 	public SC2AssetType supply() { return supply[0]; }
+
+	public List<SC2AssetType> getAllCommand() { return Arrays.asList(command); }
+	public List<SC2AssetType> getAllWorker() { return Arrays.asList(worker); }
+	public List<SC2AssetType> getAllSupply() { return Arrays.asList(supply); }
 
 	public enum Macro { COMMAND, WORKER, SUPPLY; }
 

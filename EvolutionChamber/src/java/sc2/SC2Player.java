@@ -4,10 +4,11 @@ import sc2.action.SC2Action;
 import sc2.action.SC2ActionException;
 import sc2.asset.SC2Asset;
 import sc2.asset.SC2AssetType;
-import sc2.asset.SC2Base;
+import sc2.asset.SC2Command;
 import sc2.asset.SC2Worker;
 import static sc2.SC2World.Race;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.SetMultimap;
 import com.google.common.collect.LinkedHashMultimap;
 
@@ -43,8 +44,8 @@ public class SC2Player {
 	public double res_m;
 	/** vespene resources. representing as a double allows for better averaging. */
 	public double res_v;
-	/** food resources. representing as a double due to zergling 0.5 supply. */
-	public double res_f;
+	/** food resources. representing as a float due to zergling 0.5 supply. */
+	public float res_f;
 	/** food capacity. */
 	public int max_f;
 	/** game ticks, currently measured in seconds */
@@ -84,15 +85,15 @@ public class SC2Player {
 		SC2AssetType type_w = world.macro.get(race).worker();
 
 		for (int i=0; i<base_workers.length; ++i) {
-			SC2Base curr_base = new SC2Base(this, type_b);
-			addAsset(curr_base);
+			SC2Command curr_cmd = new SC2Command(this, type_b);
+			addAsset(curr_cmd);
 			this.max_f += type_b.prov_f;
 
 			for (int j=0; j<base_workers[i]; ++j) {
 				SC2Worker curr_worker = new SC2Worker(this, type_w);
 				addAsset(curr_worker);
 				this.res_f += type_w.cost_f;
-				curr_worker.setGatherM(curr_base);
+				curr_worker.setGatherM(curr_cmd);
 			}
 		}
 	}
@@ -102,7 +103,8 @@ public class SC2Player {
 	*/
 	public void advance() {
 		// advance asset queues. these will automatically drop completed actions
-		for (SC2Asset asset: assets.values()) { asset.advance(); }
+		// use copyOf to prevent ConcurrentModificationException
+		for (SC2Asset asset: ImmutableSet.copyOf(assets.values())) { asset.advance(); }
 
 		// advance ongoing actions, dropping actions if appropriate
 		Iterator<SC2Action> it = ongoing.iterator();

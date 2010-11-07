@@ -14,7 +14,7 @@ public class SC2Main {
 
 	public static void main(String[] args) throws Throwable {
 		System.out.println("-- showing income rates (per base-minute)");
-		sc2.asset.SC2Base.main(args);
+		sc2.asset.SC2Command.main(args);
 
 		System.out.println("-- loading game data");
 		SC2World world = SC2WorldReader.read("../data/sc2stats.txt");
@@ -34,10 +34,15 @@ public class SC2Main {
 		  new SC2Build(world.getAssetType("Probe")),
 		  new SC2Build(world.getAssetType("Probe")),
 		  new SC2Build(world.getAssetType("Probe")),
+		  //new SC2Build(world.getAssetType("Pylon")),
 		  new SC2Build(world.getAssetType("Probe")),
 		  new SC2Build(world.getAssetType("Probe")),
-		  new SC2Build(world.getAssetType("Probe"))
+		  new SC2Build(world.getAssetType("Probe")),
+		  new SC2Build(world.getAssetType("Probe")),
+		  //new SC2Build(world.getAssetType("Gateway"))
 		);
+
+		System.out.println(play.getDesc());
 	}
 
 }

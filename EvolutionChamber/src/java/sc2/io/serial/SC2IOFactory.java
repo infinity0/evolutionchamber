@@ -103,7 +103,7 @@ public class SC2IOFactory {
 				curr_builder.provide(parseInt(str));
 
 			} else if (head.equals("macro")) {
-				// metadata on bases
+				// macro metadata
 				curr_macro = enumFromUncased(Macro.class, cmpts.next());
 
 			} else if (head.equals("u")) {

@@ -3,9 +3,16 @@ package sc2;
 import sc2.annot.Idempotent;
 import sc2.annot.PostImmutable;
 
-import sc2.asset.SC2AssetType;
 import sc2.asset.SC2Asset;
+import sc2.asset.SC2AssetType;
+import sc2.asset.SC2Structure;
+import sc2.asset.SC2Command;
+import sc2.asset.SC2ZergCommand;
+import sc2.asset.SC2Worker;
 import static sc2.asset.SC2AssetType.Group;
+
+import com.google.common.collect.Iterables;
+import com.google.common.base.Predicate;
 
 import java.util.Map;
 import java.util.EnumMap;
@@ -27,19 +34,6 @@ public class SC2World {
 		return stat.get(key).group();
 	}
 
-	public static SC2World getDefaultWorld() {
-		// TODO
-		return null;
-	}
-
-	/**
-	** Create an appropriate subclass of {@link SC2Asset} for the given type.
-	*/
-	public SC2Asset createAsset(SC2AssetType type) {
-		// TODO
-		return null;
-	}
-
 	public SC2AssetType getAssetType(String name) {
 		SC2AssetType type = stat.get(name);
 		if (type == null) { throw new NoSuchElementException("asset " + name + " has not yet been defined"); }
@@ -52,6 +46,41 @@ public class SC2World {
 		for (SC2AssetType type: stat.values()) {
 			type.cycles(this);
 		}
+	}
+
+	/**
+	** Create an appropriate subclass of {@link SC2Asset} for the given type.
+	*/
+	public SC2Asset createAsset(SC2Player play, SC2AssetType type) {
+		switch (type.group()) {
+		case S:
+			return new SC2Structure(play, type);
+			// TODO
+		case T:
+			throw new IllegalArgumentException("cannot create an asset from a tech type");
+		case U:
+			if (isWorker(type)) { return new SC2Worker(play, type); }
+			if (isCommand(type)) { return (type.race == Race.Z)? new SC2ZergCommand(play, type): new SC2Command(play, type); }
+			return new SC2Asset(play, type);
+		default:
+			throw new IllegalArgumentException("cannot create an asset from group: " + type.group().name);
+		}
+	}
+
+	public boolean isWorker(final SC2AssetType type) {
+		return Iterables.any(macro.values(), new Predicate<SC2Macro>() {
+			@Override public boolean apply(SC2Macro macro) {
+				return macro.getAllWorker().contains(type);
+			}
+		});
+	}
+
+	public boolean isCommand(final SC2AssetType type) {
+		return Iterables.any(macro.values(), new Predicate<SC2Macro>() {
+			@Override public boolean apply(SC2Macro macro) {
+				return macro.getAllCommand().contains(type);
+			}
+		});
 	}
 
 	public enum Race {

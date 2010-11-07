@@ -7,9 +7,9 @@ import java.util.HashSet;
 import java.util.Formatter;
 
 /**
-** Represents a base structure, eg. Nexus, Orbital Command, Hive.
+** Represents a command structure, eg. Nexus, Orbital Command, Hive.
 */
-public class SC2Base extends SC2Structure {
+public class SC2Command extends SC2Structure {
 
 	final public int patch_m;
 	final public int patch_v;
@@ -20,7 +20,7 @@ public class SC2Base extends SC2Structure {
 
 	final protected SC2Asset[] col_v;
 
-	public SC2Base(SC2Player play, SC2AssetType type, int patch_m, int patch_v, boolean gold) {
+	public SC2Command(SC2Player play, SC2AssetType type, int patch_m, int patch_v, boolean gold) {
 		super(play, type);
 		this.patch_m = patch_m;
 		this.patch_v = patch_v;
@@ -31,7 +31,7 @@ public class SC2Base extends SC2Structure {
 		// TODO
 	}
 
-	public SC2Base(SC2Player play, SC2AssetType type) {
+	public SC2Command(SC2Player play, SC2AssetType type) {
 		this(play, type, 8, 2, false);
 	}
 
@@ -112,9 +112,9 @@ public class SC2Base extends SC2Structure {
 	public static void main(String[] args) {
 		for (int i=0; i<30; ++i) {
 			System.out.printf("%2d | %06.2f %06.2f %06.2f\n", i,
-			  sc2.asset.SC2Base.estIncomeM(i, 8)*60,
-			  sc2.asset.SC2Base.estIncomeV(i, 2)*60,
-			  sc2.asset.SC2Base.estIncomeG(i, 6)*60);
+			  sc2.asset.SC2Command.estIncomeM(i, 8)*60,
+			  sc2.asset.SC2Command.estIncomeV(i, 2)*60,
+			  sc2.asset.SC2Command.estIncomeG(i, 6)*60);
 		}
 	}
 
