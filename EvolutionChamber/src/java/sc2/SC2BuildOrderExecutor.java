@@ -51,6 +51,7 @@ public class SC2BuildOrderExecutor {
 
 			} catch (SC2ActionException e) {
 				if (e.pleaseTryLater() || force_wait && wait_cycles < MAX_WAIT_CYCLES) {
+					System.out.println("wait 1 cycle due to: " + e);
 					play.advance();
 					continue;
 

@@ -192,7 +192,7 @@ public class SC2Asset {
 		} else if (active_b != null) {
 			assert active_m == null;
 			if (active_b.advance(rate)) {
-				popBuild(0);
+				active_b = queue.isEmpty()? null: queue.removeFirst();
 			}
 		}
 	}

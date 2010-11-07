@@ -1,5 +1,8 @@
 package sc2;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
@@ -23,8 +26,8 @@ final public class ArgUtils {
 		return (a == null)? d: Arrays.copyOf(a, a.length);
 	}
 
-	public static <T> Set<T> non_null_immute_set(Set<T> set) {
-		return (set == null)? Collections.<T>emptySet(): Collections.<T>unmodifiableSet(set);
+	public static <T extends Enum<T>> ImmutableSet<T> nullSafeImmutableEnumSet(Iterable<T> items) {
+		return (items == null)? ImmutableSet.<T>of(): Sets.<T>immutableEnumSet(items);
 	}
 
 	public static <T> T[] copyOf(T[] a) {

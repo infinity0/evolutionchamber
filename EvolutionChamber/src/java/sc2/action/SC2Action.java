@@ -100,13 +100,15 @@ abstract public class SC2Action {
 	/**
 	** Cancel the action. Restore resources etc.
 	**
-	** The default implementation does nothing. Subclasses might compensate
-	** previously-deducted resources, etc.
+	** The default implementation throws {@link UnsupportedOperationException}.
+	** Subclasses might compensate previously-deducted resources, etc.
 	**
 	** This method should not change the place of the action itself, e.g.
 	** remove it from an asset queue. This is already done elsewhere.
 	*/
-	public void cancel() { }
+	public void cancel() {
+		throw new UnsupportedOperationException("cancel not supported on action " + this);
+	}
 
 	/**
 	** Advance the action at a normal rate. This method delegates to {@link

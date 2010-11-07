@@ -112,6 +112,7 @@ public class SC2Player {
 		}
 
 		// TODO
+		++time;
 	}
 
 	public void addAction(SC2Action action) throws SC2ActionException {

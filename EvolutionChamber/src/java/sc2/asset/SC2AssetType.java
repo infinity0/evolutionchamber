@@ -12,12 +12,13 @@ import sc2.action.SC2AssetActionSchema;
 import static sc2.SC2World.Race;
 import static sc2.ArgUtils.nonNull;
 import static sc2.ArgUtils.nullSafeCopy;
-import static sc2.ArgUtils.non_null_immute_set;
+import static sc2.ArgUtils.nullSafeImmutableEnumSet;
+
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 
 import java.util.EnumSet;
-import java.util.Set;
 import java.util.List;
-import java.util.Collections;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
@@ -41,8 +42,8 @@ public class SC2AssetType {
 	final public int range;
 	final public int sight;
 
-	/** immutable by contract. TODO use ImmutableSet or something */
-	final public Set<Modifier> mods;
+	/** immutable by contract. */
+	final public ImmutableSet<Modifier> mods;
 
 	final public SC2Attack atk_g;
 	final public SC2Attack atk_a;
@@ -68,7 +69,7 @@ public class SC2AssetType {
 	}
 
 	/**
-	** Return the food cost, or 0 if this asset type does not use supply
+	** Return the food cost, or 0 if this asset type does not use supply.
 	*/
 	public float cost_f() {
 		return cost_f == null? 0f: cost_f;
@@ -118,7 +119,7 @@ public class SC2AssetType {
 		  nullSafeCopy(actions, new SC2AssetActionSchema[0]),
 		  stat_hp, stat_sp, (stat_ep == null)? SC2EnergySchema.NONE: stat_ep,
 		  speed, range, sight,
-		  non_null_immute_set(mods), atk_g, atk_a,
+		  nullSafeImmutableEnumSet(mods), atk_g, atk_a,
 		  prov_f, cost_f, cg_size, cg_cap);
 	}
 
@@ -131,7 +132,7 @@ public class SC2AssetType {
 		String name, Race race, SC2AssetActionSchema[] actions,
 		SC2HealthSchema stat_hp, SC2HealthSchema stat_sp, SC2EnergySchema stat_ep,
 		double speed, int range, int sight,
-		Set<Modifier> mods, SC2Attack atk_g, SC2Attack atk_a,
+		ImmutableSet<Modifier> mods, SC2Attack atk_g, SC2Attack atk_a,
 		int prov_f, Float cost_f, int cg_size, int cg_cap
 	) {
 		this.race = race;
@@ -251,7 +252,8 @@ public class SC2AssetType {
 		}
 
 		public SC2AssetType build() {
-			return new SC2AssetType(name, race, actions.<SC2AssetActionSchema>toArray(new SC2AssetActionSchema[actions.size()]),
+			return new SC2AssetType(name, race,
+			  actions.<SC2AssetActionSchema>toArray(new SC2AssetActionSchema[actions.size()]),
 			  stat_hp, stat_sp, stat_ep, speed, range, sight,
 			  mods, atk_g, atk_a, prov_f, cost_f, cg_size, cg_cap);
 		}
