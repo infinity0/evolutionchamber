@@ -2,6 +2,8 @@ package sc2.action;
 
 import sc2.asset.SC2Asset;
 import sc2.asset.SC2AssetType;
+import sc2.asset.SC2Command;
+import sc2.asset.SC2Worker;
 import sc2.require.SC2Requires;
 import sc2.require.SC2RequireException;
 import sc2.require.SC2AssetException;
@@ -36,6 +38,12 @@ abstract public class SC2AssetAction extends SC2Action {
 		this(type, type.getSchema(act));
 	}
 
+	/**
+	** {@inheritDoc}
+	**
+	** This implementation checks all requirements, selects a source asset,
+	** and binds this action to it.
+	*/
 	@Override protected void launch() throws SC2ActionException {
 		try {
 			checkRequirements();
@@ -52,12 +60,38 @@ abstract public class SC2AssetAction extends SC2Action {
 		}
 	}
 
+	/**
+	** {@inheritDoc}
+	**
+	** This implementation checks and deducts resources, and saves the referenc
+	** to the source asset.
+	*/
 	@Override public void evt_init(SC2Asset source) throws SC2ActionException {
 		try {
 			deductResources();
 			this.source = source;
 		} catch (SC2CostException e) {
 			throw new SC2ActionException(this, e.getMessage(), e);
+		}
+	}
+
+	/**
+	** {@inheritDoc}
+	**
+	** This implementation creates an asset and adds it to the game state, and
+	** increments the max supply appropriately.
+	**
+	** If a worker was created, it is sent to work.
+	*/
+	@Override public void evt_done() {
+		SC2Asset asset = play.world.createAsset(play, type);
+		play.addAsset(asset);
+		play.max_f += type.prov_f;
+
+		if (asset instanceof SC2Worker && source instanceof SC2Command) {
+			// TODO better mining rules, e.g. pick gas, pick least-saturated
+			// TODO for zerg, source won't be a SC2Command, it will be a larva. fix this.
+			((SC2Worker)asset).setGatherM((SC2Command)source);
 		}
 	}
 

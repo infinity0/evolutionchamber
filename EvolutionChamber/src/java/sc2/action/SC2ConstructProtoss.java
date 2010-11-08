@@ -1,5 +1,6 @@
 package sc2.action;
 
+import sc2.asset.SC2Asset;
 import sc2.asset.SC2AssetType;
 
 /**
@@ -12,8 +13,18 @@ public class SC2ConstructProtoss extends SC2AssetAction {
 		super(type, SC2AssetAction.Action.CSTR_P);
 	}
 
-	@Override protected void launch() throws SC2ActionException {
-		// TODO
+	/**
+	** {@inheritDoc}
+	**
+	** This implementation also drops this action from the source immediately
+	** (allowing the probe to get back to work) and binds it to the game state
+	** instead.
+	*/
+	@Override public void evt_init(SC2Asset source) throws SC2ActionException {
+		super.evt_init(source);
+		source.drop(this);
+		this.source = null;
+		play.addAction(this);
 	}
 
 }

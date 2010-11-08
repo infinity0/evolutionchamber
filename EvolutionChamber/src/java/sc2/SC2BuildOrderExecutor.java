@@ -56,6 +56,7 @@ public class SC2BuildOrderExecutor {
 					continue;
 
 				} else {
+					System.out.println("skip " + action + " due to " + e);
 					return false;
 				}
 			}

@@ -21,7 +21,7 @@ abstract public class SC2Action {
 	/** reference to the player state */
 	protected SC2Player play;
 
-	/** double because chrono boost can increase the decrement to 1.5 */
+	/** time to completion. double because chrono boost can increase the decrement to 1.5 */
 	protected double eta;
 
 	public SC2Action(double eta) {
@@ -29,7 +29,7 @@ abstract public class SC2Action {
 		this.eta = eta;
 	}
 
-	/** shortcut constructor for synchronous-only actions */
+	/** shortcut constructor for eventless actions */
 	public SC2Action() {
 		this(0);
 	}

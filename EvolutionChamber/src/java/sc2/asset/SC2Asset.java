@@ -69,6 +69,9 @@ public class SC2Asset {
 	/**
 	** Pop the next {@link SC2Build} from the queue (excluding active), or
 	** {@code null} if the queue is empty.
+	**
+	** This may be treated as a post-action-complete event, and overridden by
+	** subclasses such as {@link SC2Worker}.
 	*/
 	protected SC2Action popAction() {
 		assert active instanceof SC2Build || queue.isEmpty();

@@ -2,8 +2,6 @@ package sc2.action;
 
 import sc2.asset.SC2Asset;
 import sc2.asset.SC2AssetType;
-import sc2.asset.SC2Command;
-import sc2.asset.SC2Worker;
 import sc2.require.SC2Requires;
 import sc2.require.SC2AssetException;
 import sc2.require.SC2CostException;
@@ -32,6 +30,11 @@ public class SC2Build extends SC2AssetAction {
 		super(type, BUILD);
 	}
 
+	/**
+	** {@inheritDoc}
+	**
+	** This implementation checks the supply cost, and
+	*/
 	@Override public boolean advance(double rate) {
 		if (!begun) {
 			float cost_f = type.cost_f();
@@ -41,16 +44,6 @@ public class SC2Build extends SC2AssetAction {
 			begun = true;
 		}
 		return super.advance(rate);
-	}
-
-	@Override public void evt_done() {
-		SC2Asset asset = play.world.createAsset(play, type);
-		play.addAsset(asset);
-
-		if (asset instanceof SC2Worker && source instanceof SC2Command) {
-			// TODO better mining rules, e.g. pick gas, pick least-saturated
-			((SC2Worker)asset).setGatherM((SC2Command)source);
-		}
 	}
 
 	public boolean begun() {

@@ -126,6 +126,7 @@ public class SC2Player {
 	public void addAsset(SC2Asset asset) {
 		asset.setName("#" + assets.get(asset.type).size());
 		assets.put(asset.type, asset);
+		// food cost already deducted by action
 	}
 
 	public Set<SC2Asset> getAssets(SC2AssetType type) {
