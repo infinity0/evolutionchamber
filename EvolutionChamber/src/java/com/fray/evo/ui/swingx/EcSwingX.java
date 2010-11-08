@@ -220,7 +220,10 @@ public class EcSwingX extends JXPanel implements EcReportable
 //			
 //			}
 //		});
-		start.add(historyList);
+		historyList.setMaximumSize(new Dimension(80, 100));
+		JScrollPane scrollPane = new JScrollPane(historyList);
+		scrollPane.setPreferredSize(start.getSize());
+		start.add(scrollPane);
 		historyList.addListSelectionListener(new ListSelectionListener()
 		{
 			@Override
