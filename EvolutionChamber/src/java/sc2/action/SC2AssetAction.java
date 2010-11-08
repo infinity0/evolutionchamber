@@ -24,6 +24,8 @@ abstract public class SC2AssetAction extends SC2Action {
 	final public SC2AssetType type;
 	final public SC2AssetActionSchema schema;
 
+	protected SC2Asset source;
+
 	public SC2AssetAction(SC2AssetType type, SC2AssetActionSchema schema) {
 		super(nonNull(schema, "action scheme").cost_t);
 		this.type = nonNull(type, "asset type");
@@ -32,6 +34,34 @@ abstract public class SC2AssetAction extends SC2Action {
 
 	public SC2AssetAction(SC2AssetType type, SC2AssetAction.Action act) {
 		this(type, type.getSchema(act));
+	}
+
+	@Override protected void launch() throws SC2ActionException {
+		try {
+			checkRequirements();
+		} catch (SC2RequireException e) {
+			throw new SC2ActionException(this, "build requirements not satisfied: " + e.getMessage(), e);
+		}
+
+		try {
+			source = getSourceAsset();
+			launchPart2();
+		} catch (SC2AssetException e) {
+			throw new SC2ActionException(this, e.getMessage(), e);
+		} catch (SC2RequireException e) {
+			throw new SC2ActionException(this, "general execution error: " + e.getMessage(), e);
+		}
+	}
+
+	// TODO NOW generalise SC2Asset so this can be cleaner
+	protected void launchPart2() throws SC2ActionException, SC2RequireException { }
+
+	@Override public void init() throws SC2ActionException {
+		try {
+			deductResources();
+		} catch (SC2CostException e) {
+			throw new SC2ActionException(this, e.getMessage(), e);
+		}
 	}
 
 	public void checkRequirements() throws SC2RequireException {

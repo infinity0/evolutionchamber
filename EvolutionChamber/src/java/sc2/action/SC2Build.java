@@ -2,6 +2,8 @@ package sc2.action;
 
 import sc2.asset.SC2Asset;
 import sc2.asset.SC2AssetType;
+import sc2.asset.SC2Command;
+import sc2.asset.SC2Worker;
 import sc2.require.SC2Requires;
 import sc2.require.SC2AssetException;
 import sc2.require.SC2CostException;
@@ -30,29 +32,8 @@ public class SC2Build extends SC2AssetAction {
 		super(type, BUILD);
 	}
 
-	@Override protected void launch() throws SC2ActionException {
-		try {
-			checkRequirements();
-		} catch (SC2RequireException e) {
-			throw new SC2ActionException(this, "build requirements not satisfied: " + e.getMessage(), e);
-		}
-
-		try {
-			SC2Asset source = getSourceAsset();
-			source.pushBuild(this);
-		} catch (SC2AssetException e) {
-			throw new SC2ActionException(this, e.getMessage(), e);
-		} catch (SC2RequireException e) {
-			throw new SC2ActionException(this, "general execution error: " + e.getMessage(), e);
-		}
-	}
-
-	@Override public void init() throws SC2ActionException {
-		try {
-			deductResources();
-		} catch (SC2CostException e) {
-			throw new SC2ActionException(this, e.getMessage(), e);
-		}
+	@Override protected void launchPart2() throws SC2ActionException, SC2RequireException {
+		source.pushBuild(this);
 	}
 
 	@Override public boolean advance(double rate) {
@@ -67,7 +48,13 @@ public class SC2Build extends SC2AssetAction {
 	}
 
 	@Override public void complete() {
-		play.addAsset(play.world.createAsset(play, type));
+		SC2Asset asset = play.world.createAsset(play, type);
+		play.addAsset(asset);
+
+		if (asset instanceof SC2Worker && source instanceof SC2Command) {
+			// TODO better mining rules, e.g. pick gas, pick least-saturated
+			((SC2Worker)asset).setGatherM((SC2Command)source);
+		}
 	}
 
 }

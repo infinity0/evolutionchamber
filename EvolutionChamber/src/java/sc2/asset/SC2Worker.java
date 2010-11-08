@@ -14,7 +14,8 @@ public class SC2Worker extends SC2Asset {
 	/** current command structure, if {@code act} is {@code gath_m | gath_v}. */
 	protected SC2Command command;
 
-	/** current action, if {@code act} is {@code morph | cstr_p | cstr_t}. */
+	/** current action, if {@code act} is {@code cstr_p | cstr_t}. (for morphs,
+	** {@link #active_m} is used instead. */
 	protected SC2Action action;
 
 	public SC2Worker(SC2Player play, SC2AssetType type) {
@@ -23,7 +24,8 @@ public class SC2Worker extends SC2Asset {
 
 	public void setIdle() {
 		if (act == Activity.IDLE) { return; }
-		if (action != null) {
+		if (action != null || active_m != null || active_b != null) {
+			// TODO NOW generalise SC2Asset so this can be cleaner
 			// TODO support this. an action needs to do this on cancel()
 			throw new UnsupportedOperationException("cannot idle a worker currently on activity " + act);
 		}

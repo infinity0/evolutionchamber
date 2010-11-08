@@ -1,8 +1,7 @@
 package sc2;
 
 import sc2.asset.SC2AssetType;
-import sc2.action.SC2Action;
-import sc2.action.SC2Build;
+import sc2.action.*;
 import sc2.io.serial.SC2WorldReader;
 import static sc2.SC2World.Race;
 import static sc2.asset.SC2AssetType.Group;
@@ -34,12 +33,12 @@ public class SC2Main {
 		  new SC2Build(world.getAssetType("Probe")),
 		  new SC2Build(world.getAssetType("Probe")),
 		  new SC2Build(world.getAssetType("Probe")),
-		  //new SC2Build(world.getAssetType("Pylon")),
+		  new SC2ConstructProtoss(world.getAssetType("Pylon")),
 		  new SC2Build(world.getAssetType("Probe")),
 		  new SC2Build(world.getAssetType("Probe")),
 		  new SC2Build(world.getAssetType("Probe")),
 		  new SC2Build(world.getAssetType("Probe")),
-		  //new SC2Build(world.getAssetType("Gateway"))
+		  new SC2ConstructProtoss(world.getAssetType("Gateway"))
 		);
 
 		System.out.println(play.getDesc());

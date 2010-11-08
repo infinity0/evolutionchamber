@@ -174,6 +174,14 @@ public class SC2Asset {
 	}
 
 	/**
+	** Called when the asset is destroyed and removed from the player state.
+	*/
+	public void destroy() {
+		play.res_f -= type.cost_f();
+		play.max_f -= type.prov_f;
+	}
+
+	/**
 	** Advance the asset's state by the given rate. The default implementation
 	** recovers energy at a *standard* rate, and advances the current action by
 	** the input rate.
