@@ -32,10 +32,6 @@ public class SC2Build extends SC2AssetAction {
 		super(type, BUILD);
 	}
 
-	@Override protected void launchPart2() throws SC2ActionException, SC2RequireException {
-		source.pushBuild(this);
-	}
-
 	@Override public boolean advance(double rate) {
 		if (!begun) {
 			float cost_f = type.cost_f();
@@ -47,7 +43,7 @@ public class SC2Build extends SC2AssetAction {
 		return super.advance(rate);
 	}
 
-	@Override public void complete() {
+	@Override public void evt_done() {
 		SC2Asset asset = play.world.createAsset(play, type);
 		play.addAsset(asset);
 
@@ -55,6 +51,10 @@ public class SC2Build extends SC2AssetAction {
 			// TODO better mining rules, e.g. pick gas, pick least-saturated
 			((SC2Worker)asset).setGatherM((SC2Command)source);
 		}
+	}
+
+	public boolean begun() {
+		return begun;
 	}
 
 }

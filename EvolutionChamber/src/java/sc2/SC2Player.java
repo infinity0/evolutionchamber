@@ -119,7 +119,7 @@ public class SC2Player {
 
 	public void addAction(SC2Action action) throws SC2ActionException {
 		// TODO
-		action.init();
+		action.evt_init(null);
 		ongoing.add(action);
 	}
 

@@ -44,8 +44,7 @@ abstract public class SC2AssetAction extends SC2Action {
 		}
 
 		try {
-			source = getSourceAsset();
-			launchPart2();
+			getSourceAsset().bind(this);
 		} catch (SC2AssetException e) {
 			throw new SC2ActionException(this, e.getMessage(), e);
 		} catch (SC2RequireException e) {
@@ -53,12 +52,10 @@ abstract public class SC2AssetAction extends SC2Action {
 		}
 	}
 
-	// TODO NOW generalise SC2Asset so this can be cleaner
-	protected void launchPart2() throws SC2ActionException, SC2RequireException { }
-
-	@Override public void init() throws SC2ActionException {
+	@Override public void evt_init(SC2Asset source) throws SC2ActionException {
 		try {
 			deductResources();
+			this.source = source;
 		} catch (SC2CostException e) {
 			throw new SC2ActionException(this, e.getMessage(), e);
 		}

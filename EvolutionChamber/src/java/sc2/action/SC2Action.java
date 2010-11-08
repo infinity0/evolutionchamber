@@ -1,15 +1,20 @@
 package sc2.action;
 
 import sc2.SC2Player;
+import sc2.asset.SC2Asset;
 import sc2.action.SC2ActionException;
 
 /**
 ** Represents an ongoing action.
 **
-** An action has a mandatory {@link #launch()} phase which is executed once
-** synchronously, and optional asnychronous phases ({@link #init()}, {@link
-** #advance()}, {@link #complete()}, {@link #cancel()}), which are triggered
-** automatically by certain events in the game.
+** An action can be controlled with {@link #launch()}, {@link #advance()}, and
+** {@link #cancel()}. These methods are designed to be used directly by an
+** external client (such as {@link sc2.SC2BuildOrderExecutor}), and help to
+** integrate the action with the rest of the game state.
+**
+** An action also supports asynchronous events: {@link #evt_init(SC2Asset)} and
+** {@link #evt_done()}. These are fired automatically as the game advances
+** (e.g. by {@link SC2Player#advance()}), and should not be called directly.
 */
 abstract public class SC2Action {
 
@@ -30,8 +35,8 @@ abstract public class SC2Action {
 	}
 
 	/**
-	** Bind this action to the given player, and launch it. This is called by
-	** {@link sc2.SC2BuildOrderExecutor}.
+	** Launch the action for the given player. This method just delegates to
+	** {@link #launch()}.
 	*/
 	final public void launch(SC2Player play) throws SC2ActionException {
 		if (play == null) { throw new NullPointerException(); }
@@ -48,26 +53,21 @@ abstract public class SC2Action {
 	}
 
 	/**
-	** Launch the action. If this action implements the optional asynchronous
-	** phases, this method should integrate it into the appropriate places in
-	** the game state (e.g. asset queues) for them to be triggered correctly.
+	** Launch the action. This should integrate the action into the game state
+	** (e.g. {@link SC2Asset#bind(SC2Action)} to asset queues), so that events
+	** will be fired correctly.
 	**
-	** Called by {@link #launch(SC2Player)}.
+	** Used by {@link #launch(SC2Player)}.
 	*/
 	abstract protected void launch() throws SC2ActionException;
 
 	/**
-	** Initialise the action. This is called just before integration into the
-	** game state, e.g. when a structure is placed, or a unit is queued, and
-	** may prevent this from happening by throwing an exception.
-	**
-	** The default implementation does nothing. Subclasses might deduct
-	** resources, etc.
-	**
-	** This method should not change the place of the action itself, e.g.
-	** remove it from an asset queue. This is already done elsewhere.
+	** Advance the action at a normal rate. This method just delegates to
+	** {@link #advance(double)}.
 	*/
-	public void init() throws SC2ActionException { }
+	final public boolean advance() {
+		return advance(1.0);
+	}
 
 	/**
 	** Advance the action state to the next game tick (i.e. second).
@@ -77,45 +77,56 @@ abstract public class SC2Action {
 	** pause the action if appropriate.
 	**
 	** @param rate Timer decrement; should be 1.0 unless Chrono Boost is used.
-	** @return whether the action completed
+	** @return Whether the action completed
 	*/
 	public boolean advance(double rate) {
 		if (eta <= 0) { throw new IllegalStateException("action already completed: " + this); }
 		eta -= rate;
-		if (eta <= 0) { complete(); return true; }
+		if (eta <= 0) { evt_done(); return true; }
 		return false;
 	}
 
 	/**
-	** Complete the action. Add a new asset to the game state, etc.
-	**
-	** The default implementation does nothing. Subclasses might add a new
-	** asset to the game, etc.
-	**
-	** This method should not change the place of the action itself, e.g.
-	** remove it from an asset queue. This is already done elsewhere.
-	*/
-	public void complete() { }
-
-	/**
-	** Cancel the action. Restore resources etc.
+	** Cancel the action. This should detach the action from the game state
+	** (e.g. {@link SC2Asset#drop(SC2Action)}) from asset queues), and reverse
+	** any {@link #evt_init(SC2Asset)} events that might have been fired.
 	**
 	** The default implementation throws {@link UnsupportedOperationException}.
-	** Subclasses might compensate previously-deducted resources, etc.
+	** Subclasses might restore previously-deducted resources, etc.
 	**
-	** This method should not change the place of the action itself, e.g.
-	** remove it from an asset queue. This is already done elsewhere.
+	** There is no corresponding {@code evt_cancel} (as {@code evt_init} for
+	** {@code launch}), since cancel orders are not supposed to fail.
 	*/
 	public void cancel() {
-		throw new UnsupportedOperationException("cancel not supported on action " + this);
+		throw new UnsupportedOperationException("cancel not currently supported on action " + this);
 	}
 
 	/**
-	** Advance the action at a normal rate. This method delegates to {@link
-	** #advance(double)}, so subclasses need not (and cannot) override it.
+	** Event: initialise. Fired when the action is about to be integrated into
+	** the game state, e.g. when a structure is placed, or a unit is queued.
+	** If an exception is thrown, this will abort integration.
+	**
+	** The default implementation does nothing. Subclasses might check and
+	** deduct resources, etc.
+	**
+	** This method should not change the place of the action itself, e.g.
+	** bind it to an asset queue. This is already done elsewhere.
+	**
+	** @param source The asset that this action was bound to, or {@code null}.
 	*/
-	final public boolean advance() {
-		return advance(1.0);
-	}
+	public void evt_init(SC2Asset source) throws SC2ActionException { }
+
+	/**
+	** Event: completed. Fired when the action has just completed, e.g. when a
+	** build timer has expired. This cannot be aborted, and should not throw
+	** an exception during normal operation.
+	**
+	** The default implementation does nothing. Subclasses might add a new
+	** asset to the game state, etc.
+	**
+	** This method should not change the place of the action itself, e.g.
+	** drop it from an asset queue. This is already done elsewhere.
+	*/
+	public void evt_done() { }
 
 }
