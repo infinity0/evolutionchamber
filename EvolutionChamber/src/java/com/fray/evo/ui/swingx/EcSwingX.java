@@ -154,7 +154,7 @@ public class EcSwingX extends JXPanel implements EcReportable
 		JSplitPane outside = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		{ // Left
 			JPanel leftbottom = new JPanel(new GridBagLayout());
-			JPanel stuffPanel = leftbottom;
+			JScrollPane stuffPanel = new JScrollPane(leftbottom);
 			{
 				{
 					addControlParts(leftbottom);
