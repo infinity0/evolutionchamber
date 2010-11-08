@@ -543,7 +543,7 @@ public class EcState implements Serializable
 			return state.getSumStuff();
 		}
 
-		int i = hatcheries + lairs + hives + spawningPools + evolutionChambers + roachWarrens + hydraliskDen
+		int i = requiredBases + lairs + hives + spawningPools + evolutionChambers + roachWarrens + hydraliskDen
 				+ banelingNest + infestationPit + greaterSpire + ultraliskCavern + gasExtractors + spire
 				+ spineCrawlers + sporeCrawlers + nydusNetwork + nydusWorm
 
@@ -658,7 +658,7 @@ public class EcState implements Serializable
 		append(sb, "Ultralisks", ultralisks);
 		append(sb, "Brood Lords", broodlords);
 
-		append(sb, "Hatcheries", hatcheries);
+		append(sb, "Bases", requiredBases);
 		append(sb, "Lairs", lairs);
 		append(sb, "Hives", hives);
 		append(sb, "Gas Extractors", gasExtractors);
