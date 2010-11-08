@@ -2,6 +2,7 @@ package sc2.io.serial;
 
 import sc2.SC2World;
 import sc2.SC2Macro;
+import sc2.SC2EnergySchema;
 import sc2.asset.SC2AssetType;
 import sc2.action.SC2AssetActionSchema;
 import sc2.require.SC2Requires;
@@ -111,6 +112,10 @@ public class SC2IOFactory {
 				List<String> stats = copyOf(SEP_STATS.split(cmpts.next()));
 				parseUnitStats(stats);
 
+			} else if (head.equals("stat_ep")) {
+				// energy schema
+				curr_builder.defence(null, null, makeEnergySchema(cmpts.next()));
+
 			} else {
 				// asset actions
 				List<String> args = copyOf(cmpts);
@@ -142,6 +147,17 @@ public class SC2IOFactory {
 		int cg_size = stats.get(1).equals("A")? -1: parseInt(stats.get(1));
 		int cg_cap = parseInt(stats.get(2));
 		curr_builder.unit(cost_f, cg_size, cg_cap);
+	}
+
+	protected SC2EnergySchema makeEnergySchema(String name) {
+		if (name.length() == 0) { return SC2EnergySchema.Presets.NONE.stat_ep; }
+		if (Character.isLetter(name.charAt(0))) { return enumFromUncased(SC2EnergySchema.Presets.class, name).stat_ep; }
+		List<String> stats = copyOf(SEP_STATS.split(name));
+		int max = Integer.parseInt(stats.get(0));
+		double regen = Double.parseDouble(stats.get(1));
+		int init = Integer.parseInt(stats.get(2));
+		int init_up = (stats.size() > 3)? Integer.parseInt(stats.get(3)): init;
+		return new SC2EnergySchema(max, regen, init, init_up);
 	}
 
 	protected void parseAssetActionSchema(Action act, List<String> args) {

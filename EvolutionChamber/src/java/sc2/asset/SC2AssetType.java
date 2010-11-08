@@ -117,7 +117,7 @@ public class SC2AssetType {
 		this(true,
 		  nonNull(name, "name"), nonNull(race, "race"),
 		  nullSafeCopy(actions, new SC2AssetActionSchema[0]),
-		  stat_hp, stat_sp, (stat_ep == null)? SC2EnergySchema.NONE: stat_ep,
+		  stat_hp, stat_sp, (stat_ep == null)? SC2EnergySchema.Presets.NONE.stat_ep: stat_ep,
 		  speed, range, sight,
 		  nullSafeImmutableEnumSet(mods), atk_g, atk_a,
 		  prov_f, cost_f, cg_size, cg_cap);

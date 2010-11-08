@@ -29,8 +29,12 @@ public class SC2EnergySchema {
 		return (next < max)? next: (double)max;
 	}
 
-	final public static SC2EnergySchema NONE = new SC2EnergySchema(0, 0, 0, 0);
-	final public static SC2EnergySchema DEFAULT = new SC2EnergySchema(200, 0.5625, 50, 50);
-	final public static SC2EnergySchema DEFAULT_UP = new SC2EnergySchema(200, 0.5625, 50, 75);
+	public enum Presets {
+		NONE(0, 0, 0, 0), DEFAULT(200, 0.5625, 50, 50), DEFAULT_UP(200, 0.5625, 50, 75);
+		final public SC2EnergySchema stat_ep;
+		Presets(int max, double regen, int init, int init_up) {
+			this.stat_ep = new SC2EnergySchema(max, regen, init, init_up);
+		}
+	}
 
 }

@@ -8,6 +8,7 @@
 #            || "prov_f" : PROV_F
 #            || "macro" : M_ROLE
 #            || "u" : COST_F CARGO_SIZE CARGO_SPACE
+#            || "stat_ep" : EP_SCHEMA
 #
 #     ACTION :: "build" || "morph" || "warpin" || "cstr_p" || "cstr_t"
 #     SOURCE :: NAME , ...
@@ -20,6 +21,8 @@
 # CARGO_SIZE :: "A" || <int>
 #
 #     M_ROLE :: "worker" || "command" || "supply"
+#  EP_SCHEMA :: "none" || "default" || "default_up" || MAX REGEN INIT [INIT_UP]
+#      REGEN :: <float>
 #
 #          * :: <int>
 #
@@ -45,7 +48,7 @@
 
 [ Protoss Structures ]
 
-Nexus               | cstr_p : 400   0 100 : Probe                  | macro: command    | prov_f: 10
+Nexus               | cstr_p : 400   0 100 : Probe                  | macro: command    | prov_f: 10        | stat_ep: 100 0.5625 0
 Pylon               | cstr_p : 100   0  25 : Probe                  | macro: supply     | prov_f: 8
 Assimilator         | cstr_p :  75   0  30 : Probe
 Gateway             | cstr_p : 150   0  65 : Probe : Nexus          | morph : 0 0 10 : Warp Gate : Warpgate
@@ -94,18 +97,18 @@ Air Armor Level 3           | build : 300 300 220 : Cybernetics Core : Air Armor
 
 Probe           | u: 1 1 0 | build :  50   0  17 : Nexus:                        | macro: worker
 Zealot          | u: 2 2 0 | build : 100   0  38 : Gateway                       | warpin : 100   0  28 : Warp Gate
-Sentry          | u: 2 2 0 | build :  50 100  42 : Gateway : Cybernetics Core    | warpin :  50 100  32 : Warp Gate
+Sentry          | u: 2 2 0 | build :  50 100  42 : Gateway : Cybernetics Core    | warpin :  50 100  32 : Warp Gate     | stat_ep: default
 Stalker         | u: 2 2 0 | build : 125  50  42 : Gateway : Cybernetics Core    | warpin :  50 100  32 : Warp Gate
 Observer        | u: 1 A 0 | build :  50 100  40 : Robotics Facility
 Warp Prism      | u: 2 A 8 | build : 200   0  50 : Robotics Facility
 Immortal        | u: 4 4 0 | build : 250 100  55 : Robotics Facility
-High Templar    | u: 2 2 0 | build :  50 150  55 : Gateway : Templar Archives    | warpin :  50 150  45 : Warp Gate
+High Templar    | u: 2 2 0 | build :  50 150  55 : Gateway : Templar Archives    | warpin :  50 150  45 : Warp Gate     | stat_ep: default_up
 Dark Templar    | u: 2 2 0 | build : 125 125  55 : Gateway : Dark Shrine         | warpin : 125 125  45 : Warp Gate
 Colossus        | u: 6 8 0 | build : 300 200  75 : Robotics Facility : Robotics Bay
-Phoenix         | u: 2 A 0 | build : 150 100  45 : Stargate
+Phoenix         | u: 2 A 0 | build : 150 100  45 : Stargate                                                             | stat_ep: default
 Void Ray        | u: 3 A 0 | build : 250 150  60 : Stargate
 Carrier         | u: 6 A 0 | build : 350 250 120 : Stargate : Fleet Beacon
-Mothership      | u: 8 A 0 | build : 400 400 160 : Nexus : Fleet Beacon, <1 Mothership
+Mothership      | u: 8 A 0 | build : 400 400 160 : Nexus : Fleet Beacon, <1 Mothership                                  | stat_ep: default
 Interceptor     | u: 0 A 0 | build :  25   0   8 : Carrier
 Archon          | u: 4 4 0 | morph :   0   0  12 : High Templar, Dark Templar ::: 2 1
 
@@ -174,12 +177,12 @@ Cocoon          | u: 0 0 0 |
 Drone           | u: 1 1 0 | morph :  50   0  17 : Larva     :                  : Cocoon        | macro: worker
 Overlord        | u: 0 A 8 | morph : 100   0  25 : Larva     :                  : Cocoon        | macro: supply      | prov_f : 8
 Zergling        | u: h 1 0 | morph :  50   0  24 : Larva     : Spawning Pool    : Cocoon : 1 2
-Queen           | u: 2 9 0 | build : 150   0  50 : Hatchery
+Queen           | u: 2 9 0 | build : 150   0  50 : Hatchery                                                                             | stat_ep: 200 0.5625 25
 Roach           | u: 2 9 0 | morph :  75  25  27 : Larva     : Roach Warren     : Cocoon
 Baneling        | u: h 9 0 | morph :  25  25  20 : Zergling  : Baneling Nest    : Cocoon
-Overseer        | u: 0 9 0 | morph :  50 100  17 : Overlord  : Lair             : Cocoon        | macro: supply      | prov_f : 8
+Overseer        | u: 0 9 0 | morph :  50 100  17 : Overlord  : Lair             : Cocoon        | macro: supply      | prov_f : 8       | stat_ep: default
 Hydralisk       | u: 2 9 0 | morph : 100  50  33 : Larva     : Hydralisk Den    : Cocoon
-Infestor        | u: 2 9 0 | morph : 100 150  50 : Larva     : Infestation Pit  : Cocoon
+Infestor        | u: 2 9 0 | morph : 100 150  50 : Larva     : Infestation Pit  : Cocoon                                                | stat_ep: default_up
 Mutalisk        | u: 2 A 0 | morph : 100 100  33 : Larva     : Spire            : Cocoon
 Corruptor       | u: 2 A 0 | morph : 150 100  40 : Larva     : Spire            : Cocoon
 Ultralisk       | u: 6 9 0 | morph : 300 200  70 : Larva     : Ultralisk Cavern : Cocoon
@@ -188,7 +191,7 @@ Brood Lord      | u: 4 A 0 | morph : 150 150  34 : Corruptor : Greater Spire    
 
 [ Terran Structures ]
 
-Command Center      | cstr_t : 400   0 100                          | macro: command    | prov_f: 11
+Command Center      | cstr_t : 400   0 100                          | macro: command    | prov_f: 11        | stat_ep: default
 Supply Depot        | cstr_t : 100   0  25                          | macro: supply     | prov_f: 8
 
 [ Terran Tech ]

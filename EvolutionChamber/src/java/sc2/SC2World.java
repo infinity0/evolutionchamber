@@ -34,6 +34,11 @@ public class SC2World {
 		return stat.get(key).group();
 	}
 
+	/** alias for {@link #getAssetType(String)} */
+	public SC2AssetType type(String name) {
+		return getAssetType(name);
+	}
+
 	public SC2AssetType getAssetType(String name) {
 		SC2AssetType type = stat.get(name);
 		if (type == null) { throw new NoSuchElementException("asset " + name + " has not yet been defined"); }

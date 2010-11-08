@@ -1,5 +1,6 @@
 package sc2;
 
+import sc2.asset.SC2Asset;
 import sc2.asset.SC2AssetType;
 import sc2.action.*;
 import sc2.io.serial.SC2WorldReader;
@@ -29,16 +30,20 @@ public class SC2Main {
 		play.advance();
 		System.out.println(play.getDesc());*/
 
+		// equivalent to 9 pylon 13 gateway with 11th, 13th probes boosted
+		SC2Asset nexus = play.getAsset(world.type("Nexus"), 0);
 		exec.executeAll(
-		  new SC2Build(world.getAssetType("Probe")),
-		  new SC2Build(world.getAssetType("Probe")),
-		  new SC2Build(world.getAssetType("Probe")),
-		  new SC2ConstructProtoss(world.getAssetType("Pylon")),
-		  new SC2Build(world.getAssetType("Probe")),
-		  new SC2Build(world.getAssetType("Probe")),
-		  new SC2Build(world.getAssetType("Probe")),
-		  new SC2Build(world.getAssetType("Probe")),
-		  new SC2ConstructProtoss(world.getAssetType("Gateway"))
+		  new SC2Build(world.type("Probe")),
+		  new SC2Build(world.type("Probe")),
+		  new SC2Build(world.type("Probe")),
+		  new SC2ConstructProtoss(world.type("Pylon")),
+		  new SC2Build(world.type("Probe")),
+		  new SC2Build(world.type("Probe")),
+		  new SC2ChronoBoost(nexus, nexus),
+		  new SC2Build(world.type("Probe")),
+		  new SC2Build(world.type("Probe")),
+		  new SC2ChronoBoost(nexus, nexus),
+		  new SC2ConstructProtoss(world.type("Gateway"))
 		);
 
 		System.out.println(play.getDesc());

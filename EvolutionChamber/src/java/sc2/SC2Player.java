@@ -11,6 +11,7 @@ import static sc2.SC2World.Race;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.SetMultimap;
 import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.collect.Iterables;
 
 import java.util.Iterator;
 import java.util.Set;
@@ -131,6 +132,10 @@ public class SC2Player {
 		asset.setName("#" + assets.get(asset.type).size());
 		assets.put(asset.type, asset);
 		// food cost already deducted by action
+	}
+
+	public SC2Asset getAsset(SC2AssetType type, int index) {
+		return Iterables.get(assets.get(type), index);
 	}
 
 	public Set<SC2Asset> getAssets(SC2AssetType type) {

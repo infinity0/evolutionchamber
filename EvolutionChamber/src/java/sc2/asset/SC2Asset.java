@@ -4,6 +4,7 @@ import sc2.action.SC2Build;
 import sc2.action.SC2Morph;
 import sc2.action.SC2Action;
 import sc2.action.SC2ActionException;
+import sc2.require.SC2CostException;
 import sc2.require.SC2RequireException;
 import sc2.require.SC2QueueException;
 import sc2.SC2Player;
@@ -160,6 +161,12 @@ public class SC2Asset {
 
 	protected void regenEnergy() {
 		energy = type.stat_ep.regen(energy);
+	}
+
+	public void spendEnergy(int cost_e) throws SC2CostException {
+		if (type.stat_ep.regen == 0) { throw new IllegalArgumentException("this asset doesn't use energy"); }
+		if (energy < cost_e) { throw new SC2CostException(cost_e, energy); }
+		energy -= cost_e;
 	}
 
 	@Override public String toString() {
