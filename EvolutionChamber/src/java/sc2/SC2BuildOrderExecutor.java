@@ -66,7 +66,10 @@ public class SC2BuildOrderExecutor {
 	/**
 	** Maximum number of cycles the executor will block on an {@link SC2Wait}
 	** before giving up and skipping the next action.
+	**
+	** Currently set to 240 as no asset in the game takes this long to build.
+	** (Max is 220 for Level 3 upgrades.)
 	*/
-	final public static int MAX_WAIT_CYCLES = 120;
+	final public static int MAX_WAIT_CYCLES = 240;
 
 }

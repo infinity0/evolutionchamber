@@ -117,7 +117,8 @@ abstract public class SC2AssetAction extends SC2Action {
 		case 1:
 			return sources.get(0);
 		default:
-			// get an arbitrary idle asset
+			// get first idle asset found, sorted by type as it appears in schema.src
+			// then as the asset (of that type) was added to the game state
 			// TODO better algorithm
 			for (SC2Asset source: sources) { if (!source.isActive()) { return source; } }
 			throw new SC2AssetException(sources.toArray(new SC2Asset[sources.size()]), false);
