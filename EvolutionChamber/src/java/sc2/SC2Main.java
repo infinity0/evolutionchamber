@@ -42,6 +42,9 @@ public class SC2Main {
 		);
 
 		System.out.println(play.getDesc());
+		play.advance(120);
+		System.out.println(play.getDesc());
+
 	}
 
 }

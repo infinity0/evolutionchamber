@@ -55,7 +55,6 @@ public class SC2World {
 		switch (type.group()) {
 		case S:
 			return new SC2Structure(play, type);
-			// TODO
 		case T:
 			throw new IllegalArgumentException("cannot create an asset from a tech type");
 		case U:

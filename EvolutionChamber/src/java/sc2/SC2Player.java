@@ -117,9 +117,13 @@ public class SC2Player {
 		++time;
 	}
 
-	public void addAction(SC2Action action) throws SC2ActionException {
-		// TODO
-		action.evt_init(null);
+	public void advance(int cycles) {
+		for (int i=0; i<cycles; ++i) { advance(); }
+	}
+
+	public void addAction(SC2Action action) /*throws SC2ActionException*/ {
+		// TODO NOW this is a hack, FIX FIX FIX
+		//action.evt_init(null);
 		ongoing.add(action);
 	}
 

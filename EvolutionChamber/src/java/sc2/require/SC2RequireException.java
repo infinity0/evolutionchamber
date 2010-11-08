@@ -25,8 +25,6 @@ public class SC2RequireException extends Exception {
 	** (To work around this, the genetic algorithm automatically inserts wait
 	** actions during the mutation. However, if this field is set to true, it
 	** will help speed up optimisation.)
-	**
-	** TODO actually implement an explicit wait action.
 	*/
 	public boolean maybeSatisfiableByWaiting() {
 		return later;

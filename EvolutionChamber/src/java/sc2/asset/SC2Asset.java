@@ -106,7 +106,7 @@ public class SC2Asset {
 
 	/**
 	** Cancel the given action. This should only be called by the action
-	** itself, from {@link SC2Action#cancel()}. TODO rename
+	** itself, from {@link SC2Action#cancel()}.
 	**
 	** @return Whether the action was active (otherwise queued).
 	*/
@@ -114,7 +114,7 @@ public class SC2Asset {
 		if (action == null) { throw new NullPointerException(); }
 		if (active != null) {
 			if (action == active) {
-				action = popAction(); // returns null if queue empty
+				active = popAction(); // returns null if queue empty
 				return true;
 			} else if (action instanceof SC2Build && queue.remove(action)) {
 				assert active instanceof SC2Build;

@@ -34,6 +34,10 @@ abstract public class SC2Action {
 		this(0);
 	}
 
+	public double getETA() {
+		return eta;
+	}
+
 	/**
 	** Launch the action for the given player. This method just delegates to
 	** {@link #launch()}.

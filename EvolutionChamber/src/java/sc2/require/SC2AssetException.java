@@ -1,5 +1,6 @@
 package sc2.require;
 
+import sc2.asset.SC2Asset;
 import sc2.asset.SC2AssetType;
 
 import java.util.Arrays;
@@ -27,6 +28,11 @@ public class SC2AssetException extends SC2RequireException {
 
 	public SC2AssetException(SC2AssetType[] types, boolean later) {
 		super("could not find any of " + Arrays.toString(types), later);
+		this.type = null;
+	}
+
+	public SC2AssetException(SC2Asset[] assets, boolean later) {
+		super("none of candidate assets suitable: " + Arrays.toString(assets), later);
 		this.type = null;
 	}
 

@@ -103,8 +103,9 @@ abstract public class SC2AssetAction extends SC2Action {
 	}
 
 	public SC2Asset getSourceAsset() throws SC2AssetException {
+		List<SC2AssetType> src = schema.src();
 		List<SC2Asset> sources = Lists.newArrayList(Iterables.concat(
-		Iterables.transform(schema.src(), new Function<SC2AssetType, Set<SC2Asset>>() {
+		Iterables.transform(src, new Function<SC2AssetType, Set<SC2Asset>>() {
 			@Override public Set<SC2Asset> apply(SC2AssetType type) {
 				return play.getAssets(type);
 			}
@@ -112,11 +113,15 @@ abstract public class SC2AssetAction extends SC2Action {
 		switch (sources.size()) {
 		case 0:
 			// TODO check the queues for future satisfiability
-			throw new SC2AssetException(schema.src().toArray(new SC2AssetType[0]), false);
+			throw new SC2AssetException(src.toArray(new SC2AssetType[src.size()]), false);
 		case 1:
 			return sources.get(0);
 		default:
-			throw new UnsupportedOperationException("implict source not implemented, need to choose between: " + sources);
+			// get an arbitrary idle asset
+			// TODO better algorithm
+			for (SC2Asset source: sources) { if (!source.isActive()) { return source; } }
+			throw new SC2AssetException(sources.toArray(new SC2Asset[sources.size()]), false);
+			//throw new UnsupportedOperationException("implict source not implemented, need to choose between: " + sources);
 		}
 	}
 
