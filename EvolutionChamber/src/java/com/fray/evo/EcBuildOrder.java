@@ -40,7 +40,7 @@ public class EcBuildOrder extends EcState implements Serializable
 	
 	public EcBuildOrder(EcState importDestination)
 	{
-		importDestination.assign(this);
+		assign(importDestination);
 	}
 
 	@Override
