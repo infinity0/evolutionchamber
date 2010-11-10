@@ -1,6 +1,7 @@
 package com.fray.evo.util;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -78,30 +79,26 @@ public class EcAutoUpdate extends SwingWorker<Void, Void> {
 		    if (contentType.startsWith("text/") || contentLength == -1) {
 		      throw new IOException("This is not a binary file.");
 		    }
+		    
+		    String filename = u.getFile().substring( u.getFile().lastIndexOf('/') + 1);
+			FileOutputStream out = new FileOutputStream(filename);
 		    InputStream raw = uc.getInputStream();
 		    InputStream in 	= new BufferedInputStream(raw);
-		    byte[] data 	= new byte[contentLength];
-		    int bytesRead 	= 0;
-		    int offset 		= 0;
-		    while (offset < contentLength) {
-		      bytesRead = in.read(data, offset, data.length - offset);
-		      if (bytesRead == -1)
-		        break;
-		      offset += bytesRead;
-		      progress = (int)( (offset / (float)contentLength) * 100 );
-		      setProgress(progress);
+		    byte[] buf = new byte[1024];
+		    int bytesRead = 0;
+		    int offset = 0;
+		    while ((bytesRead = in.read(buf)) != -1){
+		    	out.write(buf, 0, bytesRead);
+		    	offset += bytesRead;
+		    	progress = (int)( (offset / (float)contentLength) * 100 );
+			    setProgress(progress);
 		    }
 		    in.close();
+		    out.close();
 
 		    if (offset != contentLength) {
 		        throw new IOException("Only read " + offset + " bytes; Expected " + contentLength + " bytes");
 		    }
-
-			String filename = u.getFile().substring( u.getFile().lastIndexOf('/') + 1);
-			FileOutputStream out = new FileOutputStream(filename);
-			out.write(data);
-			out.flush();
-			out.close();
 			this.jarFile = filename;
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -117,7 +114,7 @@ public class EcAutoUpdate extends SwingWorker<Void, Void> {
     @Override
     public void done() {
     	setProgress(100);
-        String javaBin = System.getProperty("java.home") + "/bin/java";
+        String javaBin = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
         String restartCmd[] = new String[] { javaBin, "-jar", this.jarFile};
         try {
 			Runtime.getRuntime().exec( restartCmd );
