@@ -14,6 +14,7 @@ import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 
 import com.fray.evo.util.EcAutoUpdate;
+import com.fray.evo.util.EcMessages;
 
 /**
  * Contains the main method to launch the GUI application.
@@ -21,6 +22,7 @@ import com.fray.evo.util.EcAutoUpdate;
  *
  */
 public class EcSwingXMain {
+	public static final EcMessages messages = new EcMessages("com/fray/evo/ui/swingx/messages");
 	public static final String				EC_VERSION	= "0020";
 	
 	public static void main(String args[]) {
@@ -28,7 +30,7 @@ public class EcSwingXMain {
 		
 		//run Mac OS X customizations if user is on a Mac
 		//this code must *literally* run before *anything* else graphics-related...putting this code at the beginning of EcSwingX.main() doesn't quite work--the application name (which appears as the first menu item in the Mac menu bar) does not get set--the only reason I can think of why this happens is that EcSwingX extends a class, so some static initialization code must be running before EcSwingX.main() gets executed 
-		MacSupport.initIfMac("Evolution Chamber v" + EC_VERSION, false, iconLocation, new MacHandler() {
+		MacSupport.initIfMac(messages.getString("title", EC_VERSION), false, iconLocation, new MacHandler() {
 			@Override
 			public void handleQuit(Object applicationEvent) {
 				System.exit(0);
@@ -36,7 +38,7 @@ public class EcSwingXMain {
 
 			@Override
 			public void handleAbout(Object applicationEvent) {
-				JOptionPane.showMessageDialog(null, "Evolution Chamber v" + EC_VERSION + "\nhttp://code.google.com/p/evolutionchamber/", "About", JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(null, messages.getString("about.message", EC_VERSION), messages.getString("about.title"), JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
 		
@@ -55,7 +57,7 @@ public class EcSwingXMain {
 				}
 
 				final JFrame frame = new JFrame();
-				frame.setTitle("Evolution Chamber v" + EC_VERSION);
+				frame.setTitle(messages.getString("title", EC_VERSION));
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				frame.getContentPane().add(new EcSwingX());
 				frame.setPreferredSize(new Dimension(900, 830));
@@ -65,8 +67,8 @@ public class EcSwingXMain {
 				frame.setLocationRelativeTo(null);
 
 				final JFrame updateFrame = new JFrame();
-				updateFrame.setTitle("Automatic Update");
-				JLabel waiting = new JLabel("Checking for updates...");
+				updateFrame.setTitle(messages.getString("update.title"));
+				JLabel waiting = new JLabel(messages.getString("update.checking"));
 				updateFrame.getContentPane().setLayout(new FlowLayout());
 				updateFrame.getContentPane().add(waiting);
 				updateFrame.setSize(new Dimension(250, 70));
@@ -95,10 +97,10 @@ public class EcSwingXMain {
 		if (ecUpdater.isUpdateAvailable())
 		{
 			JOptionPane pane = new JOptionPane(
-					"A newer version of the Evolution Chamber is available. Do you want to update now?");
-			Object[] options = new String[] { "Yes", "No" };
+					messages.getString("update.updateAvailable.message"));
+			Object[] options = new String[] { messages.getString("update.updateAvailable.yes"), messages.getString("update.updateAvailable.no") };
 			pane.setOptions(options);
-			JDialog dialog = pane.createDialog(new JFrame(), "Evolution Chamber Update Available");
+			JDialog dialog = pane.createDialog(new JFrame(), messages.getString("update.updateAvailable.title"));
 			dialog.setVisible(true);
 
 			Object obj = pane.getValue();
@@ -106,7 +108,7 @@ public class EcSwingXMain {
 			if (options[0].equals(obj))
 			{ // User selection = "Yes"
 				JFrame updateFrame = new JFrame();
-				updateFrame.setTitle("Updating");
+				updateFrame.setTitle(messages.getString("update.updating.title"));
 
 				final JProgressBar updateProgress = new JProgressBar(0, 100);
 				updateProgress.setValue(0);
